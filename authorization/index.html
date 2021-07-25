@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href='style.css' rel='stylesheet'>
+</head>
+<body>
+    <div id='app'>
+        <form class='form' @submit.prevent='auth'>
+            <h3>Авторизация</h3>
+            <input v-model='login' placeholder="Логин" />
+            <input type="password" v-model='password' placeholder="Пароль" />
+            <button type='submit'>Войти</button>
+        </form>
+    </div>
+    <script src="https://unpkg.com/vue@next"></script>
+    <script src='script.js'></script>
+</body>
+</html>
