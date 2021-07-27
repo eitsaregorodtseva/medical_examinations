@@ -11,12 +11,12 @@
     <link href='style.css' rel='stylesheet'>
 </head>
 <body>
-    <div id='app' class='normal_app'>
-        <form class='form' @submit.prevent='auth'>
-            <div class='normal_txt'>Авторизация</div>
-            <input class='normal_log' v-model='login' placeholder="Логин" />
-            <input class='normal_pas' type="password" v-model='password' placeholder="Пароль" />
-            <button class='normal_bttn' type='submit'>Войти</button>
+    <div id='app' class='app'>
+        <form @submit.prevent='auth'>
+            <div id='text' class='txt'>Авторизация</div>
+            <input id='log' class='input' v-model='login' placeholder="Логин" />
+            <input id='pas' class='input' type="password" v-model='password' placeholder="Пароль" />
+            <button id='btn' class='bttn' type='submit' v-on:mouseover='overBttn' v-on:mouseout='outBttn'>Войти</button>
         </form>
     </div>
     
