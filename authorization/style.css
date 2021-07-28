@@ -167,3 +167,11 @@ body {
     border: none;
     border-bottom: solid 1px #2A0B71;
 }
+
+#mes_er {
+    position: absolute;
+    text-align: center;
+    width: 100%;
+    top: 27%;
+    font-weight: 600;
+}
