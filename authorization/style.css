@@ -133,13 +133,29 @@ body {
     height: 129px;
 }
 
-.filter {
-    filter: hue-rotate(250deg);
-}
-
 #img_cont {
     position: absolute;
     left: 50%;
     margin-left: -64.5px;
     top: 7%;
+}
+
+#err_txt {
+    position: absolute;
+    text-align: center;
+    top: 43%;
+    width: 100%;
+    font-weight: 600;
+}
+
+#nav {
+    position: absolute;
+    text-align: center;
+    width: auto;
+    top: 110%;
+    left: 46%;
+    font-weight: 400;
+    border: none;
+    background-color: #FFF;
+    border-bottom: solid 1px #C51F1F;
 }

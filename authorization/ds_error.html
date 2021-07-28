@@ -11,13 +11,15 @@
     <link href='style.css' rel='stylesheet'>
 </head>
 <body>
-    <div id='app' class='app_normal'>
+    <div id='app' class='app_error'>
         <form @submit.prevent='verf'>
             <div id='img_cont'>
-                <img id='img' src='./images/flash-drive.png' />
+                <img id='img' src='./images/flash-drive (1).png' />
             </div>
-            <div id='text_ds' class='txt_normal'>Присоедините к компьютеру носитель ключа электронной подписи.</div>
-            <button id='btn' class='bttn_normal' type='submit'>Готово</button>
+            <div id='err_txt' class='input_error'>Неверный ключ</div>
+            <div id='text_ds' class='txt_error'>Присоедините к компьютеру носитель ключа электронной подписи.</div>
+            <button id='btn' class='bttn_error' type='submit'>Готово</button>
+            <button id='nav' class='input_error'>Назад</button>
         </form>
     </div>
     
