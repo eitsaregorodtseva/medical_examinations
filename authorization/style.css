@@ -47,12 +47,23 @@ body {
     letter-spacing: -0.017em;
 }
 
-#text {
+#text_au {
     position: absolute;
     text-align: center;
     top: 10%;
     width: 100%;
     font-size: 30px;
+    font-weight: 600;
+    letter-spacing: -0.017em;
+}
+
+#text_ds {
+    position: absolute;
+    text-align: center;
+    top: 52%;
+    width: 70%;
+    padding-left: 15%;
+    font-size: 18px;
     font-weight: 600;
     letter-spacing: -0.017em;
 }
@@ -115,4 +126,20 @@ body {
 
 .bttn_error:hover {
     background: linear-gradient(to left, #D62424, #C80D0D);
+}
+
+#img {
+    width: 129px;
+    height: 129px;
+}
+
+.filter {
+    filter: hue-rotate(250deg);
+}
+
+#img_cont {
+    position: absolute;
+    left: 50%;
+    margin-left: -64.5px;
+    top: 7%;
 }

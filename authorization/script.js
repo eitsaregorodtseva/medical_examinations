@@ -7,11 +7,14 @@ const app = Vue.createApp({
     },
 
     methods: {
-        auth: function() {
+        auth() {
             let data = {
                 login: this.login,
                 password: this.password,
             }
+        },
+        verf() {
+            
         },
     }
 });

@@ -11,12 +11,13 @@
     <link href='style.css' rel='stylesheet'>
 </head>
 <body>
-    <div id='app' class='app_error'>
-        <form @submit.prevent='auth'>
-            <div id='text' class='txt_error'>Авторизация</div>
-            <input id='log' class='input input_error' v-model='login' placeholder="Логин" />
-            <input id='pas' class='input input_error' type="password" v-model='password' placeholder="Пароль" />
-            <button id='btn' class='bttn_error' type='submit'>Войти</button>
+    <div id='app' class='app_normal'>
+        <form @submit.prevent='verf'>
+            <div id='img_cont'>
+                <img id='img' class='filter' src='./images/flash-drive.png' />
+            </div>
+            <div id='text_ds' class='txt_normal'>Присоедините к компьютеру носитель ключа электронной подписи.</div>
+            <button id='btn' class='bttn_normal' type='submit'>Готово</button>
         </form>
     </div>
     
