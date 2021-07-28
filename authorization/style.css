@@ -155,7 +155,15 @@ body {
     top: 110%;
     left: 46%;
     font-weight: 400;
-    border: none;
     background-color: #FFF;
+}
+
+.nav_error {
+    border: none;
     border-bottom: solid 1px #C51F1F;
+}
+
+.nav_normal {
+    border: none;
+    border-bottom: solid 1px #2A0B71;
 }
