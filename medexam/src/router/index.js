@@ -22,7 +22,15 @@ const routes = [
       layout: 'auth',
     },
     component: () => import('../views/AuthError.vue'),
-  }
+  },
+  {
+    path: '/dig_sig',
+    name: 'DigitalSignature',
+    meta: {
+      layout: 'auth',
+    },
+    component: () => import('../views/DSNormal.vue'),
+  },
 ]
 
 const router = createRouter({
