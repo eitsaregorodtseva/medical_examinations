@@ -31,6 +31,14 @@ const routes = [
     },
     component: () => import('../views/DSNormal.vue'),
   },
+  {
+    path: '/dig_sig_error',
+    name: 'DigitalSignatureError',
+    meta: {
+      layout: 'DigitalSignatureError',
+    },
+    component: () => import('../views/DSError.vue'),
+  },
 ]
 
 const router = createRouter({
