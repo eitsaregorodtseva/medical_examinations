@@ -14,6 +14,14 @@ const routes = [
       layout: 'auth',
     },
     component: () => import('../views/AuthNormal.vue'),
+  },
+  {
+    path: '/auth_error',
+    name: 'AuthError',
+    meta: {
+      layout: 'auth',
+    },
+    component: () => import('../views/AuthError.vue'),
   }
 ]
 
