@@ -7,7 +7,8 @@
 </template>
 
 <script>
-import AuthLayout from '@/layouts/AuthLayout';
+import AuthNormalLayout from '@/layouts/AuthNormalLayout';
+import AuthErrorLayout from '@/layouts/AuthErrorLayout';
 export default {
   computed: {
     layout() {
@@ -15,7 +16,8 @@ export default {
     }
   },
   components: {
-    AuthLayout,
+    AuthNormalLayout,
+    AuthErrorLayout
   }
 }
 </script>

@@ -11,7 +11,7 @@ const routes = [
     path: '/auth',
     name: 'Auth',
     meta: {
-      layout: 'auth',
+      layout: 'auth-normal',
     },
     component: () => import('../views/AuthNormal.vue'),
   },
@@ -19,7 +19,7 @@ const routes = [
     path: '/auth_error',
     name: 'AuthError',
     meta: {
-      layout: 'auth',
+      layout: 'auth-error',
     },
     component: () => import('../views/AuthError.vue'),
   },
@@ -27,7 +27,7 @@ const routes = [
     path: '/dig_sig',
     name: 'DigitalSignature',
     meta: {
-      layout: 'auth',
+      layout: 'auth-normal',
     },
     component: () => import('../views/DSNormal.vue'),
   },
@@ -35,7 +35,7 @@ const routes = [
     path: '/dig_sig_error',
     name: 'DigitalSignatureError',
     meta: {
-      layout: 'DigitalSignatureError',
+      layout: 'auth-error',
     },
     component: () => import('../views/DSError.vue'),
   },
