@@ -1,7 +1,7 @@
 <template>
     <form @submit.prevent='verf'>
         <div id='img_cont'>
-            <img id='img' src='website\medexam\src\assets\images\flash-drive (1).png' />
+            <img id='img' src='@\assets\images\flash-drive(1).png' />
         </div>
         <div id='err_txt' class='input_error'>Неверный ключ</div>
         <div id='text_ds' class='txt_error'>Присоедините к компьютеру носитель ключа электронной подписи.</div>
