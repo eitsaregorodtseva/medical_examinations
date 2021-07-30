@@ -7,3 +7,30 @@
         <button id='btn' class='bttn_error' type='submit'>Войти</button>
     </form>
 </template>
+
+<script>
+export default {
+    name: 'login',
+    data: () => ({
+        login: '',
+        password: ''
+    }),
+    methods: {
+        auth() {
+            const user = {
+                login: 'login',
+                password: 'password'
+            };
+            const authData = {
+                login: this.login,
+                password: this.password
+            };
+
+            if (user.login === authData.login && user.password === authData.password)
+                this.$router.push('/dig_sig');
+            else
+                this.$router.push('/auth_error');
+        }
+    }
+}
+</script>

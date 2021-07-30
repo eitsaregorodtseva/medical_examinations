@@ -5,6 +5,16 @@
         </div>
         <div id='text_ds' class='txt_normal'>Присоедините к компьютеру носитель ключа электронной подписи.</div>
         <button id='btn' class='bttn_normal' type='submit'>Готово</button>
-        <button id='nav' class='input_normal nav_normal'>Назад</button>
+        <button id='nav' class='input_normal nav_normal' @click='back'>Назад</button>
     </form>
 </template>
+
+<script>
+export default {
+    methods: {
+        back() {
+            this.$router.push('/auth');
+        }
+    }
+}
+</script>
