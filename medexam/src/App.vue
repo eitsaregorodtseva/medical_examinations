@@ -7,17 +7,16 @@
 </template>
 
 <script>
-import AuthNormalLayout from '@/layouts/AuthNormalLayout';
-import AuthErrorLayout from '@/layouts/AuthErrorLayout';
+import DefaultLayout from '@/layouts/DefaultLayout';
+
 export default {
   computed: {
     layout() {
-      return (this.$route.meta.layout || 'auth') + '-layout';
+      return (this.$route.meta.layout || 'default') + '-layout';
     }
   },
   components: {
-    AuthNormalLayout,
-    AuthErrorLayout
+    DefaultLayout
   }
 }
 </script>
