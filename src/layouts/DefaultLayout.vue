@@ -27,6 +27,7 @@ header {
     position: relative;
     top: 25px;
     float: left;
+    font-weight: bold;
 }
 
 #content {

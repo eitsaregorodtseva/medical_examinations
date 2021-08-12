@@ -76,7 +76,7 @@ export default {
     top: 10%;
     width: 100%;
     font-size: 30px;
-    font-weight: 600;
+    font-weight: bold;
     letter-spacing: -0.017em;
 }
 
@@ -85,7 +85,7 @@ export default {
     text-align: center;
     width: 100%;
     top: 27%;
-    font-weight: 600;
+    font-weight: bold;
 }
 
 
