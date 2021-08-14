@@ -14,19 +14,7 @@ body {
     background-color: #FFFFFF;
 }
 
-input {
-    position: absolute;
-    width: 57%;
-    height: 10%;
-    left: 20%;
-    font-size: 110%;
-    padding-left: 3%;
-    font-family: 'Montserrat', sans-serif;
-    border: none;
-}
-
 button {
-    border-radius: 50px;
     font-size: 80%;
     font-family: 'Montserrat', sans-serif;
     font-weight: bold;

@@ -1,11 +1,23 @@
 <template>
-    <div id='auth_rect' :class="isError ? 'app_error' : 'app_normal'"> 
-        <form @submit.prevent='auth'>
-            <div id='text_au' :class="isError ? 'txt_error' : 'txt_normal'">Авторизация</div>
-            <div id='mes_er' v-if=isError class='input_error'>Неверный логин или пароль</div>
-            <input id='log' class='input' :class="isError ? 'input_error' : 'input_normal'" v-model.trim='login' placeholder="Логин"  @input="isError=false"/>
-            <input id='pas' class='input' :class="isError ? 'input_error' : 'input_normal'" type="password" v-model='password' placeholder="Пароль" @input="isError=false"/>
-            <button id='btn' :class="isError ? 'btn_error' : 'btn_normal'" type='submit'>Войти</button>
+    <div id='auth_rect' class='container position-absolute top-50 start-50 translate-middle' :class="isError ? 'app_error' : 'app_normal'"> 
+        <form class='form-horizontal' @submit.prevent='auth'>
+            <div class='form-group'>
+                <div class='row mt-3 d-flex justify-content-center'>
+                    <div id='text_au' :class="isError ? 'txt_error' : 'txt_normal'">Авторизация</div>
+                </div>
+                <div class='row mt-3 d-flex justify-content-center'>
+                    <div id='mes_er' v-if=isError class='input_error'>Неверный логин или пароль</div>
+                </div>
+                <div class='row mt-3 d-flex justify-content-center'>
+                    <input class='input' :class="isError ? 'input_error' : 'input_normal'" v-model.trim='login' placeholder="Логин"  @input="isError=false"/>
+                </div>
+                <div class='row mt-3 d-flex justify-content-center'>
+                    <input class='input' :class="isError ? 'input_error' : 'input_normal'" type="password" v-model='password' placeholder="Пароль" @input="isError=false"/>
+                </div>
+                <div class='row mt-3 d-flex justify-content-center'>
+                    <button id='btn' :class="isError ? 'btn_error' : 'btn_normal'" type='submit'>Войти</button>
+                </div>
+            </div>
         </form>    
     </div>
 </template>
@@ -43,48 +55,43 @@ export default {
 
 <style scoped>
 
+button {
+    border-radius: 50px;
+}
+
 #auth_rect {
-    position: absolute;
     width: 550px;
     height: 400px;
     display: block;
-    top: 50%;
-    left: 50%;
-    margin-left: -300px;
-    margin-top: -225px;
 }
 
-#log {
-    top: 35%;
+.input {
+    border: none;
+    width: 80%;
+    height: 80%;
 }
 
-#pas {  
-    top: 55%;
+.row {
+    height: 60px;
 }
 
 #btn {
-    position: absolute;
-    width: 25%;
-    height: 10%;
-    top: 80%;
-    left: 37.5%;
+    width: 170px;
+    height: 40px;
 }
 
 #text_au {
-    position: absolute;
     text-align: center;
-    top: 10%;
     width: 100%;
     font-size: 30px;
     font-weight: bold;
     letter-spacing: -0.017em;
+    padding-top: 3%;
 }
 
 #mes_er {
-    position: absolute;
     text-align: center;
     width: 100%;
-    top: 27%;
     font-weight: bold;
 }
 
