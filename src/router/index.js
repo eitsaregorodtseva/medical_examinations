@@ -16,6 +16,12 @@ const routes = [
     name: 'DigitalSignature',
     component: () => import('../views/DigitalSignature.vue'),
   },
+  {
+    path: '/drivers/:driverId',
+    name: 'DriversSingle',
+    component: () => import('../views/DriversSingle.vue'),
+    props: (route) => ({driverId: Number.parseInt(route.params.driverId, 10) || 0})
+  }
 ]
 
 const router = createRouter({

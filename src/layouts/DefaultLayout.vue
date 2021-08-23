@@ -1,38 +1,28 @@
 <template>
-    <header>
+    <header class="d-flex align-items-center">
         <img id="logo" src="../assets/logo.png">
-        <div id="logo_text">Медосмотры</div>
+        <div class="fw-bold">Медосмотры</div>
     </header>
-    <div id="content">
+    <main>
         <router-view />
-    </div>
+    </main>
 </template>
 
 <style scoped>
 
 header {
-    position: relative;
-    height: 80px;
+    height: 4rem;
     width: 100%;
+}
+
+main {
+    min-height: calc(100vh - 4rem);
 }
 
 #logo {
     height: 50px;
     width: auto;
-    margin: 10px;
-    float: left;
-}
-
-#logo_text {
-    position: relative;
-    top: 25px;
-    float: left;
-    font-weight: bold;
-}
-
-#content {
-    top: 10%;
-    width: 100%;
+    margin: 5px;
 }
 
 </style>
