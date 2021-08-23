@@ -74,6 +74,10 @@
 </template>
 
 <script>
+import {addPersonnel, updatePersonnel} from '@/api/personnel.api'
+
+const USER_ID = 5
+
 // For creating unique id
 let uuid = 0
 
@@ -90,6 +94,13 @@ function emptyForm() {
     }
 }
 export default {
+    emits : {
+        // Is emmitted after sucsessful POST request
+        driverAdded : (id) => {return true},
+        // Is emmited after sucsessful PATCH request
+        driverUpdated : () => {return true}
+    },
+
     props : {
         title: {
             type: String,
@@ -108,62 +119,34 @@ export default {
             default : false
         }
     },
-    emits : {
-        // Is emmitted after sucsessful POST request
-        driverAdded : (id) => {return true},
-        // Is emmited after sucsessful PATCH request
-        driverUpdated : () => {}
-    },
+    
     data (){ return {
         driver_info : this.initDriverInfo,
         uuid : null
     }},
+
     methods : {
         closeModal () {
             document.getElementById('closeButton-'+this.uuid).click()
         },
         async updateDriverInfo(params) {
             try {
-                const url = `https://stats.auditory.ru/api/web/update_personnel?user_id=5&personnel_id=${this.driver_info.pers_id}`
-                const response = await this.$axios.patch(url, params)
-                const results = response.data
+                const response = await updatePersonnel(USER_ID, this.driver_info.pers_id, params)
                 // On success
                 this.$emit('driverUpdated')
                 this.closeModal()
 
-            } catch (err) {
-                if (err.response) {
-                // client received an error response (5xx, 4xx)
-                console.log("Response Error:", err)
-                } else if (err.request) {
-                // client never received a response, or request never left
-                console.log("Network Error:", err)
-                } else {
-                console.log("Client Error:", err)
-                }
-            }
+            } catch (err) {}
         },
         async addDriver(){
             try {
-                const url = 'https://stats.auditory.ru/api/web/add_personnel?user_id=5'
-                const response = await this.$axios.post(url, this.driver_info)
+                const response = await addPersonnel(USER_ID, this.driver_info)
                 const results = response.data
                 // On success
                 this.$emit('driverAdded', results.id)
                 this.closeModal()
                 this.driver_info = emptyForm()
-            } catch (err) {
-                if (err.response) {
-                // client received an error response (5xx, 4xx)
-                console.log("Response Error:", err)
-                } else if (err.request) {
-                // client never received a response, or request never left
-                console.log("Network Error:", err)
-                } else {
-                console.log("Client Error:", err)
-                }
-            }
-
+            } catch (err) {}
         },
         onSubmit() {
             if (this.isEditing) {
@@ -191,8 +174,6 @@ export default {
             }
             return diff
         },
-        
-
     },
     
     watch : {

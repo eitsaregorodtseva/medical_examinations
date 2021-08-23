@@ -41,16 +41,6 @@
                             </button>
                         </div>
                     </AppListGroup>
-                    <!-- <AppListGroup 
-                    :items="['Иван', 'Олег', 'Владимир', 'Олег', 'Владимир', 'Олег', 'Владимир', 'Олег', 'Владимир', 'Олег', 'Владимир', 'Олег', 'Владимир', 'Олег', 'Владимир', 'Олег', 'Владимир', 'Олег', 'Владимир', 'Олег', 'Владимир', 'Олег', 'Владимир', 'Олег', 'Владимир', 'Олег', 'Владимир', 'Олег', 'Владимир']"
-                    :heading="'Водители'"
-                    class="w-100 h-100"
-                    ></AppListGroup> -->
-                    <!-- <AppListGroup 
-                        :items="['Иван', 'Олег', 'Владимир']"
-                        :heading="'Водители'"
-                        style="height: 90vh;"
-                    ></AppListGroup> -->
                     <a 
                     class="d-md-none h-100 text-center app_normal fs-6"
                     data-bs-toggle="collapse" 
@@ -67,11 +57,11 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-4 d-flex flex-column align-items-center">
-
                     <AppImage :imageId="driver_info.photo"></AppImage>
                     <AppFileUpload @file-uploaded="onImageUploaded">Изменить фото</AppFileUpload>
-                    <!-- <button class="btn_normal m-3" >Изменить фото</button> -->
+                    <button class="btn_normal" @click="$notify({type : 'success',title : 'Успешно обновлено',duration: 1000000})">Notify</button>
                 </div>
+
 
                 <div class="col-md-8 pt-3 d-flex flex-column align-items-start">
                     <h4># {{ driver_info.pers_number }}</h4>
@@ -111,107 +101,33 @@
 
 </template>
 
+
 <script>
     import AppListGroup from '@/components/AppListGroup'
     import AppImage from '@/components/AppImage'
     import AppFileUpload from '@/components/AppFileUpload'
     import DriversAddEditModal from '@/components/DriversAddEditModal'
+    import { getPersonnelList, getPersonnelInfo, updatePersonnel } from '@/api/personnel.api'
+    
+    const USER_ID = 5
+
     export default {
-        props : {
-            driverId : Number
-        },
-        data: () => ({
-            driver_info : {},
-            drivers_list : [] // of objects {id, name}
-        }),
         components: {
             AppListGroup,
             AppImage,
             DriversAddEditModal,
             AppFileUpload
         },
-        methods : {
-            async fetchSingleDriverData(driver_id) {
-                try {
-                    const url = `https://stats.auditory.ru/api/web/personnel_info?user_id=5&personnel_id=${driver_id}`
-                    const response = await this.$axios.get(url)
-                    const results = response.data
-                    this.driver_info = results.pers_info
-                    
-                } catch (err) {
-                    if (err.response) {
-                    // client received an error response (5xx, 4xx)
-                    console.log("Response Error:", err)
-                    } else if (err.request) {
-                    // client never received a response, or request never left
-                    console.log("Network Error:", err)
-                    } else {
-                    console.log("Client Error:", err)
-                    }
-                }
-            },
-            async fetchDriversList() {
-                try {
-                    const url = `https://stats.auditory.ru/api/web/personnel_list?user_id=5`
-                    const response = await this.$axios.get(url)
-                    const results = response.data
-                    this.drivers_list = results.map(driver_info => ({
-                        id : driver_info.pers_id,
-                        name: (
-                            driver_info.second_name + ' ' 
-                            + driver_info.first_name 
-                            + ' ' + (driver_info.father_name || '')
-                        ).trim()
-                    }))
-                } catch (err) {
-                    if (err.response) {
-                    // client received an error response (5xx, 4xx)
-                    console.log("Response Error:", err)
-                    } else if (err.request) {
-                    // client never received a response, or request never left
-                    console.log("Network Error:", err)
-                    } else {
-                    console.log("Client Error:", err)
-                    }
-                }
-            },
-            async updateDriverInfo(driverId, data) {
-                try {
-                    const url = `https://stats.auditory.ru/api/web/update_personnel`
-                    const response = await this.$axios.patch(url, data, { params : {
-                        user_id : 5,
-                        personnel_id : driverId
-                        }})
-                    const results = response.data
-                    // On success
-                } catch (err) {
-                    if (err.response) {
-                    // client received an error response (5xx, 4xx)
-                    console.log("Response Error:", err)
-                    } else if (err.request) {
-                    // client never received a response, or request never left
-                    console.log("Network Error:", err)
-                    } else {
-                    console.log("Client Error:", err)
-                    }
-                }
-            },
-            changeDriver(id) {
-                this.$router.replace({name: 'DriversSingle', params: {driverId :id}})
-            },
-            onAddModalSuccess(id) {
-                this.changeDriver(id)
-                this.fetchDriversList()
-            }, 
-            onEditModalSuccess() {
-                this.fetchDriversList()
-                this.fetchSingleDriverData(this.driverId)
-            },
-            async onImageUploaded(fileId) {
-                await this.updateDriverInfo(this.driverId, {photo : fileId})
-                this.driver_info.photo=fileId
-            }
+
+        props : {
+            driverId : Number
         },
+
+        data: () => ({
+            driver_info : {},
+            drivers_list : [] // of objects {id, name}
+        }),
+
         computed : {
             driver_full_name () {
                 return (
@@ -231,18 +147,82 @@
                 return result
             }
         },
+
+        methods : {
+            async fetchDriverInfo() {
+                try {
+                    const response = await getPersonnelInfo(USER_ID, this.driverId)
+                    this.driver_info = response.data.pers_info
+                } catch (err) {
+                    if (err.response.status == 404) {
+                        this.$notify({
+                            type : 'warn',
+                            title : 'Водитель не найден', 
+                            text : 'Проверьте введенный адрес'
+                            });
+                    }
+                }
+            },
+            async fetchDriversList() {
+                try {
+                    const response = await getPersonnelList(USER_ID)
+                    const results = response.data
+                    this.drivers_list = results.map(driver_info => ({
+                        id : driver_info.pers_id,
+                        name: (
+                            driver_info.second_name + ' ' 
+                            + driver_info.first_name 
+                            + ' ' + (driver_info.father_name || '')
+                        ).trim()
+                    }))
+                } catch (err) {}
+            },
+            async updateDriverPhoto(photo) {
+                try {
+                    const response = await updatePersonnel(USER_ID, this.driverId, {photo})
+                    this.$notify({
+                        type : 'success',
+                        title : 'Успешно обновлено', 
+                    });
+                } catch (err) {}
+            },
+            changeDriver(id) {
+                this.$router.replace({name: 'DriversSingle', params: {driverId :id}})
+            },
+            onAddModalSuccess(id) {
+                this.changeDriver(id)
+                this.fetchDriversList()
+                this.$notify({
+                    type : 'success',
+                    title : `Водитель создан!`, 
+                })
+            },
+            async onEditModalSuccess() {
+                this.fetchDriversList()
+                await this.fetchDriverInfo()
+                this.$notify({
+                    type : 'success',
+                    title : `Водитель ${this.driver_name_with_initials} обновлен!`
+                })
+            },
+            async onImageUploaded(fileId) {
+                await this.updateDriverPhoto(fileId)
+                this.driver_info.photo=fileId
+            }
+        },
+        
+        watch : {
+            driverId () {
+                this.fetchDriverInfo(this.driverId)
+            }
+        },
+
         mounted() {
-            this.fetchSingleDriverData(this.driverId)
+            this.fetchDriverInfo()
             
             if (0 === this.drivers_list.length) {
                 this.fetchDriversList()
             }
-        },
-        watch : {
-            driverId () {
-                this.fetchSingleDriverData(this.driverId)
-            }
         }
-        
     }
 </script>

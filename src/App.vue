@@ -2,9 +2,9 @@
   <div id='app'>
     <component :is='layout'>
       <router-view/>
-      <notifications />
     </component>
   </div>
+  <notifications classes="my-notification" position="bottom right" />
 </template>
 
 <script>
