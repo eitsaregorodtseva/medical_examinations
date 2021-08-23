@@ -10,17 +10,33 @@ body {
     margin: 0;
     font-family: 'Montserrat', sans-serif;
     font-weight: normal;
+    font-size: 0.8rem;
     color: #2A0B71;
     background-color: #FFFFFF;
 }
 
 button {
-    font-size: 80%;
+    border-radius: 50px;
     font-family: 'Montserrat', sans-serif;
     font-weight: bold;
     color: #FFFFFF;
     border: none;
     letter-spacing: -0.017em;
+    padding: 4px 8px;
+}
+
+a {
+    text-decoration: underline;
+    color: inherit;
+}
+
+a:hover {
+    text-decoration: none;
+    color: inherit;
+}
+
+table {
+    color: inherit;
 }
 
 .input_normal {
@@ -86,5 +102,6 @@ button {
 .nav_btn_normal:hover {
     border-bottom: solid 3px #2A0B71;
 }
+
 
 
