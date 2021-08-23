@@ -2,6 +2,7 @@
   <div id='app'>
     <component :is='layout'>
       <router-view/>
+      <notifications />
     </component>
   </div>
 </template>
