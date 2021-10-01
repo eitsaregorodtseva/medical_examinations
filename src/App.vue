@@ -4,7 +4,7 @@
       <router-view/>
     </component>
   </div>
-  <notifications classes="my-notification" position="bottom right" />
+  <notifications position="bottom right" />
 </template>
 
 <script>
