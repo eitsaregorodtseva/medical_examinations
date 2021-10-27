@@ -21,6 +21,11 @@ const routes = [
     name: 'DriversSingle',
     component: () => import('../views/DriversSingle.vue'),
     props: (route) => ({driverId: Number.parseInt(route.params.driverId, 10) || 0})
+  },
+  {
+    path: '/exams',
+    name: 'Exams',
+    component: () => import('../views/Exams.vue'),
   }
 ]
 
