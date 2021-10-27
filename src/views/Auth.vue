@@ -9,10 +9,10 @@
                     <div id='mes_er' v-if=isError class='input_error'>Неверный логин или пароль</div>
                 </div>
                 <div class='row mt-3 d-flex justify-content-center'>
-                    <input class='input' :class="isError ? 'input_error' : 'input_normal'" v-model.trim='login' placeholder="Логин"  @input="isError=false"/>
+                    <input class='input' :class="isError ? 'input_error' : 'input_normal'" v-model.trim='login' placeholder="Логин" />
                 </div>
                 <div class='row mt-3 d-flex justify-content-center'>
-                    <input class='input' :class="isError ? 'input_error' : 'input_normal'" type="password" v-model='password' placeholder="Пароль" @input="isError=false"/>
+                    <input class='input' :class="isError ? 'input_error' : 'input_normal'" type="password" v-model='password' placeholder="Пароль" />
                 </div>
                 <div class='row mt-3 d-flex justify-content-center'>
                     <button id='btn' :class="isError ? 'btn_error' : 'btn_normal'" type='submit'>Войти</button>
@@ -23,6 +23,8 @@
 </template>
 
 <script>
+import { authMedic } from '@/api/exam.api'
+
 export default {
     name: 'login',
     data: () => ({
@@ -31,22 +33,21 @@ export default {
         isError: false
     }),
     methods: {
-        auth() {
-            const user = {
-                login: 'login',
-                password: 'password'
-            };
+        async auth() {
             const authData = {
                 login: this.login,
                 password: this.password
             };
 
-            if (user.login === authData.login && user.password === authData.password) {
-                this.isError = false
+            try {
+                const response = await authMedic(authData);
+                this.isError = false;
+                sessionStorage.setItem('user_id', response.data.id);
                 this.$router.push('/dig_sig');
-            }
-            else {
-                this.isError = true
+            } catch (error) {
+                this.isError = true;
+                this.login = '';
+                this.password = '';
             }
         }
     }
