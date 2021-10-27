@@ -19,6 +19,7 @@
     "vue-router": "^4.0.0-0",
     "vue3-chart-v2": "^0.8.2",
     "vue3-popper": "^1.2.0",
+    "vue3-table-lite": "^1.0.6",
     "vuex": "^4.0.0-0"
   },
   "devDependencies": {
