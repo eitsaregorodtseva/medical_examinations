@@ -13,7 +13,7 @@
                     <div id='text_ds' :class="isError ? 'txt_error' : 'txt_normal'">Присоедините к компьютеру носитель ключа электронной подписи.</div>
                 </div>
                 <div class='row mt-3 d-flex justify-content-center'>
-                    <button id='btn' :class="isError ? 'btn_error' : 'btn_normal'" type='submit'>Готово</button>
+                    <button id='btn' :class="isError ? 'btn_error' : 'btn_normal'" type='submit' @click='clc'>Готово</button>
                 </div>
                 <div class='row d-flex justify-content-center'>
                     <button id='nav' :class="isError ? 'nav_btn_error' : 'nav_btn_normal'" @click='back'>Назад</button>
@@ -31,6 +31,9 @@ export default {
     methods: {
         back() {
             this.$router.push('/auth');
+        },
+        clc() {
+            this.$router.push('/expect_patient');
         }
     }
 }
