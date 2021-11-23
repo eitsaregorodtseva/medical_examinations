@@ -1,13 +1,13 @@
 <template>
-    <div id='auth_rect' class='container position-absolute top-50 start-50 translate-middle app_normal' > 
+    <div id='auth_rect' class='container position-absolute top-50 start-50 translate-middle app_normal' >
         <form class='form-horizontal' @submit.prevent='get_next_patient'>
             <button id='btn' class='btn_normal position-absolute top-50 start-50 translate-middle'>Следующий пациент</button>
-        </form>    
+        </form>
     </div>
 </template>
 
 <script>
-import { getNextPatient } from '@/api/exam.api'
+import { getNextPatient } from '@/api/exams.api'
 
 export default {
     data() {

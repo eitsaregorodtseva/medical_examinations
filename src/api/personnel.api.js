@@ -1,20 +1,24 @@
 import {webAPI} from "./services";
 
-const getPersonnelInfo = (user_id, personnel_id) => webAPI.get('/personnel_info',
-    {params : {user_id, personnel_id}})
+const addPersonnelRecord = (user_id, personnel_data) => webAPI.post('/personnel',
+personnel_data, {params : {user_id}})
 
-const getPersonnelList = (user_id, organization_id = null) => webAPI.get('/personnel_list',
+const getPersonnelList = (user_id, organization_id = null) => webAPI.get('/personnel',
     {params : {user_id, organization_id}})
 
-const addPersonnel = (user_id, personnel_data) => webAPI.post('/add_personnel', 
+const getPersonnelRecord = (user_id, personnel_id) => webAPI.get(`/personnel/${personnel_id}`,
+    {params : {user_id}})
+
+const updatePersonnelRecord = (user_id, personnel_id, personnel_data) => webAPI.patch(`/personnel/${personnel_id}`,
     personnel_data, {params : {user_id}})
 
-const updatePersonnel = (user_id, personnel_id, personnel_data) => webAPI.patch('/update_personnel',
-personnel_data, {params : {user_id, personnel_id}})
+const deletePersonnelRecord = (user_id, personnel_id) => webAPI.patch(`/personnel/${personnel_id}`,
+    {params : {user_id, personnel_id}})
 
 export {
-    getPersonnelInfo,
+    addPersonnelRecord,
     getPersonnelList,
-    addPersonnel,
-    updatePersonnel
+    getPersonnelRecord,
+    updatePersonnelRecord,
+    deletePersonnelRecord
 }

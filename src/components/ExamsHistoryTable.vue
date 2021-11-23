@@ -9,12 +9,12 @@
     :total="table.totalRecordCount"
     :sortable="table.sortable"
     :messages="table.messages"
-  ></vue-table-lite>
+  />
 </template>
 
 <script>
 import VueTableLite from "vue3-table-lite";
-import { computed, defineComponent, reactive, ref, toRefs, watch } from "vue";
+import { computed, defineComponent, reactive, toRefs, watch } from "vue";
 import moment from 'moment';
 
 export default defineComponent({
@@ -38,7 +38,7 @@ export default defineComponent({
     const parseVerdictsList = (verdicts_list, verdict_comment) => {
       if (!verdicts_list) {
         return "";
-      }   
+      }
 
       let result = "";
       if (verdicts_list.includes('Допущен')) {
@@ -48,11 +48,11 @@ export default defineComponent({
         // Replace with comment
         const ind = verdicts_list.indexOf('Другое');
         verdicts_list[ind] = verdict_comment;
-      } 
-      
+      }
+
       result = verdicts_list.join(', ');
       return result;
-      
+
     }
 
     const table = reactive({
@@ -127,7 +127,7 @@ export default defineComponent({
           sortable: true,
           display: function(row) {
             return parseVerdictsList(JSON.parse(row.verdicts), row.verdict_comment)
-          }          
+          }
         },
         {
           label: "Медработник",
@@ -141,18 +141,18 @@ export default defineComponent({
                 row.med_id +
                 '" >' +
                 name_with_initials(row.med_second_name, row.med_first_name, row.med_father_name) +
-                "</button>" 
-              );       
+                "</button>"
+              );
             } else {
               return "";
             }
-          }          
+          }
         },
       ],
       rows: props.exams,
       totalRecordCount: computed(() => {
         return table.rows.length;
-      }), 
+      }),
       sortable: {
         order: "exam_datetime",
         sort: "desc",
@@ -170,7 +170,7 @@ export default defineComponent({
       table.rows = newValue
     })
 
-    
+
     return {
       table,
     };

@@ -2,30 +2,30 @@
     <div class="d-flex flex-column align-items-stretch bg-white">
 
         <div class="p-1 border-bottom sticky-top bg-white">
-            <slot></slot>            
+            <slot></slot>
         </div>
-        
+
         <div class="list-group list-group-flush border-bottom overflow-auto">
             <div v-for="item in items" :key="item.id"
-            class="list-group-item list-group-item-action lh-tight" 
+            class="list-group-item list-group-item-action lh-tight"
             :class="{'active' : activeItemId == item.id}"
             aria-current="true"
-            @click="itemClicked(item)" 
-            > 
-                    {{ item.name }}            
+            @click="itemClicked(item)"
+            >
+                    {{ item.name }}
             </div>
-        </div>    
+        </div>
     </div>
-    
+
 </template>
 
 <script>
 export default {
     props: {
-        // Array of objects {id, name}, where name will be displayed 
+        // Array of objects {id, name}, where name will be displayed
         // and id will be passed as a parameter to $emit
-        items: Array, 
-        // Item with this value as id will be highlited 
+        items: Array,
+        // Item with this value as id will be highlited
         activeItemId: Number
     },
     emits: {

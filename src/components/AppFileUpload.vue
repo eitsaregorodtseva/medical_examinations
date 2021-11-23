@@ -3,7 +3,7 @@
         <button class="btn_normal" @click="clickInputFile">
             <slot></slot>
         </button>
-        <input class="d-none" id="inputFile" ref="file" type="file" 
+        <input class="d-none" id="inputFile" ref="file" type="file"
         accept=".jpg,.png"
         @change="handleFileChange">
     </div>
@@ -61,7 +61,7 @@ export default {
                 const last_byte = file.size
                 const url = `https://stats.auditory.ru/api/mediaserver/load_file/${fileId}`
                 const response = await this.$axios.put(url, formData, {
-                    params : { last_byte }, 
+                    params : { last_byte },
                     headers: { 'Content-Type': 'multipart/form-data'}
                     })
                 // On success
@@ -79,7 +79,7 @@ export default {
                 console.log("Client Error:", err)
                 }
             }
-            
+
         },
 
     }
