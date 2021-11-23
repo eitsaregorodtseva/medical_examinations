@@ -1,32 +1,67 @@
 <template>
-    <div id='auth_rect' class='container position-absolute top-50 start-50 translate-middle' :class="isError ? 'app_error' : 'app_normal'"> 
-        <form class='form-horizontal' @submit.prevent='auth'>
-            <div class='form-group'>
-                <div class='row mt-3 d-flex justify-content-center'>
-                    <div id='text_au' :class="isError ? 'txt_error' : 'txt_normal'">Авторизация</div>
-                </div>
-                <div class='row mt-3 d-flex justify-content-center'>
-                    <div id='mes_er' v-if=isError class='input_error'>Неверный логин или пароль</div>
-                </div>
-                <div class='row mt-3 d-flex justify-content-center'>
-                    <input class='input' :class="isError ? 'input_error' : 'input_normal'" v-model.trim='login' placeholder="Логин" />
-                </div>
-                <div class='row mt-3 d-flex justify-content-center'>
-                    <input class='input' :class="isError ? 'input_error' : 'input_normal'" type="password" v-model='password' placeholder="Пароль" />
-                </div>
-                <div class='row mt-3 d-flex justify-content-center'>
-                    <button id='btn' :class="isError ? 'btn_error' : 'btn_normal'" type='submit'>Войти</button>
-                </div>
-            </div>
-        </form>    
-    </div>
+  <div
+    id="auth_rect"
+    class="container position-absolute top-50 start-50 translate-middle"
+    :class="isError ? 'app_error' : 'app_normal'"
+  >
+    <form
+      class="form-horizontal"
+      @submit.prevent="auth"
+    >
+      <div class="form-group">
+        <div class="row mt-3 d-flex justify-content-center">
+          <div
+            id="text_au"
+            :class="isError ? 'txt_error' : 'txt_normal'"
+          >
+            Авторизация
+          </div>
+        </div>
+        <div class="row mt-3 d-flex justify-content-center">
+          <div
+            v-if="isError"
+            id="mes_er"
+            class="input_error"
+          >
+            Неверный логин или пароль
+          </div>
+        </div>
+        <div class="row mt-3 d-flex justify-content-center">
+          <input
+            v-model.trim="login"
+            class="input"
+            :class="isError ? 'input_error' : 'input_normal'"
+            placeholder="Логин"
+          >
+        </div>
+        <div class="row mt-3 d-flex justify-content-center">
+          <input
+            v-model="password"
+            class="input"
+            :class="isError ? 'input_error' : 'input_normal'"
+            type="password"
+            placeholder="Пароль"
+          >
+        </div>
+        <div class="row mt-3 d-flex justify-content-center">
+          <button
+            id="btn"
+            :class="isError ? 'btn_error' : 'btn_normal'"
+            type="submit"
+          >
+            Войти
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
 </template>
 
 <script>
-import { authMedic } from '@/api/exam.api'
+import { auth } from '@/api/users.api'
 
 export default {
-    name: 'login',
+    name: 'Auth',
     data: () => ({
         login: '',
         password: '',
@@ -40,14 +75,25 @@ export default {
             };
 
             try {
-                const response = await authMedic(authData);
+                const response = await auth(authData);
                 this.isError = false;
                 sessionStorage.setItem('user_id', response.data.id);
-                this.$router.push('/dig_sig');
+                sessionStorage.setItem('user_role', response.data.role);
+                sessionStorage.setItem('user_organization_id', response.data.organization_id);
+
+                this.routeByRole(response.data.role);
+
             } catch (error) {
                 this.isError = true;
                 this.login = '';
                 this.password = '';
+            }
+        },
+        routeByRole(user_role) {
+            if (user_role === 'Медработник') {
+                this.$router.push('/dig_sig');
+            } else if (user_role === 'Администратор' || user_role === 'Диспетчер') {
+                this.$router.push('/exams_history')
             }
         }
     }

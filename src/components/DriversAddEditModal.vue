@@ -35,23 +35,23 @@
 
                         <div class="form-check-inline">Пол:</div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="inputGender" id="inputGenderMale" 
+                            <input class="form-check-input" type="radio" name="inputGender" id="inputGenderMale"
                             value="м" v-model="driver_info.gender" checked>
                             <label class="form-check-label" for="inputGenderMale">Муж</label>
                         </div>
                         <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="inputGender" id="inputGenderFemale" 
+                            <input class="form-check-input" type="radio" name="inputGender" id="inputGenderFemale"
                             value="ж" v-model="driver_info.gender">
                             <label class="form-check-label" for="inputGenderFemale">Жен</label>
                         </div>
 
                         <hr>
-                        
+
                         <div class="input-group input-group-sm mb-2">
                             <label for="inputDateOfBirth" class="input-group-text">Дата рождения</label>
                             <input type="date" id="inputDateOfBirth" class="form-control" v-model="driver_info.date_of_birth" required>
-                            <label for="inputDateOfBirth" class="input-group-text"> 
-                                возраст: {{ $moment().diff(driver_info.date_of_birth, 'years') || ' '}} 
+                            <label for="inputDateOfBirth" class="input-group-text">
+                                возраст: {{ $moment().diff(driver_info.date_of_birth, 'years') || ' '}}
                             </label>
 
                         </div>
@@ -74,9 +74,7 @@
 </template>
 
 <script>
-import {addPersonnel, updatePersonnel} from '@/api/personnel.api'
-
-const USER_ID = 5
+import {addPersonnelRecord, updatePersonnelRecord} from '@/api/personnel.api'
 
 // For creating unique id
 let uuid = 0
@@ -94,13 +92,6 @@ function emptyForm() {
     }
 }
 export default {
-    emits : {
-        // Is emmitted after sucsessful POST request
-        driverAdded : (id) => {return true},
-        // Is emmited after sucsessful PATCH request
-        driverUpdated : () => {return true}
-    },
-
     props : {
         title: {
             type: String,
@@ -119,19 +110,45 @@ export default {
             default : false
         }
     },
-    
+
+    emits : {
+        // Is emmitted after sucsessful POST request
+        driverAdded : (id) => {return true},
+        // Is emmited after sucsessful PATCH request
+        driverUpdated : () => {return true}
+    },
+
     data (){ return {
+        user_id : null,
         driver_info : this.initDriverInfo,
         uuid : null
     }},
 
+    watch : {
+        initDriverInfo (new_info) {
+            // Assign a copy of data, not object reference
+            this.driver_info = Object.assign({}, new_info)
+        }
+    },
+
+    mounted() {
+        // Generate unique id for this component
+        this.uuid = uuid.toString()
+        uuid += 1;
+
+        this.populateDataFromStorage()
+    },
+
     methods : {
+        populateDataFromStorage() {
+            this.user_id = sessionStorage.getItem('user_id')
+        },
         closeModal () {
             document.getElementById('closeButton-'+this.uuid).click()
         },
         async updateDriverInfo(params) {
             try {
-                const response = await updatePersonnel(USER_ID, this.driver_info.pers_id, params)
+                const response = await updatePersonnelRecord(this.user_id, this.driver_info.pers_id, params)
                 // On success
                 this.$emit('driverUpdated')
                 this.closeModal()
@@ -140,7 +157,7 @@ export default {
         },
         async addDriver(){
             try {
-                const response = await addPersonnel(USER_ID, this.driver_info)
+                const response = await addPersonnelRecord(this.user_id, this.driver_info)
                 const results = response.data
                 // On success
                 this.$emit('driverAdded', results.id)
@@ -150,7 +167,7 @@ export default {
         },
         onSubmit() {
             if (this.isEditing) {
-                let changedParams = this.findChanges(this.initDriverInfo, this.driver_info) 
+                let changedParams = this.findChanges(this.initDriverInfo, this.driver_info)
                 if (0 === Object.keys(changedParams).length) {
                     this.closeModal()
                 } else {
@@ -174,19 +191,6 @@ export default {
             }
             return diff
         },
-    },
-    
-    watch : {
-        initDriverInfo (new_info) {
-            // Assign a copy of data, not object reference
-            this.driver_info = Object.assign({}, new_info)
-        }
-    },
-
-    mounted() {
-        // Generate unique id for this component
-        this.uuid = uuid.toString()
-        uuid += 1;
     }
 }
 </script>

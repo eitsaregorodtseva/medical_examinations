@@ -21,10 +21,10 @@ const mediaAPI = axios.create({
 const errorInterceptor = error => {
     // check if it's a server error
     if (!error.response) {
-      console.error('Network/Server error');
+      console.error('Network/Server error: ' + error.message);
       notify({
           type : 'error',
-          title : 'Ошибка сети или сервера', 
+          title : 'Ошибка сети или сервера',
           text : 'Проверьте подключение к Интернету'
         });
       return Promise.reject(error);
@@ -46,8 +46,8 @@ const errorInterceptor = error => {
 // Interceptor for responses
 const responseInterceptor = response => {
     switch(response.status) {
-        case 200: 
-            // yay!      
+        case 200:
+            // yay!
 
             break;
         // any other cases

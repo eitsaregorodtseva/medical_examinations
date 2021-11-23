@@ -12,7 +12,7 @@
                                 <span id='age'>{{ age }}</span>
                             </div>
                         </div>
-                    </div>  
+                    </div>
                 </div>
                 <div id='table_data' class='container'>
                     <table>
@@ -128,11 +128,11 @@ import temp_opt from '@/components/options/temp'
 import alc_opt from '@/components/options/alc'
 import { getVerdictList,
     getExamData,
-    getExamHist,
-    postVerdict, } from '@/api/exam.api'
+    getExamsHistoryForPersonnel,
+    postVerdict, } from '@/api/exams.api'
 
 export default {
-    
+
     components: {
         Chart
     },
@@ -157,9 +157,9 @@ export default {
                 checked: [],
                 comment_13: '',
                 checked_13: false,
-                admission: false,   
+                admission: false,
                 user_id: sessionStorage.getItem('user_id'),
-                exam_id: sessionStorage.getItem('exam_id'),  
+                exam_id: sessionStorage.getItem('exam_id'),
         }
     },
     created() {
@@ -173,7 +173,7 @@ export default {
             });
             this.sys_dia_opt.series = [
                 {
-                    name: 'sys',  
+                    name: 'sys',
                     data: [['11.0', 820], ['Tue', 932], ['Wed', 901], ['Thu', 934], ['Fri', 1290], ['Sat', 1330], ['Sun', 1320]],
                     type: 'line',
                     smooth: true,
@@ -197,7 +197,7 @@ export default {
         },
         async getdata() {
             const exam_data = await getExamData(this.exam_id, this.user_id);
-            const exam_hist = await getExamHist(this.user_id, exam_data.data.pers_id);
+            const exam_hist = await getExamsHistoryForPersonnel(this.user_id, exam_data.data.pers_id);
             this.is_requested = true;
             this.exam_data = exam_data;
             this.exam_hist = exam_hist;

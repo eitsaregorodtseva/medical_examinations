@@ -33,9 +33,9 @@ const routes = [
     component: () => import('../views/ExpectPatient.vue'),
   },
   {
-    path: '/exams',
-    name: 'Exams',
-    component: () => import('../views/Exams.vue'),
+    path: '/exams_history',
+    name: 'ExamsHistory',
+    component: () => import('../views/ExamsHistory.vue'),
   }
 ]
 
