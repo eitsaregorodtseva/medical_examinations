@@ -89,7 +89,8 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="req_form">Отправить</button>
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" v-if="checked.length > 0 || checked_13" @click="req_form">Отправить</button>
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" v-else disabled @click="req_form">Отправить</button>
                     </div>
                 </div>
                 </form>
