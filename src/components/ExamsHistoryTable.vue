@@ -89,8 +89,10 @@ export default defineComponent({
           sortable: true,
           display: function (row) {
             return (
-              '<a href="#" data-id="' +
-              row.pers_number +
+              '<a href="drivers/' +
+              row.pers_id +
+               '" data-id="' +
+              row.pers_id +
               '" >' +
               (row.second_name + ' ' + row.first_name + ' ' + (row.father_name || '')).trim() +
               "</button>"
