@@ -25,6 +25,10 @@ button {
     padding: 4px 8px;
 }
 
+button:disabled {
+    background: #ACB3C1;
+}
+
 a {
     text-decoration: underline;
     color: inherit;

@@ -59,14 +59,19 @@
 
 <script>
 import { auth } from '@/api/users.api'
+import { Role } from '@/helpers/role'
 
 export default {
     name: 'Auth',
     data: () => ({
         login: '',
         password: '',
+        returnUrl: '',
         isError: false
     }),
+    created () {
+        this.returnUrl = this.$route.query.returnUrl
+    },
     methods: {
         async auth() {
             const authData = {
@@ -81,19 +86,13 @@ export default {
                 sessionStorage.setItem('user_role', response.data.role);
                 sessionStorage.setItem('user_organization_id', response.data.organization_id);
 
-                this.routeByRole(response.data.role);
+                this.$router.push(this.returnUrl || '/')
 
             } catch (error) {
+                console.log(error);
                 this.isError = true;
                 this.login = '';
                 this.password = '';
-            }
-        },
-        routeByRole(user_role) {
-            if (user_role === 'Медработник') {
-                this.$router.push('/dig_sig');
-            } else if (user_role === 'Администратор' || user_role === 'Диспетчер') {
-                this.$router.push('/exams_history')
             }
         }
     }
