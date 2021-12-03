@@ -14,10 +14,10 @@
                         </div>
                     </div>
                 </div>
-                <div id='table_data' class='container'>
-                    <table>
+                <div class="mt-4 p-2">
+                    <table class="mb-4">
                         <thead>
-                            <tr>Данные приборов</tr>
+                            <tr class="text-center fs-4">Данные приборов</tr>
                         </thead>
                         <tbody>
                             <tr :class="pressure_upper >= 110 && pressure_upper <= 130 ? 'input_normal' : 'input_error'">
@@ -51,9 +51,9 @@
                 <div id='player' class='container'></div>
                 <div id='notions' class='container'>
                     <div class='row'>
-                        <span id='pr'>Примечание</span>
+                        <span class="fs-4">Жалобы</span>
                     </div>
-                    <span id='notes'>{{ complaints }}</span>
+                    <span id='notes'>{{ complaints || 'Нет' }}</span>
                 </div>
                 <div id='buttns' class='container'>
                     <div class='d-flex justify-content-around'>
@@ -274,16 +274,15 @@ button {
 
 #notions {
     margin-top: 40px;
+    margin-left: 10px;
     width: 640px;
     height: 100px;
 }
 
 #buttns {
-    margin-top: 40px;
-    width: 640px;
+    margin-top: 25px;
     height: 100px;
 }
-
 
 #pers_data_txt {
     width: 300px;
@@ -317,38 +316,21 @@ button {
 
 tr {
     width: 100%;
-    display: block;
     height: 45px;
 }
 
 td {
-    width: 300px;
+    width: 100%;
 }
 
 .right_col {
     text-align: right;
 }
 
-table {
-    width: 100%;
-    height: 300px;
-}
-
-thead {
-    font-size: 26px;
-    text-align: center;
-    height: 70px;
-}
-
 #hist_btn {
     width: 300px;
     height: 40px;
     font-size: 15px;
-}
-
-#pr {
-    width: 100%;
-    font-size: 28px;
 }
 
 #notes {

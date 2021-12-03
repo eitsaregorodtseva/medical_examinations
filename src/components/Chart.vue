@@ -27,7 +27,8 @@ export default defineComponent({
 
 <style scoped>
 .chart {
-  height: 300px;
+  height: 300px; 
   width: 600px;
+
 }
 </style>
