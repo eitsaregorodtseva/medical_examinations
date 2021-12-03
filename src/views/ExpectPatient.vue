@@ -20,6 +20,12 @@ export default {
                 sessionStorage.setItem('exam_id', response.data);
                 this.$router.push('/exam_data');
             } catch (error) {
+                if (error.response.status === 404) {
+                    this.$notify({
+                    type : 'success',
+                    title : 'В очереди нет пациентов',
+                    });
+                }
             }
         }
     }
