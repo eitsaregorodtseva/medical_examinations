@@ -45,13 +45,13 @@
             @item-clicked="changeDriver"
           >
             <div class="d-flex align-items-center justify-content-between bg-white">
-              <a
+              <!-- <a
                 href="#"
                 class="flex-shrink-1  d-flex align-items-center"
               >
                 <i class="bi bi-arrow-90deg-left" />
                 <div class="p-1">Назад к списку</div>
-              </a>
+              </a> -->
               <span class=" w-100 text-center fs-6 fw-bold p-1">Водители</span>
               <button
                 class="btn_normal p-1"

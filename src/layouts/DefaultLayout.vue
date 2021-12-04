@@ -1,22 +1,23 @@
 <template>
-  <header class="d-flex align-items-center">
-    <a href="/"><img
-      id="logo"
-      src="../assets/logo.png"
-    ></a>
-    <a
-      href="/"
-      class="text-decoration-none"
-    >
-      <div class="fw-bold">
-        Медосмотры
-      </div>
-    </a>
+  <header class="p-3 d-flex align-items-center justify-content-between">
+    <header-logo />
+    <header-logout-link />
   </header>
   <main>
     <router-view />
   </main>
 </template>
+
+<script>
+import HeaderLogo from '@/components/header/HeaderLogo.vue'
+import HeaderLogoutLink from '@/components/header/HeaderLogoutLink.vue'
+export default {
+    components: {
+        HeaderLogo,
+        HeaderLogoutLink
+    }
+}
+</script>
 
 <style scoped>
 
@@ -30,10 +31,5 @@ main {
     min-height: calc(100vh - 4rem);
 }
 
-#logo {
-    height: 50px;
-    width: auto;
-    margin: 5px;
-}
 
 </style>
