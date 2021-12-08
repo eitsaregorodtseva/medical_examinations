@@ -14,6 +14,10 @@ import ECharts from 'vue-echarts'
 import { use } from "echarts/core"
 
 //import 'materialize-css/dist/js/materialize.min'
+import { Quasar } from 'quasar'
+import quasarUserOptions from './quasar-user-options'
+
+import './assets/style.css'
 
 import {
     CanvasRenderer
@@ -39,7 +43,7 @@ use([
     TooltipComponent
 ])
 
-const app = createApp(App).use(store).use(router).use(Notifications).component('Popper', Popper).component('v-chart', ECharts)
+const app = createApp(App).use(Quasar, quasarUserOptions).use(store).use(router).use(Notifications).component('Popper', Popper).component('v-chart', ECharts)
 app.config.globalProperties.$axios=axios
 moment.locale('ru')
 app.config.globalProperties.$moment=moment

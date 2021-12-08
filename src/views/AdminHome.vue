@@ -3,11 +3,11 @@
     <div class="d-flex align-items-center justify-content-between h-100 ">
       <button
         class="btn_normal w-25 p-2"
-        @click="$router.push('/drivers/1')"
+        @click="$router.push('/personnel/1')"
       >
         <i class="bi bi-person-badge fs-1" />
         <br>
-        Водители
+        Персонал
       </button>
       <button
         class="btn_normal w-25 p-2"

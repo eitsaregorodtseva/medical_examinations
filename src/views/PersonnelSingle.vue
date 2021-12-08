@@ -1,16 +1,16 @@
 <template>
-  <DriversAddEditModal
+  <PersonnelAddEditModal
     id="addModal"
     title="Новый водитель"
-    @driver-added="onAddModalSuccess"
+    @personnel-added="onAddModalSuccess"
   />
-  <DriversAddEditModal
-    v-if="show_driver"
+  <PersonnelAddEditModal
+    v-if="show_personnel"
     id="editModal"
-    :title="'Редактировать ' + driver_name_with_initials"
+    :title="'Редактировать ' + personnel_name_with_initials"
     :is-editing="true"
-    :init-driver-info="driver_info"
-    @driver-updated="onEditModalSuccess"
+    :init-personnel-info="personnel_info"
+    @personnel-updated="onEditModalSuccess"
   />
 
   <div class="d-flex w-100 h-100">
@@ -21,8 +21,8 @@
       <a
         class="d-md-none d-flex align-items-center fw-bold app_normal"
         data-bs-toggle="collapse"
-        href="#driversSidebar"
-        aria-controls="driversSidebar"
+        href="#personnelSidebar"
+        aria-controls="personnelSidebar"
         style="min-width: 33px; writing-mode: vertical-lr; text-orientation: upright; text-decoration: none;"
       >
         <i class="bi bi-list fs-4 mt-2" />
@@ -30,19 +30,19 @@
       </a>
 
       <div
-        id="driversSidebar"
+        id="personnelSidebar"
         class="collapse navbar-collapse"
-        aria-labelledby="driversSidebarLabel"
+        aria-labelledby="personnelSidebarLabel"
       >
         <div
           class="d-flex justify-content-evenly w-100 h-100"
           style="min-width: 263px;"
         >
           <AppListGroup
-            :items="drivers_list"
-            :active-item-id="driverId"
+            :items="personnel_list"
+            :active-item-id="personnelId"
             class="w-100 h-100"
-            @item-clicked="changeDriver"
+            @item-clicked="changePersonnel"
           >
             <div class="d-flex align-items-center justify-content-between bg-white">
               <!-- <a
@@ -65,8 +65,8 @@
           <a
             class="d-md-none h-100 text-center app_normal fs-6"
             data-bs-toggle="collapse"
-            href="#driversSidebar"
-            aria-controls="driversSidebar"
+            href="#personnelSidebar"
+            aria-controls="personnelSidebar"
             style=" writing-mode: vertical-lr;  text-decoration: none;"
           >Скрыть</a>
         </div>
@@ -75,12 +75,12 @@
 
 
     <div
-      v-if="show_driver"
+      v-if="show_personnel"
       class="container"
     >
       <div class="row">
         <div class="col-md-4 d-flex flex-column align-items-center">
-          <AppImage :image-id="driver_info.photo" />
+          <AppImage :image-id="personnel_info.photo" />
           <AppFileUpload @file-uploaded="onImageUploaded">
             Изменить фото
           </AppFileUpload>
@@ -88,28 +88,28 @@
 
 
         <div class="col-md-8 pt-3 d-flex flex-column align-items-start">
-          <h4># {{ driver_info.pers_number }}</h4>
-          <h2>{{ driver_full_name }}</h2>
+          <h6># {{ personnel_info.pers_number }}</h6>
+          <h4>{{ personnel_full_name }}</h4>
           <table class="mt-4 table table-borderless">
             <tbody>
               <tr>
                 <th>Пол:</th>
-                <td>{{ driver_info.gender }}</td>
+                <td>{{ personnel_info.gender }}</td>
               </tr>
               <tr>
                 <th>Дата рождения:</th>
                 <td>
-                  {{ $moment(driver_info.date_of_birth).format('L') }}
-                  <span class="text-nowrap">(возраст: {{ driver_info.age }})</span>
+                  {{ $moment(personnel_info.date_of_birth).format('L') }}
+                  <span class="text-nowrap">(возраст: {{ personnel_info.age }})</span>
                 </td>
               </tr>
               <tr>
                 <th>Зарегистрирован:</th>
-                <td>{{ $moment(driver_info.registration_date).format('LLL') }}</td>
+                <td>{{ $moment(personnel_info.registration_date).format('LLL') }}</td>
               </tr>
               <tr>
                 <th>Согласие на обработку данных:</th>
-                <td>{{ driver_info.processing_consent ? 'Да' : 'Нет' }}</td>
+                <td>{{ personnel_info.processing_consent ? 'Да' : 'Нет' }}</td>
               </tr>
             </tbody>
           </table>
@@ -131,64 +131,64 @@
     import AppListGroup from '@/components/AppListGroup'
     import AppImage from '@/components/AppImage'
     import AppFileUpload from '@/components/AppFileUpload'
-    import DriversAddEditModal from '@/components/DriversAddEditModal'
+    import PersonnelAddEditModal from '@/components/PersonnelAddEditModal'
     import { getPersonnelList, getPersonnelRecord, updatePersonnelRecord } from '@/api/personnel.api'
 
     export default {
         components: {
             AppListGroup,
             AppImage,
-            DriversAddEditModal,
+            PersonnelAddEditModal,
             AppFileUpload
         },
 
         props : {
-            driverId : Number
+            personnelId : Number
         },
 
         data: () => ({
             user_id : null,
             user_organization_id: null,
-            driver_info : {},
-            drivers_list : [] // of objects {id, name}
+            personnel_info : {},
+            personnel_list : [] // of objects {id, name}
         }),
 
         computed : {
-            show_driver () {
-              return this.driver_info && 0 !== Object.keys(this.driver_info).length
+            show_personnel () {
+              return this.personnel_info && 0 !== Object.keys(this.personnel_info).length
             },
-            driver_full_name () {
+            personnel_full_name () {
                 return (
-                    [this.driver_info.second_name, this.driver_info.first_name, this.driver_info.father_name].filter(Boolean).join(' ')
+                    [this.personnel_info.second_name, this.personnel_info.first_name, this.personnel_info.father_name].filter(Boolean).join(' ')
                 )
             },
-            driver_name_with_initials () {
-                if (0 === Object.keys(this.driver_info).length) {
+            personnel_name_with_initials () {
+                if (0 === Object.keys(this.personnel_info).length) {
                     return ''
                 }
 
-                let result = this.driver_info.second_name
-                        + ' ' + this.driver_info.first_name.charAt(0) + '.'
-                if (this.driver_info.father_name) {
-                    result += this.driver_info.father_name.charAt(0) + '.'
+                let result = this.personnel_info.second_name
+                        + ' ' + this.personnel_info.first_name.charAt(0) + '.'
+                if (this.personnel_info.father_name) {
+                    result += this.personnel_info.father_name.charAt(0) + '.'
                 }
                 return result
             }
         },
 
         watch : {
-            driverId () {
-                this.fetchDriverInfo(this.driverId)
+            personnelId () {
+                this.fetchPersonnelInfo(this.personnelId)
             }
         },
 
         mounted() {
             this.populateDataFromStorage()
 
-            this.fetchDriverInfo()
+            this.fetchPersonnelInfo()
 
-            if (0 === this.drivers_list.length) {
-                this.fetchDriversList()
+            if (0 === this.personnel_list.length) {
+                this.fetchPersonnelList()
             }
         },
 
@@ -197,21 +197,21 @@
                 this.user_id = sessionStorage.getItem('user_id')
                 this.user_organization_id = sessionStorage.getItem('user_organization_id')
             },
-            async fetchDriverInfo() {
+            async fetchPersonnelInfo() {
                 try {
-                    const response = await getPersonnelRecord(this.user_id, this.driverId)
-                    this.driver_info = response.data
+                    const response = await getPersonnelRecord(this.user_id, this.personnelId)
+                    this.personnel_info = response.data
                 } catch (err) {
                     if (err.response && err.response.status == 404) {
                         this.$notify({
                             type : 'warn',
-                            title : 'Водитель не найден',
+                            title : 'Работник не найден',
                             text : 'Проверьте введенный адрес'
                             });
                     }
                 }
             },
-            async fetchDriversList() {
+            async fetchPersonnelList() {
                 try {
                     var response
                     if (this.user_organization_id !== 'null') {
@@ -220,47 +220,47 @@
                         response = await getPersonnelList(this.user_id)
                     }
                     const results = response.data
-                    this.drivers_list = results.map(driver_info => ({
-                        id : driver_info.pers_id,
+                    this.personnel_list = results.map(personnel_info => ({
+                        id : personnel_info.pers_id,
                         name: (
-                            driver_info.second_name + ' '
-                            + driver_info.first_name
-                            + ' ' + (driver_info.father_name || '')
+                            personnel_info.second_name + ' '
+                            + personnel_info.first_name
+                            + ' ' + (personnel_info.father_name || '')
                         ).trim()
                     }))
                 } catch (err) {}
             },
-            async updateDriverPhoto(photo) {
+            async updatePersonnelPhoto(photo) {
                 try {
-                    const response = await updatePersonnelRecord(this.user_id, this.driverId, {photo})
+                    const response = await updatePersonnelRecord(this.user_id, this.personnelId, {photo})
                     this.$notify({
                         type : 'success',
                         title : 'Успешно обновлено',
                     });
                 } catch (err) {}
             },
-            changeDriver(id) {
-                this.$router.replace({name: 'DriversSingle', params: {driverId :id}})
+            changePersonnel(id) {
+                this.$router.replace({name: 'PersonnelSingle', params: {personnelId :id}})
             },
             onAddModalSuccess(id) {
-                this.changeDriver(id)
-                this.fetchDriversList()
+                this.changePersonnel(id)
+                this.fetchPersonnelList()
                 this.$notify({
                     type : 'success',
-                    title : `Водитель создан!`,
+                    title : `Работник создан!`,
                 })
             },
             async onEditModalSuccess() {
-                this.fetchDriversList()
-                await this.fetchDriverInfo()
+                this.fetchPersonnelList()
+                await this.fetchPersonnelInfo()
                 this.$notify({
                     type : 'success',
-                    title : `Водитель ${this.driver_name_with_initials} обновлен!`
+                    title : `Работник ${this.personnel_name_with_initials} обновлен!`
                 })
             },
             async onImageUploaded(fileId) {
-                await this.updateDriverPhoto(fileId)
-                this.driver_info.photo=fileId
+                await this.updatePersonnelPhoto(fileId)
+                this.personnel_info.photo=fileId
             }
         }
     }

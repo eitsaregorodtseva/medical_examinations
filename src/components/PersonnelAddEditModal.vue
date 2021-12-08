@@ -13,22 +13,22 @@
                     <div class="modal-body">
                         <div class="input-group input-group-sm mb-2">
                             <label for="inputPersNumber" class="input-group-text w-25">Таб. №</label>
-                            <input type="text" id="inputPersNumber" class="form-control" v-model.trim="driver_info.pers_number" required>
+                            <input type="text" id="inputPersNumber" class="form-control" v-model.trim="personnel_info.pers_number" required>
                         </div>
 
                         <hr>
 
                         <div class="input-group input-group-sm mb-2">
                             <label for="inputSecondName" class="input-group-text w-25">Фамилия</label>
-                            <input type="text" id="inputSecondName" class="form-control" v-model.trim="driver_info.second_name" required>
+                            <input type="text" id="inputSecondName" class="form-control" v-model.trim="personnel_info.second_name" required>
                         </div>
                         <div class="input-group input-group-sm mb-2">
                             <label for="inputFirstName" class="input-group-text w-25">Имя</label>
-                            <input type="text" id="inputFirstName" class="form-control" v-model.trim="driver_info.first_name" required>
+                            <input type="text" id="inputFirstName" class="form-control" v-model.trim="personnel_info.first_name" required>
                         </div>
                         <div class="input-group input-group-sm mb-2">
                             <label for="inputFatherName" class="input-group-text w-25">Отчество</label>
-                            <input type="text" id="inputFatherName" class="form-control" v-model.trim="driver_info.father_name">
+                            <input type="text" id="inputFatherName" class="form-control" v-model.trim="personnel_info.father_name">
                         </div>
 
                         <hr>
@@ -36,12 +36,12 @@
                         <div class="form-check-inline">Пол:</div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="inputGender" id="inputGenderMale"
-                            value="м" v-model="driver_info.gender" checked>
+                            value="м" v-model="personnel_info.gender" checked>
                             <label class="form-check-label" for="inputGenderMale">Муж</label>
                         </div>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="radio" name="inputGender" id="inputGenderFemale"
-                            value="ж" v-model="driver_info.gender">
+                            value="ж" v-model="personnel_info.gender">
                             <label class="form-check-label" for="inputGenderFemale">Жен</label>
                         </div>
 
@@ -49,9 +49,9 @@
 
                         <div class="input-group input-group-sm mb-2">
                             <label for="inputDateOfBirth" class="input-group-text">Дата рождения</label>
-                            <input type="date" id="inputDateOfBirth" class="form-control" v-model="driver_info.date_of_birth" required>
+                            <input type="date" id="inputDateOfBirth" class="form-control" v-model="personnel_info.date_of_birth" required>
                             <label for="inputDateOfBirth" class="input-group-text">
-                                возраст: {{ $moment().diff(driver_info.date_of_birth, 'years') || ' '}}
+                                возраст: {{ $moment().diff(personnel_info.date_of_birth, 'years') || ' '}}
                             </label>
 
                         </div>
@@ -60,7 +60,7 @@
 
                         <div class="form-check form-switch">
                             <label class="form-check-label" for="switchConsent">Согласие на обработку данных</label>
-                            <input class="form-check-input" type="checkbox" id="switchConsent" v-model="driver_info.processing_consent">
+                            <input class="form-check-input" type="checkbox" id="switchConsent" v-model="personnel_info.processing_consent">
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -97,14 +97,14 @@ export default {
             type: String,
             default: 'Новый водитель'
         },
-        initDriverInfo : {
+        initPersonnelInfo : {
             type: Object,
             default: emptyForm(),
             validator(input) {
                 return input && 0 !== Object.keys(input).length
             }
         },
-        // Set this to true if form is opened for editing driver. Default: false
+        // Set this to true if form is opened for editing personnel. Default: false
         isEditing: {
             type : Boolean,
             default : false
@@ -113,21 +113,21 @@ export default {
 
     emits : {
         // Is emmitted after sucsessful POST request
-        driverAdded : (id) => {return true},
+        personnelAdded : (id) => {return true},
         // Is emmited after sucsessful PATCH request
-        driverUpdated : () => {return true}
+        personnelUpdated : () => {return true}
     },
 
     data (){ return {
         user_id : null,
-        driver_info : this.initDriverInfo,
+        personnel_info : this.initPersonnelInfo,
         uuid : null
     }},
 
     watch : {
-        initDriverInfo (new_info) {
+        initPersonnelInfo (new_info) {
             // Assign a copy of data, not object reference
-            this.driver_info = Object.assign({}, new_info)
+            this.personnel_info = Object.assign({}, new_info)
         }
     },
 
@@ -146,35 +146,35 @@ export default {
         closeModal () {
             document.getElementById('closeButton-'+this.uuid).click()
         },
-        async updateDriverInfo(params) {
+        async updatePersonnelInfo(params) {
             try {
-                const response = await updatePersonnelRecord(this.user_id, this.driver_info.pers_id, params)
+                const response = await updatePersonnelRecord(this.user_id, this.personnel_info.pers_id, params)
                 // On success
-                this.$emit('driverUpdated')
+                this.$emit('personnelUpdated')
                 this.closeModal()
 
             } catch (err) {}
         },
-        async addDriver(){
+        async addPersonnel(){
             try {
-                const response = await addPersonnelRecord(this.user_id, this.driver_info)
+                const response = await addPersonnelRecord(this.user_id, this.personnel_info)
                 const results = response.data
                 // On success
-                this.$emit('driverAdded', results.id)
+                this.$emit('personnelAdded', results.id)
                 this.closeModal()
-                this.driver_info = emptyForm()
+                this.personnel_info = emptyForm()
             } catch (err) {}
         },
         onSubmit() {
             if (this.isEditing) {
-                let changedParams = this.findChanges(this.initDriverInfo, this.driver_info)
+                let changedParams = this.findChanges(this.initPersonnelInfo, this.personnel_info)
                 if (0 === Object.keys(changedParams).length) {
                     this.closeModal()
                 } else {
-                    this.updateDriverInfo(changedParams)
+                    this.updatePersonnelInfo(changedParams)
                 }
             } else {
-                this.addDriver()
+                this.addPersonnel()
             }
         },
         findChanges (oldObj, newObj) {

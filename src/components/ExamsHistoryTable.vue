@@ -1,184 +1,205 @@
 <template>
-  <vue-table-lite
-    :is-static-mode="true"
-    :has-checkbox="false"
-    :is-loading="table.isLoading"
-    :is-re-search="table.isReSearch"
-    :columns="table.columns"
-    :rows="table.rows"
-    :total="table.totalRecordCount"
-    :sortable="table.sortable"
-    :messages="table.messages"
-  />
+  <div class="q-pa-md q-gutter-sm">
+    <q-table
+      class="exams-table"
+      title="Осмотры"
+      :rows="exams"
+      :columns="columns"
+      row-key="exam_datetime"
+      :loading="loading"
+      :wrap-cells="true"
+      separator="horizontal"
+      :style="{'max-height' : height}"
+      table-header-class="app_normal"
+      rows-per-page-label="Записей на странице: "
+      :pagination="pagination"
+      :pagination-label="(firstRowIndex, endRowIndex, totalRowsNumber) => {
+        return firstRowIndex + ' - ' + endRowIndex + ' из ' + totalRowsNumber
+      }"
+      @row-click="onRowClicked"
+    >
+      <template #body-cell-admittance="props">
+        <q-td :props="props">
+          <q-badge
+            v-if="props.row.admittance === true"
+            color="positive"
+            text-color="black"
+            :label="props.value"
+          />
+          <q-badge
+            v-if="props.row.admittance === false"
+            color="negative"
+            text-color="black"
+            :label="props.value"
+          />
+        </q-td>
+      </template>
+      <template #body-cell-name="props">
+        <q-td :props="props">
+          <a
+            :href="'/personnel/' + props.row.pers_id"
+            @click.stop=""
+          >
+            {{ props.value }}
+          </a>
+        </q-td>
+      </template>
+    </q-table>
+
+    <q-dialog
+      v-model="showExamDialog"
+      transition-show="slide-up"
+      transition-hide="slide-down"
+      :full-width="true"
+      :full-height="true"
+    >
+      <q-card class="d-flex flex-column bg-white">
+        <div class="align-self-end sticky-top bg-white">
+          <q-btn
+            v-close-popup
+            class="justify-self-end"
+            flat
+            icon="close"
+          >
+            <q-tooltip class="bg-white text-primary">
+              Закрыть
+            </q-tooltip>
+          </q-btn>
+        </div>
+        <exam-data />
+      </q-card>
+    </q-dialog>
+  </div>
 </template>
 
 <script>
-import VueTableLite from "vue3-table-lite";
-import { computed, defineComponent, reactive, toRefs, watch } from "vue";
 import moment from 'moment';
+import ExamData from '../views/ExamData.vue';
 
-export default defineComponent({
-  components: {
-    VueTableLite,
+const columns = [
+  { name: 'exam_datetime', required: true, label: 'Дата и время', align: 'left', field: 'exam_datetime', format: val => moment(val).format('lll'), sortable: true },
+  { name: 'organization_name', label: 'Организация', align: 'left', field: 'organization_name', sortable: true },
+  { name: 'pers_number', label: 'Таб. №', align: 'left', field: 'pers_number', sortable: true },
+  {
+    name: 'name',
+    label: 'ФИО',
+    align: 'left',
+    field: row => (row.second_name + ' ' + row.first_name + ' ' + (row.father_name || '')),
+    sortable: true
   },
+  { name: 'type', label: 'Тип осмотра', align: 'left', field: 'type', sortable: true },
+  {
+    name: 'admittance',
+    label: 'Допуск',
+    align: 'left',
+    field: 'admittance',
+    format: val => {
+      if (val === true) {
+        return 'Допущен'
+      } else if (val === false) {
+        return 'Не допущен'
+      } else {
+        return ""
+      }
+
+    },
+    sortable: true
+  },
+  {
+    name:'verdicts',
+    label: 'Причина недопуска',
+    align: 'left',
+    field: row => parseVerdictsList(JSON.parse(row.verdicts), row.verdict_comment),
+    sortable: true
+  },
+  {
+    name:'medworker',
+    label: 'Медработник',
+    align: 'left',
+    field: row => nameWithInitials(row.med_second_name, row.med_first_name, row.med_father_name),
+    sortable: true
+  }
+]
+
+const parseVerdictsList = (verdicts_list, verdict_comment) => {
+  if (!verdicts_list) {
+    return "";
+  }
+
+  if (verdicts_list.includes('Допущен')) {
+    return '';
+  }
+  if (verdicts_list.includes('Другое')) {
+    // Replace with comment
+    const ind = verdicts_list.indexOf('Другое');
+    verdicts_list[ind] = verdict_comment;
+  }
+  return verdicts_list.join(', ');
+
+}
+
+const nameWithInitials = (second, first, father) => {
+  if (!first || !second) {
+    return ''
+  }
+  let result = second
+          + ' ' + first.charAt(0) + '.';
+  if (father) {
+      result += father.charAt(0) + '.';
+  }
+  return result;
+}
+
+export default {
+  components: { ExamData },
   props: {
-    exams : Array
+    exams : Array,
+    height: String
   },
-  setup(props) {
-
-    const name_with_initials = (second, first, father) => {
-      let result = second
-              + ' ' + first.charAt(0) + '.';
-      if (father) {
-          result += father.charAt(0) + '.';
-      }
-      return result;
-    }
-
-    const parseVerdictsList = (verdicts_list, verdict_comment) => {
-      if (!verdicts_list) {
-        return "";
-      }
-
-      let result = "";
-      if (verdicts_list.includes('Допущен')) {
-        return result;
-      }
-      if (verdicts_list.includes('Другое')) {
-        // Replace with comment
-        const ind = verdicts_list.indexOf('Другое');
-        verdicts_list[ind] = verdict_comment;
-      }
-
-      result = verdicts_list.join(', ');
-      return result;
-
-    }
-
-    const table = reactive({
-      columns: [
-        {
-          label: "Дата и время",
-          field: "exam_datetime",
-          width: "5%",
-          sortable: true,
-          isKey: true,
-          display: function (row) {
-            return (
-              moment(row.exam_datetime).format('lll')
-            );
-          },
-        },
-        {
-          label: "Организация",
-          field: "organization_name",
-          width: "10%",
-          sortable: true,
-        },
-        {
-          label: "Таб. №",
-          field: "pers_number",
-          width: "5%",
-          sortable: true,
-          isKey: true,
-        },
-        {
-          label: "ФИО",
-          field: "name",
-          width: "15%",
-          sortable: true,
-          display: function (row) {
-            return (
-              '<a href="drivers/' +
-              row.pers_id +
-               '" data-id="' +
-              row.pers_id +
-              '" >' +
-              (row.second_name + ' ' + row.first_name + ' ' + (row.father_name || '')).trim() +
-              "</button>"
-            );
-          },
-        },
-        {
-          label: "Допуск",
-          field: "admittance",
-          width: "5%",
-          sortable: true,
-          display: function(row) {
-            if (row.admittance === true) {
-              return (
-                "<div class=\" text-center\" >" +
-                "Да" +
-                "</div>"
-              )
-            } else if (row.admittance === false) {
-              return (
-                "<div class=\"app_error text-center\" >" +
-                "Нет" +
-                "</div>"
-              );
-            } else {
-              return "";
-            }
-          }
-        },
-        {
-          label: "Причины недопуска",
-          field: "verdicts",
-          width: "10%",
-          sortable: true,
-          display: function(row) {
-            return parseVerdictsList(JSON.parse(row.verdicts), row.verdict_comment)
-          }
-        },
-        {
-          label: "Медработник",
-          field: "med",
-          width: "5%",
-          sortable: true,
-          display: function(row) {
-            if (row.med_id) {
-              return (
-                '<a href="#" data-id="' +
-                row.med_id +
-                '" >' +
-                name_with_initials(row.med_second_name, row.med_first_name, row.med_father_name) +
-                "</button>"
-              );
-            } else {
-              return "";
-            }
-          }
-        },
-      ],
-      rows: props.exams,
-      totalRecordCount: computed(() => {
-        return table.rows.length;
-      }),
-      sortable: {
-        order: "exam_datetime",
-        sort: "desc",
+  data () {return {
+    columns: columns,
+    showExamDialog: false,
+    pagination: {
+        sortBy: 'exam_datetime',
+        descending: true,
+        page: 1,
+        rowsPerPage: 10
       },
-      messages: {
-        pagingInfo: "Записи {0}-{1} из {2}",
-        pageSizeChangeLabel: "Записей:",
-        gotoPageLabel: "Перейти на страницу",
-        noDataAvailable: "Нет данных",
-      },
-    });
-
-    const examsRef = toRefs(props).exams
-    watch(examsRef, (newValue, oldValue) => {
-      table.rows = newValue
-    })
-
-
-    return {
-      table,
-    };
+  } },
+  computed : {
+    loading () {
+      return !this.exams || (this.exams.length == 0)
+    }
   },
-});
+  methods : {
+    onRowClicked(evt, row, index) {
+      sessionStorage.setItem('exam_id', row.exam_id)
+      this.showExamDialog = true
+    }
+  },
+}
+
 </script>
 
-<style>
+<style lang="sass" >
+.exams-table
+
+  .q-table__top,
+  .q-table__bottom,
+  thead tr:first-child th
+    margin: 0
+    font-weight: bolder
+
+  thead tr th
+    position: sticky
+    z-index: 1
+  thead tr:first-child th
+    top: 0
+
+  /* this is when the loading indicator appears */
+  &.q-table--loading thead tr:last-child th
+    /* height of all previous header rows */
+    top: 48px
+
+
 </style>

@@ -47,10 +47,10 @@ const routes = [
     }
   },
   {
-    path: '/drivers/:driverId',
-    name: 'DriversSingle',
-    component: () => import('../views/DriversSingle.vue'),
-    props: (route) => ({driverId: Number.parseInt(route.params.driverId, 10) || 0}),
+    path: '/personnel/:personnelId',
+    name: 'PersonnelSingle',
+    component: () => import('../views/PersonnelSingle.vue'),
+    props: (route) => ({personnelId: Number.parseInt(route.params.personnelId, 10) || 0}),
     meta : {
       permittedRoles : [
         Role.MedWorker,

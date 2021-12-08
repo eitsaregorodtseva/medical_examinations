@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@kyvg/vue3-notification": "^2.3.4",
+    "@quasar/extras": "^1.12.2",
     "axios": "^0.21.1",
     "bootstrap": "^5.1.0",
     "bootstrap-icons": "^1.7.0",
@@ -15,6 +16,7 @@
     "core-js": "^3.6.5",
     "echarts": "^5.2.0",
     "moment": "^2.29.1",
+    "quasar": "^2.3.4",
     "register-service-worker": "^1.7.1",
     "vue": "^3.0.0",
     "vue-echarts": "^6.0.0",

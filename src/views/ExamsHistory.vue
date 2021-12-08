@@ -1,6 +1,7 @@
 <template>
   <exams-history-table
     :exams="examsList"
+    height="90vh"
   />
 </template>
 

@@ -1,122 +1,281 @@
 <template>
-    <div class='container' >
-        <div class='row'>
-            <div class='col-xl-6'>
-                <div id='pers_data' class='container'>
-                    <div class='row'>
-                        <div id='img' class='col-4'></div>
-                        <div id='pers_data_txt' class='col-4'>
-                            <div class='row'>
-                                <span id='name'>{{ name }}</span>
-                                <span id='sex'>{{ gender }}</span>
-                                <span id='age'>{{ age }}</span>
-                            </div>
-                        </div>
-                    </div>
+  <q-inner-loading :showing="!dataLoaded">
+    <q-spinner
+      color="primary"
+      size="3em"
+    />
+  </q-inner-loading>
+  <div
+    v-if="dataLoaded"
+    class="container"
+  >
+    <div class="row">
+      <div class="col-xl-6">
+        <div
+          id="pers_data"
+          class="container"
+        >
+          <div class="row">
+            <div
+              id="img"
+              class="col-md-3"
+            />
+            <div
+              id="pers_data_txt"
+              class="col-md-3"
+            >
+              <div class="d-flex flex-column">
+                <div class="h4">
+                  {{ fullName }}
                 </div>
-                <div class="mt-4 p-2">
-                    <table class="mb-4">
-                        <thead>
-                            <tr class="text-center fs-4">Данные приборов</tr>
-                        </thead>
-                        <tbody>
-                            <tr :class="pressure_upper >= 110 && pressure_upper <= 130 ? 'input_normal' : 'input_error'">
-                                <td>Верхнее артериальное давление</td>
-                                <td class='right_col'>{{ pressure_upper }}</td>
-                            </tr>
-                            <tr :class="pressure_lower >= 70 && pressure_lower <= 85 ? 'input_normal' : 'input_error'">
-                                <td>Нижнее артериальное давление</td>
-                                <td class='right_col'>{{ pressure_lower }}</td>
-                            </tr>
-                            <tr :class="heart_rate >= 60 && heart_rate <= 80 ? 'input_normal' : 'input_error'">
-                                <td>Пульс</td>
-                                <td class='right_col'>{{ heart_rate }}</td>
-                            </tr>
-                            <tr :class="alcohol * 100 <= 16 ? 'input_normal' : 'input_error'">
-                                <td>Уровень алкоголя</td>
-                                <td class='right_col'>{{ alcohol }}</td>
-                            </tr>
-                            <tr :class="temperature * 10 >= 359 && temperature * 10 <= 372 ? 'input_normal' : 'input_error'">
-                                <td>Температура тела</td>
-                                <td class='right_col'>{{ temperature }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <div class='d-flex justify-content-center'>
-                        <button id='hist_btn' class='btn_normal' type="button" data-bs-toggle="collapse" data-bs-target="#collapse" aria-expanded="false" aria-controls="collapse" @click='clc'>Посмотреть историю</button>
-                    </div>
+                <div class="m-1">
+                  Пол: {{ exam_data.gender }}
                 </div>
+                <div class="m-1">
+                  Возраст: {{ exam_data.age }}
+                </div>
+              </div>
             </div>
-            <div class='col-xl-6'>
-                <div id='player' class='container'></div>
-                <div id='notions' class='container'>
-                    <div class='row'>
-                        <span class="fs-4">Жалобы</span>
-                    </div>
-                    <span id='notes'>{{ complaints || 'Нет' }}</span>
-                </div>
-                <div id='buttns' class='container'>
-                    <div class='d-flex justify-content-around'>
-                        <button @click="getlist" type="button" id='reject' class='btn_error' data-bs-toggle="modal" data-bs-target="#exampleModal">Не допустить</button>
-                        <button @click='admit' id='resolve' class='btn_normal'>Допустить</button>
-                    </div>
-               </div>
-            </div>
+            <q-card class="col-md-3 mt-2 p-2 d-flex flex-column" v-if="exam_data.admittance !== null">
+              <q-badge class="align-self-center" v-if="exam_data.admittance" color="positive" text-color="black">Допущен</q-badge>
+              <q-badge class="align-self-center" v-if="!exam_data.admittance" color="negative" text-color="black">Не допущен</q-badge>
+              <div class="mt-3">Медработник: {{ medNameWithInitials }} </div>
+              <div v-if="!exam_data.admittance" class="mt-3"> {{ parsedVerdictsList }} </div>
+            </q-card>
+          </div>
         </div>
-        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <form class='form-horizontal' @submit.prevent='req_form'>
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Причины недопуска</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="input-group" v-for="item in verd_list" :key='item.id'>
-                            <div class="input-group-text">
-                                <input class="form-check-input mt-0" type="checkbox" :value='item.id' v-model='checked'>
-                            </div>
-                            <label class="form-check-label form-control" for="flexCheckDefault">
-                                {{ item.text }}
-                            </label>
-                        </div>
-                        <div class="input-group">
-                            <div class="input-group-text">
-                                <input class="form-check-input mt-0" type="checkbox" :value='13' v-model='checked_13'>
-                            </div>
-                            <input type="text" class="form-control" placeholder='Другое' v-model='comment_13'>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Отмена</button>
-                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" v-if="checked.length > 0 || checked_13" @click="req_form">Отправить</button>
-                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" v-else disabled @click="req_form">Отправить</button>
-                    </div>
-                </div>
-                </form>
-            </div>
+        <div class="mt-4 p-2 d-flex flex-column align-items-center">
+          <div class="fs-4">
+            Данные приборов
+          </div>
+          <table class="table p-2">
+            <thead class="text-dark">
+              <tr>
+                <th scope="col">
+                  Параметр
+                </th>
+                <th scope="col">
+                  Значение
+                </th>
+                <th scope="col">
+                  Норма
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr :class="exam_data.pressure_upper >= 110 && exam_data.pressure_upper <= 130 ? 'input_normal' : 'app_error'">
+                <td>Верхнее артериальное давление</td>
+                <td class="right_col">
+                  {{ exam_data.pressure_upper }}
+                </td>
+                <td>110 - 130</td>
+              </tr>
+              <tr :class="exam_data.pressure_lower >= 70 && exam_data.pressure_lower <= 85 ? 'input_normal' : 'app_error'">
+                <td>Нижнее артериальное давление</td>
+                <td class="right_col">
+                  {{ exam_data.pressure_lower }}
+                </td>
+                <td> 70 - 85</td>
+              </tr>
+              <tr :class="exam_data.heart_rate >= 60 && exam_data.heart_rate <= 80 ? 'input_normal' : 'app_error'">
+                <td>Пульс</td>
+                <td class="right_col">
+                  {{ exam_data.heart_rate }}
+                </td>
+                <td>60 - 80</td>
+              </tr>
+              <tr :class="exam_data.alcohol * 100 <= 16 ? 'input_normal' : 'app_error'">
+                <td>Уровень алкоголя</td>
+                <td class="right_col">
+                  {{ exam_data.alcohol }}
+                </td>
+                <td> {{ '< 0.16' }}</td>
+              </tr>
+              <tr :class="exam_data.temperature * 10 >= 359 && exam_data.temperature * 10 <= 372 ? 'input_normal' : 'app_error'">
+                <td>Температура тела</td>
+                <td class="right_col">
+                  {{ exam_data.temperature.toPrecision(3) }}
+                </td>
+                <td>35.9 - 37.2</td>
+              </tr>
+            </tbody>
+          </table>
+          <button
+            id="hist_btn"
+            class="btn_normal"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#collapse"
+            aria-expanded="false"
+            aria-controls="collapse"
+            @click="clc"
+          >
+            Посмотреть историю
+          </button>
         </div>
-        <div class='collapse collapsing' id="collapse">
-            <div class="container-fluid">
-                <div class='row'>
-                    <div class='col-xl-6'>
-                        <chart :options='sys_dia_opt' />
-                    </div>
-                    <div class='col-xl-6'>
-                        <chart :options='pulse_opt' />
-                    </div>
-                </div>
-                <div class='row'>
-                    <div class='col-xl-6'>
-                        <chart :options='temp_opt' />
-                    </div>
-                    <div class='col-xl-6'>
-                        <chart :options='alc_opt' />
-                    </div>
-                </div>
-            </div>
+      </div>
+      <div class="col-xl-6">
+        <div
+          id="player"
+          class="container"
+        />
+        <div
+          id="notions"
+          class="container"
+        >
+          <div class="row">
+            <span class="fs-4">Жалобы</span>
+          </div>
+          <span id="notes">{{ parsedComplaints || 'Нет' }}</span>
         </div>
+        <div
+          v-if="exam_data.admittance === null"
+          id="buttns"
+          class="container"
+        >
+          <div class="d-flex justify-content-around">
+            <button
+              id="reject"
+              type="button"
+              class="btn_error"
+              data-bs-toggle="modal"
+              data-bs-target="#exampleModal"
+              @click="getlist"
+            >
+              Не допустить
+            </button>
+            <button
+              id="resolve"
+              class="btn_normal"
+              @click="admit"
+            >
+              Допустить
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
+    <div
+      id="exampleModal"
+      class="modal fade"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <form
+          class="form-horizontal"
+          @submit.prevent="req_form"
+        >
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5
+                id="exampleModalLabel"
+                class="modal-title"
+              >
+                Причины недопуска
+              </h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              />
+            </div>
+            <div class="modal-body">
+              <div
+                v-for="item in verd_list"
+                :key="item.id"
+                class="input-group"
+              >
+                <div class="input-group-text">
+                  <input
+                    v-model="checked"
+                    class="form-check-input mt-0"
+                    type="checkbox"
+                    :value="item.id"
+                  >
+                </div>
+                <label
+                  class="form-check-label form-control"
+                  for="flexCheckDefault"
+                >
+                  {{ item.text }}
+                </label>
+              </div>
+              <div class="input-group">
+                <div class="input-group-text">
+                  <input
+                    v-model="checked_13"
+                    class="form-check-input mt-0"
+                    type="checkbox"
+                    :value="13"
+                  >
+                </div>
+                <input
+                  v-model="comment_13"
+                  type="text"
+                  class="form-control"
+                  placeholder="Другое"
+                >
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Отмена
+              </button>
+              <button
+                v-if="checked.length > 0 || checked_13"
+                type="button"
+                class="btn btn-primary"
+                data-bs-dismiss="modal"
+                @click="req_form"
+              >
+                Отправить
+              </button>
+              <button
+                v-else
+                type="button"
+                class="btn btn-primary"
+                data-bs-dismiss="modal"
+                disabled
+                @click="req_form"
+              >
+                Отправить
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div
+      id="collapse"
+      class="collapse collapsing"
+    >
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-xl-6">
+            <chart :options="sys_dia_opt" />
+          </div>
+          <div class="col-xl-6">
+            <chart :options="pulse_opt" />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xl-6">
+            <chart :options="temp_opt" />
+          </div>
+          <div class="col-xl-6">
+            <chart :options="alc_opt" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -139,31 +298,69 @@ export default {
     },
     data() {
             return {
-                name: '',
-                gender: '',
-                age: '',
-                pressure_upper: '',
-                pressure_lower: '',
-                heart_rate: '',
-                alcohol: '',
-                temperature: '',
-                complaints: '',
                 verd_list: [],
                 sys_dia_opt,
                 pulse_opt,
                 temp_opt,
                 alc_opt,
-                exam_data: {},
+                exam_data: null,
                 exam_hist: {},
                 checked: [],
                 comment_13: '',
                 checked_13: false,
-                admission: false,
                 user_id: sessionStorage.getItem('user_id'),
                 exam_id: sessionStorage.getItem('exam_id'),
         }
     },
-    created() {
+    computed : {
+        dataLoaded () {
+          return this.exam_data && 0 !== Object.keys(this.exam_data).length
+        },
+        parsedComplaints () {
+            if (this.dataLoaded && this.exam_data.complaints) {
+                return this.exam_data.complaints.replaceAll('"', '').replace('[', '').replace(']', '');
+            } else {
+                return ''
+            }
+        },
+        fullName () {
+            if (this.exam_data && 0 !== Object.keys(this.exam_data).length) {
+                return [this.exam_data.second_name, this.exam_data.first_name, this.exam_data.father_name].filter(Boolean).join(' ')
+            } else {
+                return ''
+            }
+        },
+        medNameWithInitials () {
+          if (!this.exam_data || !this.exam_data.med_first_name || !this.exam_data.med_second_name) {
+            return ''
+          }
+          let result = this.exam_data.med_second_name
+                  + ' ' + this.exam_data.med_first_name.charAt(0) + '.';
+          if (this.exam_data.med_father_name) {
+              result += this.exam_data.med_father_name.charAt(0) + '.';
+          }
+          return result;
+        },
+        parsedVerdictsList () {
+          if (!this.dataLoaded || !this.exam_data.verdicts) {
+            return "";
+          }
+          let verdicts_list = JSON.parse(this.exam_data.verdicts);
+          console.log(verdicts_list);
+
+          if (verdicts_list.includes('Допущен')) {
+            return '';
+          }
+          if (verdicts_list.includes('Другое')) {
+            // Replace with comment
+            const ind = verdicts_list.indexOf('Другое');
+            verdicts_list[ind] = this.exam_data.verdict_comment;
+          }
+          return verdicts_list.join(', ');
+
+        }
+    },
+    mounted() {
         this.getdata()
     },
     methods: {
@@ -197,11 +394,15 @@ export default {
             }
         },
         async getdata() {
-            const exam_data = await getExamData(this.exam_id, this.user_id);
-            const exam_hist = await getExamsHistoryForPersonnel(this.user_id, exam_data.data.pers_id);
-            this.is_requested = true;
-            this.exam_data = exam_data;
-            this.exam_hist = exam_hist;
+            try {
+              const exam_data = await getExamData(this.exam_id, this.user_id);
+              const exam_hist = await getExamsHistoryForPersonnel(this.user_id, exam_data.pers_id);
+              this.is_requested = true;
+              this.exam_data = exam_data.data;
+              this.exam_hist = exam_hist;
+            } catch (error) {
+              console.log(error);
+            }
         },
         req_form() {
             let verdicts = [];
@@ -223,20 +424,6 @@ export default {
             } catch (error) {
             }
         }
-    },
-    watch: {
-        exam_data: function() {
-            this.name = this.exam_data.data.first_name + ' ' + this.exam_data.data.father_name + ' ' + this.exam_data.data.second_name;
-            this.gender = this.exam_data.data.gender;
-            this.age = this.exam_data.data.age + ' ' + 'лет';
-            this.pressure_upper = this.exam_data.data.pressure_upper;
-            this.pressure_lower = this.exam_data.data.pressure_lower;
-            this.heart_rate = this.exam_data.data.heart_rate;
-            this.alcohol = this.exam_data.data.alcohol.toFixed(1);
-            this.temperature = this.exam_data.data.temperature.toFixed(1);
-            if (this.exam_data.data.complaints != null)
-                this.complaints = this.exam_data.data.complaints.replaceAll('"', '').replace('[', '').replace(']', '');
-        }
     }
 };
 </script>
@@ -249,21 +436,6 @@ button {
 
 .container {
     padding: 0;
-}
-
-#container {
-    margin: 0;
-}
-
-#pers_data {
-    width: 550px;
-    height: 200px;
-}
-
-#table_data {
-    margin-top: 60px;
-    width: 550px;
-    height: 400px;
 }
 
 #player {
@@ -289,42 +461,10 @@ button {
     height: 200px;
 }
 
-#name {
-    width: 100%;
-    text-align: center;
-    font-size: 24px;
-}
-
-#sex {
-    width: 50%;
-    text-align: left;
-    top: 26px;
-}
-
-#age {
-    width: 50%;
-    text-align: right;
-    right: 0;
-    top: 26px;
-}
-
 #img {
     width: 200px;
     height: 200px;
     background-color: darkgray;
-}
-
-tr {
-    width: 100%;
-    height: 45px;
-}
-
-td {
-    width: 100%;
-}
-
-.right_col {
-    text-align: right;
 }
 
 #hist_btn {
