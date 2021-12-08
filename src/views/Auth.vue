@@ -85,8 +85,11 @@ export default {
                 sessionStorage.setItem('user_id', response.data.id);
                 sessionStorage.setItem('user_role', response.data.role);
                 sessionStorage.setItem('user_organization_id', response.data.organization_id);
-
-                this.$router.push(this.returnUrl || '/')
+                if (response.data.role === Role.MedWorker) {
+                  this.$router.push('/dig_sig')
+                } else {
+                  this.$router.push(this.returnUrl || '/')
+                }
 
             } catch (error) {
                 console.log(error);
