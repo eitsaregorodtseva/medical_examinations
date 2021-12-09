@@ -1,76 +1,173 @@
 <template>
-    <div class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered ">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">
-                        {{ title }}
-                    </h5>
-                    <!-- Button has unique id to tell instances apart when clicking it from the script -->
-                    <button type="button" :id="'closeButton-' + uuid" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form @submit.prevent="onSubmit">
-                    <div class="modal-body">
-                        <div class="input-group input-group-sm mb-2">
-                            <label for="inputPersNumber" class="input-group-text w-25">Таб. №</label>
-                            <input type="text" id="inputPersNumber" class="form-control" v-model.trim="personnel_info.pers_number" required>
-                        </div>
-
-                        <hr>
-
-                        <div class="input-group input-group-sm mb-2">
-                            <label for="inputSecondName" class="input-group-text w-25">Фамилия</label>
-                            <input type="text" id="inputSecondName" class="form-control" v-model.trim="personnel_info.second_name" required>
-                        </div>
-                        <div class="input-group input-group-sm mb-2">
-                            <label for="inputFirstName" class="input-group-text w-25">Имя</label>
-                            <input type="text" id="inputFirstName" class="form-control" v-model.trim="personnel_info.first_name" required>
-                        </div>
-                        <div class="input-group input-group-sm mb-2">
-                            <label for="inputFatherName" class="input-group-text w-25">Отчество</label>
-                            <input type="text" id="inputFatherName" class="form-control" v-model.trim="personnel_info.father_name">
-                        </div>
-
-                        <hr>
-
-                        <div class="form-check-inline">Пол:</div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="inputGender" id="inputGenderMale"
-                            value="м" v-model="personnel_info.gender" checked>
-                            <label class="form-check-label" for="inputGenderMale">Муж</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="inputGender" id="inputGenderFemale"
-                            value="ж" v-model="personnel_info.gender">
-                            <label class="form-check-label" for="inputGenderFemale">Жен</label>
-                        </div>
-
-                        <hr>
-
-                        <div class="input-group input-group-sm mb-2">
-                            <label for="inputDateOfBirth" class="input-group-text">Дата рождения</label>
-                            <input type="date" id="inputDateOfBirth" class="form-control" v-model="personnel_info.date_of_birth" required>
-                            <label for="inputDateOfBirth" class="input-group-text">
-                                возраст: {{ $moment().diff(personnel_info.date_of_birth, 'years') || ' '}}
-                            </label>
-
-                        </div>
-
-                        <hr>
-
-                        <div class="form-check form-switch">
-                            <label class="form-check-label" for="switchConsent">Согласие на обработку данных</label>
-                            <input class="form-check-input" type="checkbox" id="switchConsent" v-model="personnel_info.processing_consent">
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn_error" data-bs-dismiss="modal">Отмена</button>
-                        <button type="submit" class="btn_normal">Сохранить</button>
-                    </div>
-                </form>
-            </div>
+  <div
+    class="modal fade"
+    data-bs-backdrop="static"
+    data-bs-keyboard="false"
+    tabindex="-1"
+  >
+    <div class="modal-dialog modal-dialog-centered ">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">
+            {{ title }}
+          </h5>
+          <!-- Button has unique id to tell instances apart when clicking it from the script -->
+          <button
+            :id="'closeButton-' + uuid"
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          />
         </div>
+        <form @submit.prevent="onSubmit">
+          <div class="modal-body">
+            <div class="input-group input-group-sm mb-2">
+              <label
+                for="inputPersNumber"
+                class="input-group-text w-25"
+              >Таб. №</label>
+              <input
+                id="inputPersNumber"
+                v-model.trim="personnel_info.pers_number"
+                type="text"
+                class="form-control"
+                required
+              >
+            </div>
+
+            <hr>
+
+            <div class="input-group input-group-sm mb-2">
+              <label
+                for="inputSecondName"
+                class="input-group-text w-25"
+              >Фамилия</label>
+              <input
+                id="inputSecondName"
+                v-model.trim="personnel_info.second_name"
+                type="text"
+                class="form-control"
+                required
+              >
+            </div>
+            <div class="input-group input-group-sm mb-2">
+              <label
+                for="inputFirstName"
+                class="input-group-text w-25"
+              >Имя</label>
+              <input
+                id="inputFirstName"
+                v-model.trim="personnel_info.first_name"
+                type="text"
+                class="form-control"
+                required
+              >
+            </div>
+            <div class="input-group input-group-sm mb-2">
+              <label
+                for="inputFatherName"
+                class="input-group-text w-25"
+              >Отчество</label>
+              <input
+                id="inputFatherName"
+                v-model.trim="personnel_info.father_name"
+                type="text"
+                class="form-control"
+              >
+            </div>
+
+            <hr>
+
+            <div class="form-check-inline">
+              Пол:
+            </div>
+            <div class="form-check form-check-inline">
+              <input
+                id="inputGenderMale"
+                v-model="personnel_info.gender"
+                class="form-check-input"
+                type="radio"
+                name="inputGender"
+                value="м"
+                checked
+              >
+              <label
+                class="form-check-label"
+                for="inputGenderMale"
+              >Муж</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input
+                id="inputGenderFemale"
+                v-model="personnel_info.gender"
+                class="form-check-input"
+                type="radio"
+                name="inputGender"
+                value="ж"
+              >
+              <label
+                class="form-check-label"
+                for="inputGenderFemale"
+              >Жен</label>
+            </div>
+
+            <hr>
+
+            <div class="input-group input-group-sm mb-2">
+              <label
+                for="inputDateOfBirth"
+                class="input-group-text"
+              >Дата рождения</label>
+              <input
+                id="inputDateOfBirth"
+                v-model="personnel_info.date_of_birth"
+                type="date"
+                class="form-control"
+                required
+              >
+              <label
+                for="inputDateOfBirth"
+                class="input-group-text"
+              >
+                возраст: {{ $moment().diff(personnel_info.date_of_birth, 'years') || ' ' }}
+              </label>
+            </div>
+
+            <hr>
+
+            <div class="form-check form-switch">
+              <label
+                class="form-check-label"
+                for="switchConsent"
+              >Согласие на обработку данных</label>
+              <input
+                id="switchConsent"
+                v-model="personnel_info.processing_consent"
+                class="form-check-input"
+                type="checkbox"
+              >
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn_error"
+              data-bs-dismiss="modal"
+            >
+              Отмена
+            </button>
+            <button
+              type="submit"
+              class="btn_normal"
+            >
+              Сохранить
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
+  </div>
 </template>
 
 <script>
