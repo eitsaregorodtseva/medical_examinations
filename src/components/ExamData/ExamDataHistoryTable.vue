@@ -1,8 +1,9 @@
 <template>
-  <div class="q-pa-md q-gutter-sm">
+  <div class="">
     <q-table
+      dense
       class="exams-table"
-      title="Осмотры"
+      title="Предыдущие осмотры"
       :rows="exams"
       :columns="columns"
       row-key="exam_datetime"
@@ -16,24 +17,7 @@
       :pagination-label="(firstRowIndex, endRowIndex, totalRowsNumber) => {
         return firstRowIndex + ' - ' + endRowIndex + ' из ' + totalRowsNumber
       }"
-      @row-click="onRowClicked"
     >
-      <template #body-cell-auto_admittance="props">
-        <q-td :props="props">
-          <q-badge
-            outline
-            v-if="props.row.auto_admittance === true"
-            color="green-13"
-            :label="props.value"
-          />
-          <q-badge
-            outline
-            v-if="props.row.auto_admittance === false"
-            color="negative"
-            :label="props.value"
-          />
-        </q-td>
-      </template>
       <template #body-cell-admittance="props">
         <q-td :props="props">
           <q-badge
@@ -90,37 +74,16 @@
 
 <script>
 import moment from 'moment';
-import ExamData from '../views/ExamData.vue';
-import { nameWithInitials, fullName } from '@/helpers/names'
+import ExamData from '@/views/ExamData.vue';
+import { nameWithInitials } from '@/helpers/names'
 
 const columns = [
   { name: 'exam_datetime', required: true, label: 'Дата и время', align: 'left', field: 'exam_datetime', format: val => moment(val).format('lll'), sortable: true },
-  { name: 'organization_name', label: 'Организация', align: 'left', field: 'organization_name', sortable: true },
-  { name: 'pers_number', label: 'Таб. №', align: 'left', field: 'pers_number', sortable: true },
-  {
-    name: 'name',
-    label: 'ФИО',
-    align: 'left',
-    field: row => fullName(row.second_name,  row.first_name, row.father_name),
-    sortable: true
-  },
   { name: 'type', label: 'Тип осмотра', align: 'left', field: 'type', sortable: true },
-  {
-    name: 'auto_admittance',
-    label: 'Автодопуск',
-    align: 'left',
-    field: 'auto_admittance',
-    format: val => {
-      if (val === true) {
-        return 'Допущен'
-      } else if (val === false) {
-        return 'Не допущен'
-      } else {
-        return ""
-      }
-    },
-    sortable: true
-  },
+  { name: 'pressure', label: 'Давление', align: 'left', field: row => row.pressure_upper + '/' + row.pressure_lower, sortable: true },
+  { name: 'heart_rate', label: 'Пульс', align: 'left', field: 'heart_rate', sortable: true },
+  { name: 'temperature', label: 'Температура', align: 'left', field: 'temperature', format: val => val.toPrecision(3),sortable: true },
+  { name: 'alcohol', label: 'Алкоголь', align: 'left', field: 'alcohol', sortable: true },
   {
     name: 'admittance',
     label: 'Допуск',
@@ -134,6 +97,7 @@ const columns = [
       } else {
         return ""
       }
+
     },
     sortable: true
   },
@@ -183,7 +147,7 @@ export default {
         sortBy: 'exam_datetime',
         descending: true,
         page: 1,
-        rowsPerPage: 10
+        rowsPerPage: 15
       },
   } },
   computed : {

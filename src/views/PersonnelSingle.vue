@@ -5,9 +5,9 @@
     @personnel-added="onAddModalSuccess"
   />
   <PersonnelAddEditModal
-    v-if="show_personnel"
+    v-if="personnelInfoLoaded"
     id="editModal"
-    :title="'Редактировать ' + personnel_name_with_initials"
+    :title="'Редактировать ' + personnelNameWithInitials"
     :is-editing="true"
     :init-personnel-info="personnel_info"
     @personnel-updated="onEditModalSuccess"
@@ -75,7 +75,7 @@
 
 
     <div
-      v-if="show_personnel"
+      v-if="personnelInfoLoaded"
       class="container"
     >
       <div class="row">
@@ -89,7 +89,7 @@
 
         <div class="col-md-8 pt-3 d-flex flex-column align-items-start">
           <h6># {{ personnel_info.pers_number }}</h6>
-          <h4>{{ personnel_full_name }}</h4>
+          <h4>{{ personnelFullName }}</h4>
           <table class="mt-4 table table-borderless">
             <tbody>
               <tr>
@@ -133,6 +133,7 @@
     import AppFileUpload from '@/components/AppFileUpload'
     import PersonnelAddEditModal from '@/components/PersonnelAddEditModal'
     import { getPersonnelList, getPersonnelRecord, updatePersonnelRecord } from '@/api/personnel.api'
+    import { fullName, nameWithInitials } from '@/helpers/names'
 
     export default {
         components: {
@@ -154,25 +155,22 @@
         }),
 
         computed : {
-            show_personnel () {
+            personnelInfoLoaded () {
               return this.personnel_info && 0 !== Object.keys(this.personnel_info).length
             },
-            personnel_full_name () {
-                return (
-                    [this.personnel_info.second_name, this.personnel_info.first_name, this.personnel_info.father_name].filter(Boolean).join(' ')
-                )
+            personnelNameWithInitials () {
+              if (!this.personnelInfoLoaded) {
+                  return ''
+              } else {
+                return nameWithInitials(this.personnel_info.second_name, this.personnel_info.first_name, this.personnel_info.father_name)
+              }
             },
-            personnel_name_with_initials () {
-                if (0 === Object.keys(this.personnel_info).length) {
-                    return ''
-                }
-
-                let result = this.personnel_info.second_name
-                        + ' ' + this.personnel_info.first_name.charAt(0) + '.'
-                if (this.personnel_info.father_name) {
-                    result += this.personnel_info.father_name.charAt(0) + '.'
-                }
-                return result
+            personnelFullName () {
+              if (!this.personnelInfoLoaded) {
+                  return ''
+              } else {
+                return fullName(this.personnel_info.second_name, this.personnel_info.first_name, this.personnel_info.father_name)
+              }
             }
         },
 
@@ -255,7 +253,7 @@
                 await this.fetchPersonnelInfo()
                 this.$notify({
                     type : 'success',
-                    title : `Работник ${this.personnel_name_with_initials} обновлен!`
+                    title : `Работник ${this.personnelNameWithInitials} обновлен!`
                 })
             },
             async onImageUploaded(fileId) {

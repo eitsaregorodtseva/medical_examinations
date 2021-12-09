@@ -7,13 +7,12 @@
   </q-inner-loading>
   <div
     v-if="dataLoaded"
-    class="container"
+    class="container-fluid"
   >
     <div class="row">
       <div class="col-xl-6">
         <div
-          id="pers_data"
-          class="container"
+          class="container-fluid"
         >
           <div class="row">
             <div
@@ -21,12 +20,12 @@
               class="col-md-3"
             />
             <div
-              id="pers_data_txt"
-              class="col-md-3"
+              class="col"
+              style="min-width: 300px"
             >
               <div class="d-flex flex-column">
                 <div class="h4">
-                  {{ fullName }}
+                  {{ personnelFullName }}
                 </div>
                 <div class="m-1">
                   Пол: {{ exam_data.gender }}
@@ -36,70 +35,61 @@
                 </div>
               </div>
             </div>
-            <q-card class="col-md-3 mt-2 p-2 d-flex flex-column" v-if="exam_data.admittance !== null">
-              <q-badge class="align-self-center" v-if="exam_data.admittance" color="positive" text-color="black">Допущен</q-badge>
-              <q-badge class="align-self-center" v-if="!exam_data.admittance" color="negative" text-color="black">Не допущен</q-badge>
-              <div class="mt-3">Медработник: {{ medNameWithInitials }} </div>
-              <div v-if="!exam_data.admittance" class="mt-3"> {{ parsedVerdictsList }} </div>
+            <q-card
+              v-if="exam_data.admittance !== null"
+              class="col-md-4 mt-2 p-2 d-flex flex-column"
+            >
+              <h6 class="align-self-center">Вердикт</h6>
+              <q-separator />
+              <div class="mt-2">
+                <span> Автоматический: </span>
+                <span>
+                  <q-badge
+                    v-if="exam_data.auto_admittance === true"
+                    outline
+                    color="positive"
+                  >
+                    Допущен
+                  </q-badge>
+                </span>
+                <span>
+                  <q-badge
+                    v-if="exam_data.auto_admittance === false"
+                    outline
+                    color="negative"
+                  >
+                    Не допущен
+                  </q-badge>
+                </span>
+              </div>
+              <div class="mt-3">
+                Медработник <strong> {{ medNameWithInitials }} </strong> :
+                <q-badge
+                  v-if="exam_data.admittance"
+                  color="positive"
+                  text-color="white"
+                >
+                  Допущен
+                </q-badge>
+                <q-badge
+                  v-if="!exam_data.admittance"
+                  color="negative"
+                  text-color="white"
+                >
+                  Не допущен
+                </q-badge>
+              </div>
+              <div
+                v-if="!exam_data.admittance"
+                class="mt-3"
+              >
+                {{ parsedVerdictsList }}
+              </div>
             </q-card>
           </div>
         </div>
         <div class="mt-4 p-2 d-flex flex-column align-items-center">
-          <div class="fs-4">
-            Данные приборов
-          </div>
-          <table class="table p-2">
-            <thead class="text-dark">
-              <tr>
-                <th scope="col">
-                  Параметр
-                </th>
-                <th scope="col">
-                  Значение
-                </th>
-                <th scope="col">
-                  Норма
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr :class="exam_data.pressure_upper >= 110 && exam_data.pressure_upper <= 130 ? 'input_normal' : 'app_error'">
-                <td>Верхнее артериальное давление</td>
-                <td class="right_col">
-                  {{ exam_data.pressure_upper }}
-                </td>
-                <td>110 - 130</td>
-              </tr>
-              <tr :class="exam_data.pressure_lower >= 70 && exam_data.pressure_lower <= 85 ? 'input_normal' : 'app_error'">
-                <td>Нижнее артериальное давление</td>
-                <td class="right_col">
-                  {{ exam_data.pressure_lower }}
-                </td>
-                <td> 70 - 85</td>
-              </tr>
-              <tr :class="exam_data.heart_rate >= 60 && exam_data.heart_rate <= 80 ? 'input_normal' : 'app_error'">
-                <td>Пульс</td>
-                <td class="right_col">
-                  {{ exam_data.heart_rate }}
-                </td>
-                <td>60 - 80</td>
-              </tr>
-              <tr :class="exam_data.alcohol * 100 <= 16 ? 'input_normal' : 'app_error'">
-                <td>Уровень алкоголя</td>
-                <td class="right_col">
-                  {{ exam_data.alcohol }}
-                </td>
-                <td> {{ '< 0.16' }}</td>
-              </tr>
-              <tr :class="exam_data.temperature * 10 >= 359 && exam_data.temperature * 10 <= 372 ? 'input_normal' : 'app_error'">
-                <td>Температура тела</td>
-                <td class="right_col">
-                  {{ exam_data.temperature.toPrecision(3) }}
-                </td>
-                <td>35.9 - 37.2</td>
-              </tr>
-            </tbody>
-          </table>
+          <sensor-data-table :exam-data="exam_data" />
           <button
             id="hist_btn"
             class="btn_normal"
@@ -108,7 +98,7 @@
             data-bs-target="#collapse"
             aria-expanded="false"
             aria-controls="collapse"
-            @click="clc"
+            @click="onHistoryButtonClicked"
           >
             Посмотреть историю
           </button>
@@ -120,8 +110,8 @@
           class="container"
         />
         <div
-          id="notions"
-          class="container"
+          class="container mt-2"
+          style="min-height: 60px"
         >
           <div class="row">
             <span class="fs-4">Жалобы</span>
@@ -130,9 +120,29 @@
         </div>
         <div
           v-if="exam_data.admittance === null"
-          id="buttns"
-          class="container"
+          class="container mt-4"
         >
+          <q-card
+            class="mb-3 p-2"
+          >
+            <span class="p-2"> Автоматический вердикт: </span>
+            <span>
+              <q-badge
+                v-if="exam_data.auto_admittance === true"
+                color="positive"
+              >
+                Допущен
+              </q-badge>
+            </span>
+            <span>
+              <q-badge
+                v-if="exam_data.auto_admittance === false"
+                color="negative"
+              >
+                Не допущен
+              </q-badge>
+            </span>
+          </q-card>
           <div class="d-flex justify-content-around">
             <button
               id="reject"
@@ -254,47 +264,84 @@
     </div>
     <div
       id="collapse"
-      class="collapse collapsing"
+      class="collapse collapsing mt-3"
     >
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-xl-6">
-            <chart :options="sys_dia_opt" />
+      <q-tabs
+        v-model="active_history_tab"
+        dense
+        active-color="primary"
+        indicator-color="primary"
+        align="justify"
+        narrow-indicator
+      >
+        <q-tab
+          name="table"
+          label="Таблица"
+        />
+        <q-tab
+          name="charts"
+          label="Графики"
+        />
+      </q-tabs>
+      <q-separator />
+      <q-tab-panels
+        v-model="active_history_tab"
+        animated
+      >
+        <q-tab-panel name="table">
+          <exam-data-history-table
+            v-if="dataLoaded"
+            :exams="exam_hist"
+            height="90vh"
+          />
+        </q-tab-panel>
+        <q-tab-panel name="charts">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-xl-6">
+                <chart :options="sys_dia_opt" />
+              </div>
+              <div class="col-xl-6">
+                <chart :options="pulse_opt" />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl-6">
+                <chart :options="temp_opt" />
+              </div>
+              <div class="col-xl-6">
+                <chart :options="alc_opt" />
+              </div>
+            </div>
           </div>
-          <div class="col-xl-6">
-            <chart :options="pulse_opt" />
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-xl-6">
-            <chart :options="temp_opt" />
-          </div>
-          <div class="col-xl-6">
-            <chart :options="alc_opt" />
-          </div>
-        </div>
-      </div>
+        </q-tab-panel>
+      </q-tab-panels>
     </div>
   </div>
 </template>
 
 <script>
-import Chart from '@/components/Chart.vue'
+import Chart from '@/components/ExamData/Chart.vue'
+import SensorDataTable from '@/components/ExamData/SensorDataTable.vue'
+import ExamDataHistoryTable from '@/components/ExamData/ExamDataHistoryTable.vue'
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.min.js";
-import sys_dia_opt from '@/components/options/sys_dia'
-import pulse_opt from '@/components/options/pulse'
-import temp_opt from '@/components/options/temp'
-import alc_opt from '@/components/options/alc'
+import sys_dia_opt from '@/components/ExamData/options/sys_dia'
+import pulse_opt from '@/components/ExamData/options/pulse'
+import temp_opt from '@/components/ExamData/options/temp'
+import alc_opt from '@/components/ExamData/options/alc'
 import { getVerdictList,
     getExamData,
     getExamsHistoryForPersonnel,
     postVerdict, } from '@/api/exams.api'
+import { fullName } from '@/helpers/names'
 
 export default {
 
     components: {
-        Chart
+        Chart,
+        ExamDataHistoryTable,
+        SensorDataTable,
     },
     data() {
             return {
@@ -303,13 +350,14 @@ export default {
                 pulse_opt,
                 temp_opt,
                 alc_opt,
-                exam_data: null,
+                exam_data: {},
                 exam_hist: {},
                 checked: [],
                 comment_13: '',
                 checked_13: false,
                 user_id: sessionStorage.getItem('user_id'),
                 exam_id: sessionStorage.getItem('exam_id'),
+                active_history_tab: "table"
         }
     },
     computed : {
@@ -323,11 +371,11 @@ export default {
                 return ''
             }
         },
-        fullName () {
-            if (this.exam_data && 0 !== Object.keys(this.exam_data).length) {
-                return [this.exam_data.second_name, this.exam_data.first_name, this.exam_data.father_name].filter(Boolean).join(' ')
+        personnelFullName () {
+            if (!this.dataLoaded) {
+              return ''
             } else {
-                return ''
+              return fullName(this.exam_data.second_name, this.exam_data.first_name, this.exam_data.father_name)
             }
         },
         medNameWithInitials () {
@@ -364,7 +412,7 @@ export default {
         this.getdata()
     },
     methods: {
-        clc() {
+        onHistoryButtonClicked() {
             let myCollapsible = document.getElementById('collapse');
             myCollapsible.addEventListener('shown.bs.collapse', function () {
                 this.scrollIntoView();
@@ -396,10 +444,10 @@ export default {
         async getdata() {
             try {
               const exam_data = await getExamData(this.exam_id, this.user_id);
-              const exam_hist = await getExamsHistoryForPersonnel(this.user_id, exam_data.pers_id);
+              const exam_hist = await getExamsHistoryForPersonnel(this.user_id, exam_data.data.pers_id);
               this.is_requested = true;
               this.exam_data = exam_data.data;
-              this.exam_hist = exam_hist;
+              this.exam_hist = exam_hist.data;
             } catch (error) {
               console.log(error);
             }
@@ -434,31 +482,10 @@ button {
     border-radius: 50px;
 }
 
-.container {
-    padding: 0;
-}
-
 #player {
     width: 640px;
     height: 360px;
     background-color: darkgrey;
-}
-
-#notions {
-    margin-top: 40px;
-    margin-left: 10px;
-    width: 640px;
-    height: 100px;
-}
-
-#buttns {
-    margin-top: 25px;
-    height: 100px;
-}
-
-#pers_data_txt {
-    width: 300px;
-    height: 200px;
 }
 
 #img {
