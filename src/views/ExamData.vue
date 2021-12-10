@@ -105,9 +105,9 @@
         </div>
       </div>
       <div class="col-xl-6">
-        <div
-          id="player"
-          class="container"
+        <video-players
+          :source1="'https://stats.auditory.ru/' + (exam_data.video1 || '1') + '.mp4'"
+          :source2="'https://stats.auditory.ru/' + (exam_data.video2 || '2') + '.mp4'"
         />
         <div
           class="container mt-2"
@@ -335,6 +335,7 @@ import { getVerdictList,
     getExamsHistoryForPersonnel,
     postVerdict, } from '@/api/exams.api'
 import { fullName } from '@/helpers/names'
+import VideoPlayers from '@/components/ExamData/VideoPlayers.vue'
 
 export default {
 
@@ -342,6 +343,7 @@ export default {
         Chart,
         ExamDataHistoryTable,
         SensorDataTable,
+        VideoPlayers,
     },
     data() {
             return {
