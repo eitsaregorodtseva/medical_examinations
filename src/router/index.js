@@ -88,7 +88,8 @@ const routes = [
     meta : {
       permittedRoles : [
         Role.Admin,
-        Role.Dispatcher
+        Role.Dispatcher,
+        Role.MedWorker
       ]
     }
   }
