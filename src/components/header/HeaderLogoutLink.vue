@@ -1,13 +1,12 @@
 <template>
-  <a
+  <q-btn
     v-if="userIsLoggedIn"
-    href="/auth"
-    class="flex-shrink-1 d-flex align-items-center"
+    no-caps
+    flat
+    rounded
+    label="Выйти"
     @click="logOut"
-  >
-    <div class="p-1">Выход</div>
-    <i class="fs-5 bi bi-box-arrow-right" />
-  </a>
+  />
 </template>
 
 <script>
@@ -19,7 +18,8 @@ computed: {
 },
 methods : {
     logOut() {
-        sessionStorage.removeItem('user_id')
+        sessionStorage.clear()
+        this.$router.push('/auth');
     }
 }
 }

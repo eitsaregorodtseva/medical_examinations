@@ -1,18 +1,19 @@
 <template>
-  <div class="d-flex align-items-center">
-    <a href="/"><img
-      id="logo"
-      src="@/assets/logo.png"
-    ></a>
-    <a
-      href="/"
+  <q-avatar
+    color="dark"
+    text-color="white"
+    icon="medical_services"
+    class="cursor-pointer"
+    @click="$router.push('/')"
+  />
+  <q-toolbar-title>
+    <router-link
+      to="/"
       class="text-decoration-none"
     >
-      <div class="fw-bold">
-        Медосмотры
-      </div>
-    </a>
-  </div> 
+      Медосмотры
+    </router-link>
+  </q-toolbar-title>
 </template>
 
 <script>

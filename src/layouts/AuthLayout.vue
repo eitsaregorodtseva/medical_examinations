@@ -3,14 +3,12 @@
     <q-layout view="hHh lpr lFf" class="q-pa-md">
       <q-header class="bg-white q-pa-xs q-gutter-xs" style="color: inherit">
         <q-toolbar>
-          <q-btn flat round dense icon="menu" class="q-mr-sm" @click="showSidebar = !showSidebar"/>
           <header-logo />
           <header-logout-link />
         </q-toolbar>
       </q-header>
 
       <q-page-container>
-        <navigation-sidebar v-model="showSidebar"  />
         <router-view />
       </q-page-container>
     </q-layout>
@@ -20,12 +18,10 @@
 <script>
 import HeaderLogo from '@/components/header/HeaderLogo.vue'
 import HeaderLogoutLink from '@/components/header/HeaderLogoutLink.vue'
-import NavigationSidebar from '@/components/NavigationSidebar.vue'
 export default {
     components: {
         HeaderLogo,
         HeaderLogoutLink,
-        NavigationSidebar,
     },
     data () { return {
       showSidebar : true

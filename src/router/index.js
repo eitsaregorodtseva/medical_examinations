@@ -11,12 +11,8 @@ const routes = [
       let role = sessionStorage.getItem('user_role')
       if (!role) {
         return '/auth'
-      } else if (role === Role.MedWorker) {
-        return '/expect_patient'
-      } else if (role === Role.Admin) {
-        return '/admin'
-      } else if (role === Role.Dispatcher) {
-        return '/admin'
+      } else {
+        return '/exams_history'
       }
     }
   },
@@ -24,16 +20,8 @@ const routes = [
     path: '/auth',
     name: 'Auth',
     component: () => import('../views/Auth.vue'),
-  },
-  {
-    path: '/admin',
-    name: 'AdminHome',
-    component: () => import('../views/AdminHome.vue'),
-    meta : {
-      permittedRoles : [
-        Role.Admin,
-        Role.Dispatcher
-      ]
+    meta :{
+      layout : 'auth'
     }
   },
   {
@@ -41,6 +29,7 @@ const routes = [
     name: 'DigitalSignature',
     component: () => import('../views/DigitalSignature.vue'),
     meta : {
+      layout : 'auth',
       permittedRoles : [
         Role.MedWorker
       ]
@@ -101,7 +90,7 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  if (!sessionStorage.getItem('user_id') && to.path !== '/auth') {
+  if (!sessionStorage.getItem('full_auth') && !(to.path === '/auth' || to.path === '/dig_sig')) {
     // the user is not logged in, redirect to auth page
     next({ name: 'Auth', query: { returnUrl: to.path } })
   } else if (to.meta.permittedRoles) {

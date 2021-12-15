@@ -34,16 +34,6 @@
           />
         </q-td>
       </template>
-      <template #body-cell-name="props">
-        <q-td :props="props">
-          <a
-            :href="'/personnel/' + props.row.pers_id"
-            @click.stop=""
-          >
-            {{ props.value }}
-          </a>
-        </q-td>
-      </template>
     </q-table>
 
     <q-dialog
