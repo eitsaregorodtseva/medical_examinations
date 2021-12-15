@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-md q-gutter-sm">
+  <!-- <div class="q-pa-md q-gutter-sm"> -->
     <q-table
       class="exams-table"
       title="Осмотры"
@@ -52,12 +52,12 @@
       </template>
       <template #body-cell-name="props">
         <q-td :props="props">
-          <a
-            :href="'/personnel/' + props.row.pers_id"
+          <router-link
+            :to="'/personnel/' + props.row.pers_id"
             @click.stop=""
           >
             {{ props.value }}
-          </a>
+          </router-link>
         </q-td>
       </template>
     </q-table>
@@ -85,7 +85,7 @@
         <exam-data />
       </q-card>
     </q-dialog>
-  </div>
+  <!-- </div> -->
 </template>
 
 <script>

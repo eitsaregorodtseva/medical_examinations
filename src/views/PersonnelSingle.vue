@@ -26,7 +26,7 @@
         style="min-width: 33px; writing-mode: vertical-lr; text-orientation: upright; text-decoration: none;"
       >
         <i class="bi bi-list fs-4 mt-2" />
-        <span class="fs-6 flex-fill text-center">Водители</span>
+        <span class="fs-6 flex-fill text-center">Работники</span>
       </a>
 
       <div
@@ -52,7 +52,7 @@
                 <i class="bi bi-arrow-90deg-left" />
                 <div class="p-1">Назад к списку</div>
               </a> -->
-              <span class=" w-100 text-center fs-6 fw-bold p-1">Водители</span>
+              <span class=" w-100 text-center fs-6 fw-bold p-1">Работники</span>
               <button
                 class="btn_normal p-1"
                 data-bs-toggle="modal"

@@ -88,6 +88,7 @@ export default {
                 if (response.data.role === Role.MedWorker) {
                   this.$router.push('/dig_sig')
                 } else {
+                  sessionStorage.setItem('full_auth', true);
                   this.$router.push(this.returnUrl || '/')
                 }
 

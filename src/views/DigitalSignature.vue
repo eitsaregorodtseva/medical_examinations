@@ -33,7 +33,9 @@ export default {
             this.$router.push('/auth');
         },
         clc() {
-            this.$router.push('/expect_patient');
+            // TODO: accept auth only after digital signature
+            sessionStorage.setItem('full_auth', true);
+            this.$router.push('/');
         }
     }
 }
