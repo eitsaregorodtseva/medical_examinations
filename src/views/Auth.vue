@@ -85,6 +85,7 @@ export default {
                 sessionStorage.setItem('user_id', response.data.id);
                 sessionStorage.setItem('user_role', response.data.role);
                 sessionStorage.setItem('user_organization_id', response.data.organization_id);
+                sessionStorage.setItem('user_el_signature', response.data.el_signature);
                 if (response.data.role === Role.MedWorker) {
                   this.$router.push('/dig_sig')
                 } else {
