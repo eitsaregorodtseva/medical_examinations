@@ -7,6 +7,7 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "@aktivco/rutoken-plugin": "^1.0.9",
     "@kyvg/vue3-notification": "^2.3.4",
     "@quasar/extras": "^1.12.2",
     "axios": "^0.21.1",
