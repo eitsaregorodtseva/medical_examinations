@@ -1,7 +1,6 @@
 <template>
-  <main>
     <q-layout view="hHh lpr lFf" class="q-pa-md">
-      <q-header class="bg-white q-pa-xs q-gutter-xs" style="color: inherit">
+      <q-header class="bg-white q-pa-xs" style="color: inherit">
         <q-toolbar>
           <q-btn flat round dense icon="menu" class="q-mr-sm" @click="showSidebar = !showSidebar"/>
           <header-logo />
@@ -10,11 +9,12 @@
       </q-header>
 
       <q-page-container>
-        <navigation-sidebar v-model="showSidebar"  />
-        <router-view />
+        <navigation-sidebar v-model="showSidebar" />
+          <q-page>
+            <router-view />
+          </q-page>
       </q-page-container>
     </q-layout>
-  </main>
 </template>
 
 <script>

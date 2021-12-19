@@ -1,18 +1,18 @@
 <template>
-  <main>
-    <q-layout view="hHh lpr lFf" class="q-pa-md">
-      <q-header class="bg-white q-pa-xs q-gutter-xs" style="color: inherit">
-        <q-toolbar>
-          <header-logo />
-          <header-logout-link />
-        </q-toolbar>
-      </q-header>
+  <q-layout view="hHh lpr lFf" class="q-pa-md">
+    <q-header class="bg-white q-pa-xs q-gutter-xs" style="color: inherit">
+      <q-toolbar>
+        <header-logo />
+        <header-logout-link />
+      </q-toolbar>
+    </q-header>
 
-      <q-page-container>
+    <q-page-container>
+      <q-page>
         <router-view />
-      </q-page-container>
-    </q-layout>
-  </main>
+      </q-page>
+    </q-page-container>
+  </q-layout>
 </template>
 
 <script>
