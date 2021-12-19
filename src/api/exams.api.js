@@ -1,5 +1,8 @@
 import { webAPI } from "./services";
 
+const getQueueSize = user_id => webAPI.get('/queue_size',
+    { params : {user_id} });
+
 const getNextPatient = user_id => webAPI.get('/get_patient',
     { params : {user_id} });
 
@@ -21,6 +24,7 @@ const postVerdict = (exam_id, verd_list, user_id, verdict_comment = null) => web
     verd_list, { params: {user_id, verdict_comment} });
 
 export {
+    getQueueSize,
     getNextPatient,
     getVerdictList,
     getExamData,

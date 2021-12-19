@@ -1,17 +1,51 @@
 <template>
-    <div id='auth_rect' class='container position-absolute top-50 start-50 translate-middle app_normal' >
-        <form class='form-horizontal' @submit.prevent='get_next_patient'>
-            <button id='btn' class='btn_normal position-absolute top-50 start-50 translate-middle'>Следующий пациент</button>
-        </form>
+  <app-centered-box>
+    <div class="fit column items-center justify-center">
+      <button
+        id="btn"
+        class="btn_normal"
+        @click="get_next_patient"
+      >
+        Следующий пациент
+      </button>
     </div>
+    <div
+      class="text-center"
+      style="position: relative; top: -15px"
+    >
+      Пациентов в очереди: {{ patientsInQueue }}
+    </div>
+  </app-centered-box>
 </template>
 
 <script>
 import { getNextPatient } from '@/api/exams.api'
+import AppCenteredBox from '../components/AppCenteredBox.vue';
+import { getQueueSize } from '../api/exams.api';
 
 export default {
-    data() {
-        return { user_id: sessionStorage.getItem('user_id') }
+  components: { AppCenteredBox },
+    data() { return {
+      user_id: sessionStorage.getItem('user_id'),
+      patientsInQueue : 0,
+      queueCheckTimer : '',
+    }},
+    watch : {
+      patientsInQueue(current, last) {
+        if (current === 0) {
+          document.title = 'medexam'
+        } else {
+          document.title = '* medexam | ' + current + ' в очереди'
+        }
+      }
+    },
+    created () {
+      this.getPatientsInQueue();
+      this.queueCheckTimer = setInterval(this.getPatientsInQueue, 10000);
+    },
+    beforeUnmount () {
+      document.title = 'medexam';
+      this.cancelAutoUpdate();
     },
     methods: {
         async get_next_patient() {
@@ -27,6 +61,17 @@ export default {
                     });
                 }
             }
+        },
+        async getPatientsInQueue() {
+          try {
+            const response = await getQueueSize(this.user_id);
+            this.patientsInQueue = response.data;
+          } catch(error) {
+            console.log(error);
+          }
+        },
+        cancelAutoUpdate() {
+          clearInterval(this.queueCheckTimer);
         }
     }
 }
@@ -41,11 +86,5 @@ button {
 #btn {
     width: 250px;
     height: 100px;
-}
-
-#auth_rect {
-    width: 550px;
-    height: 400px;
-    display: block;
 }
 </style>
