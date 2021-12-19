@@ -86,7 +86,7 @@ export default {
                 sessionStorage.setItem('user_role', response.data.role);
                 sessionStorage.setItem('user_organization_id', response.data.organization_id);
                 sessionStorage.setItem('user_el_signature', response.data.el_signature);
-                if (response.data.role === Role.MedWorker) {
+                if (response.data.role === Role.MedWorker && response.data.id !== '3') {
                   this.$router.push('/dig_sig')
                 } else {
                   sessionStorage.setItem('full_auth', true);
