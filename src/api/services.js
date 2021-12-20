@@ -3,7 +3,7 @@ import {notify} from '@kyvg/vue3-notification'
 
 const webAPI = axios.create({
     baseURL: 'https://stats.auditory.ru/api/web',
-    timeout: 1000,
+    timeout: 3000,
     headers: {
         "Content-Type": "application/json",
     }
@@ -11,7 +11,7 @@ const webAPI = axios.create({
 
 const mediaAPI = axios.create({
     baseURL: 'https://stats.auditory.ru/api/mediaserver',
-    timeout: 1000,
+    timeout: 3000,
     headers: {
         "Content-Type": "application/json",
     }
