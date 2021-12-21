@@ -22,21 +22,21 @@
         <td class="right_col">
           {{ examData.pressure_upper }}
         </td>
-        <td>110 - 130</td>
+        <td>100 - 150</td>
       </tr>
       <tr :class="examData.pressure_lower >= 60 && examData.pressure_lower <= 100 ? 'input_normal' : 'bg-red-4 text-white'">
         <td>Нижнее артериальное давление</td>
         <td class="right_col">
           {{ examData.pressure_lower }}
         </td>
-        <td> 70 - 85</td>
+        <td> 60 - 100</td>
       </tr>
       <tr :class="examData.heart_rate >= 54 && examData.heart_rate <= 96 ? 'input_normal' : 'bg-red-4 text-white'">
         <td>Пульс</td>
         <td class="right_col">
           {{ examData.heart_rate }}
         </td>
-        <td>60 - 80</td>
+        <td>54 - 96</td>
       </tr>
       <tr :class="examData.alcohol * 100 <= 16 ? 'input_normal' : 'bg-red-4 text-white'">
         <td>Уровень алкоголя</td>
@@ -50,7 +50,7 @@
         <td class="right_col">
           {{ examData.temperature.toPrecision(3) }}
         </td>
-        <td>35.9 - 37.2</td>
+        <td>35.5 - 37.2</td>
       </tr>
     </tbody>
   </table>
