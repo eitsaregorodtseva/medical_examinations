@@ -19,9 +19,9 @@
 </template>
 
 <script>
-import { getNextPatient } from '@/api/exams.api'
+import { getNextPatient, getQueueSize } from '@/api/exams.api'
 import AppCenteredBox from '../components/AppCenteredBox.vue';
-import { getQueueSize } from '../api/exams.api';
+import notificationSound from '@/assets/sounds/done-for-you-612.mp3';
 
 export default {
   components: { AppCenteredBox },
@@ -35,6 +35,7 @@ export default {
         if (current === 0) {
           document.title = 'medexam'
         } else {
+          this.playSound(notificationSound)
           document.title = '* medexam | ' + current + ' в очереди'
         }
       }
@@ -72,6 +73,10 @@ export default {
         },
         cancelAutoUpdate() {
           clearInterval(this.queueCheckTimer);
+        },
+        playSound(url) {
+          const audio = new Audio(url);
+          audio.play(notificationSound);
         }
     }
 }
