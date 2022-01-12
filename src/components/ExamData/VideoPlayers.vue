@@ -6,7 +6,7 @@
       controls
       autoplay
       muted
-      class="col-xxl mt-2"
+      class="col-md mt-2"
       @seeked="syncVideoPlayers('video1','video2')"
     />
     <video
@@ -15,7 +15,7 @@
       controls
       autoplay
       muted
-      class="col-xxl mt-2"
+      class="col-md mt-2"
       @seeked="syncVideoPlayers('video2','video1')"
     />
   </div>
