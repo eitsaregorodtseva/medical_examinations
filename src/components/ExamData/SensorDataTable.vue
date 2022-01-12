@@ -1,7 +1,4 @@
 <template>
-  <div class="fs-4">
-    Данные приборов
-  </div>
   <table class="table p-2">
     <thead class="text-dark">
       <tr>

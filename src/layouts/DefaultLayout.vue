@@ -1,5 +1,5 @@
 <template>
-    <q-layout view="hHh lpr lFf" class="q-pa-md">
+    <q-layout view="hHh LpR lfr" class="q-pa-md">
       <q-header class="bg-white q-pa-xs" style="color: inherit">
         <q-toolbar>
           <q-btn flat round dense icon="menu" class="q-mr-sm" @click="showSidebar = !showSidebar"/>
@@ -10,9 +10,7 @@
 
       <q-page-container>
         <navigation-sidebar v-model="showSidebar" />
-          <q-page>
             <router-view />
-          </q-page>
       </q-page-container>
     </q-layout>
 </template>
