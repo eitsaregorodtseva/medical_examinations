@@ -1,19 +1,20 @@
 <template>
-  <q-inner-loading
-    :showing="loading"
-    :label="loadingLabel"
-    label-class="h6"
-    size="72px"
-  />
-  <plugin-install
-    v-if="currentStep === 'plugin-install'"
-    @ok="onPluginFound"
-  />
-  <device-connect
-    v-if="currentStep === 'device-connect'"
-    @ok="onDeviceConneced"
-  />
-  <q-inner-loading />
+  <q-page>
+    <q-inner-loading
+      :showing="loading"
+      :label="loadingLabel"
+      label-class="h6"
+      size="72px"
+    />
+    <plugin-install
+      v-if="currentStep === 'plugin-install'"
+      @ok="onPluginFound"
+    />
+    <device-connect
+      v-if="currentStep === 'device-connect'"
+      @ok="onDeviceConneced"
+    />
+  </q-page>
 </template>
 
 <script>

@@ -1,21 +1,23 @@
 <template>
-  <app-centered-box>
-    <div class="fit column items-center justify-center">
-      <button
-        id="btn"
-        class="btn_normal"
-        @click="get_next_patient"
+  <q-page>
+    <app-centered-box>
+      <div class="fit column items-center justify-center">
+        <button
+          id="btn"
+          class="btn_normal"
+          @click="get_next_patient"
+        >
+          Следующий пациент
+        </button>
+      </div>
+      <div
+        class="text-center"
+        style="position: relative; top: -15px"
       >
-        Следующий пациент
-      </button>
-    </div>
-    <div
-      class="text-center"
-      style="position: relative; top: -15px"
-    >
-      Пациентов в очереди: {{ patientsInQueue }}
-    </div>
-  </app-centered-box>
+        Пациентов в очереди: {{ patientsInQueue }}
+      </div>
+    </app-centered-box>
+  </q-page>
 </template>
 
 <script>

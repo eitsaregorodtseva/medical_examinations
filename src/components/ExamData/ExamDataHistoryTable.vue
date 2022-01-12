@@ -3,7 +3,6 @@
     <q-table
       dense
       class="exams-table"
-      title="Предыдущие осмотры"
       :rows="exams"
       :columns="columns"
       row-key="exam_datetime"

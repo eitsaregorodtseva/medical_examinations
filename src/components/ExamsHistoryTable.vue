@@ -23,7 +23,7 @@
           <q-badge
             outline
             v-if="props.row.auto_admittance === true"
-            color="green-13"
+            color="positive"
             :label="props.value"
           />
           <q-badge

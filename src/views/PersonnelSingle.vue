@@ -1,129 +1,131 @@
 <template>
-  <PersonnelAddEditModal
-    id="addModal"
-    title="Новый водитель"
-    @personnel-added="onAddModalSuccess"
-  />
-  <PersonnelAddEditModal
-    v-if="personnelInfoLoaded"
-    id="editModal"
-    :title="'Редактировать ' + personnelNameWithInitials"
-    :is-editing="true"
-    :init-personnel-info="personnel_info"
-    @personnel-updated="onEditModalSuccess"
-  />
+  <q-page>
+    <PersonnelAddEditModal
+      id="addModal"
+      title="Новый водитель"
+      @personnel-added="onAddModalSuccess"
+    />
+    <PersonnelAddEditModal
+      v-if="personnelInfoLoaded"
+      id="editModal"
+      :title="'Редактировать ' + personnelNameWithInitials"
+      :is-editing="true"
+      :init-personnel-info="personnel_info"
+      @personnel-updated="onEditModalSuccess"
+    />
 
-  <div class="d-flex w-100 h-100">
-    <nav
-      class="col-lg-3 navbar-expand-md d-flex flex-nowrap sticky-top pe-2"
-      style="height: 100vh"
-    >
-      <a
-        class="d-md-none d-flex align-items-center fw-bold app_normal"
-        data-bs-toggle="collapse"
-        href="#personnelSidebar"
-        aria-controls="personnelSidebar"
-        style="min-width: 33px; writing-mode: vertical-lr; text-orientation: upright; text-decoration: none;"
+    <div class="d-flex w-100 h-100">
+      <nav
+        class="col-lg-3 navbar-expand-md d-flex flex-nowrap sticky-top pe-2"
+        style="height: 100vh"
       >
-        <i class="bi bi-list fs-4 mt-2" />
-        <span class="fs-6 flex-fill text-center">Работники</span>
-      </a>
+        <a
+          class="d-md-none d-flex align-items-center fw-bold app_normal"
+          data-bs-toggle="collapse"
+          href="#personnelSidebar"
+          aria-controls="personnelSidebar"
+          style="min-width: 33px; writing-mode: vertical-lr; text-orientation: upright; text-decoration: none;"
+        >
+          <i class="bi bi-list fs-4 mt-2" />
+          <span class="fs-6 flex-fill text-center">Работники</span>
+        </a>
+
+        <div
+          id="personnelSidebar"
+          class="collapse navbar-collapse"
+          aria-labelledby="personnelSidebarLabel"
+        >
+          <div
+            class="d-flex justify-content-evenly w-100 h-100"
+            style="min-width: 263px;"
+          >
+            <AppListGroup
+              :items="personnel_list"
+              :active-item-id="personnelId"
+              class="w-100 h-100"
+              @item-clicked="changePersonnel"
+            >
+              <div class="d-flex align-items-center justify-content-between bg-white">
+                <!-- <a
+                  href="#"
+                  class="flex-shrink-1  d-flex align-items-center"
+                >
+                  <i class="bi bi-arrow-90deg-left" />
+                  <div class="p-1">Назад к списку</div>
+                </a> -->
+                <span class=" w-100 text-center fs-6 fw-bold p-1">Работники</span>
+                <button
+                  class="btn_normal p-1"
+                  data-bs-toggle="modal"
+                  data-bs-target="#addModal"
+                >
+                  Добавить
+                </button>
+              </div>
+            </AppListGroup>
+            <a
+              class="d-md-none h-100 text-center app_normal fs-6"
+              data-bs-toggle="collapse"
+              href="#personnelSidebar"
+              aria-controls="personnelSidebar"
+              style=" writing-mode: vertical-lr;  text-decoration: none;"
+            >Скрыть</a>
+          </div>
+        </div>
+      </nav>
+
 
       <div
-        id="personnelSidebar"
-        class="collapse navbar-collapse"
-        aria-labelledby="personnelSidebarLabel"
+        v-if="personnelInfoLoaded"
+        class="container"
       >
-        <div
-          class="d-flex justify-content-evenly w-100 h-100"
-          style="min-width: 263px;"
-        >
-          <AppListGroup
-            :items="personnel_list"
-            :active-item-id="personnelId"
-            class="w-100 h-100"
-            @item-clicked="changePersonnel"
-          >
-            <div class="d-flex align-items-center justify-content-between bg-white">
-              <!-- <a
-                href="#"
-                class="flex-shrink-1  d-flex align-items-center"
-              >
-                <i class="bi bi-arrow-90deg-left" />
-                <div class="p-1">Назад к списку</div>
-              </a> -->
-              <span class=" w-100 text-center fs-6 fw-bold p-1">Работники</span>
-              <button
-                class="btn_normal p-1"
-                data-bs-toggle="modal"
-                data-bs-target="#addModal"
-              >
-                Добавить
-              </button>
-            </div>
-          </AppListGroup>
-          <a
-            class="d-md-none h-100 text-center app_normal fs-6"
-            data-bs-toggle="collapse"
-            href="#personnelSidebar"
-            aria-controls="personnelSidebar"
-            style=" writing-mode: vertical-lr;  text-decoration: none;"
-          >Скрыть</a>
-        </div>
-      </div>
-    </nav>
+        <div class="row">
+          <div class="col-md-4 d-flex flex-column align-items-center">
+            <AppImage :image-id="personnel_info.photo" />
+            <AppFileUpload @file-uploaded="onImageUploaded">
+              Изменить фото
+            </AppFileUpload>
+          </div>
 
 
-    <div
-      v-if="personnelInfoLoaded"
-      class="container"
-    >
-      <div class="row">
-        <div class="col-md-4 d-flex flex-column align-items-center">
-          <AppImage :image-id="personnel_info.photo" />
-          <AppFileUpload @file-uploaded="onImageUploaded">
-            Изменить фото
-          </AppFileUpload>
-        </div>
-
-
-        <div class="col-md-8 pt-3 d-flex flex-column align-items-start">
-          <h6># {{ personnel_info.pers_number }}</h6>
-          <h4>{{ personnelFullName }}</h4>
-          <table class="mt-4 table table-borderless">
-            <tbody>
-              <tr>
-                <th>Пол:</th>
-                <td>{{ personnel_info.gender }}</td>
-              </tr>
-              <tr>
-                <th>Дата рождения:</th>
-                <td>
-                  {{ $moment(personnel_info.date_of_birth).format('L') }}
-                  <span class="text-nowrap">(возраст: {{ personnel_info.age }})</span>
-                </td>
-              </tr>
-              <tr>
-                <th>Зарегистрирован:</th>
-                <td>{{ $moment(personnel_info.registration_date).format('LLL') }}</td>
-              </tr>
-              <tr>
-                <th>Согласие на обработку данных:</th>
-                <td>{{ personnel_info.processing_consent ? 'Да' : 'Нет' }}</td>
-              </tr>
-            </tbody>
-          </table>
-          <button
-            class="btn_normal m-3 align-self-center"
-            data-bs-toggle="modal"
-            data-bs-target="#editModal"
-          >
-            Редактировать
-          </button>
+          <div class="col-md-8 pt-3 d-flex flex-column align-items-start">
+            <h6># {{ personnel_info.pers_number }}</h6>
+            <h4>{{ personnelFullName }}</h4>
+            <table class="mt-4 table table-borderless">
+              <tbody>
+                <tr>
+                  <th>Пол:</th>
+                  <td>{{ personnel_info.gender }}</td>
+                </tr>
+                <tr>
+                  <th>Дата рождения:</th>
+                  <td>
+                    {{ $moment(personnel_info.date_of_birth).format('L') }}
+                    <span class="text-nowrap">(возраст: {{ personnel_info.age }})</span>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Зарегистрирован:</th>
+                  <td>{{ $moment(personnel_info.registration_date).format('LLL') }}</td>
+                </tr>
+                <tr>
+                  <th>Согласие на обработку данных:</th>
+                  <td>{{ personnel_info.processing_consent ? 'Да' : 'Нет' }}</td>
+                </tr>
+              </tbody>
+            </table>
+            <button
+              class="btn_normal m-3 align-self-center"
+              data-bs-toggle="modal"
+              data-bs-target="#editModal"
+            >
+              Редактировать
+            </button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </q-page>
 </template>
 
 

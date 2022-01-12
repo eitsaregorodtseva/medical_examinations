@@ -1,8 +1,10 @@
 <template>
-  <exams-history-table
-    :exams="examsList"
-    height="90vh"
-  />
+  <q-page>
+    <exams-history-table
+      :exams="examsList"
+      height="90vh"
+    />
+  </q-page>
 </template>
 
 <script>

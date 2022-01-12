@@ -18,7 +18,7 @@
             </div>
         </div>
     </div>
-    <div v-else class="d-flex justify-content-center align-items-center" style="background-color: #d3d3d3; width: 180px; height: 270px;">
+    <div v-else class="d-flex justify-content-center align-items-center" style="background-color: #d3d3d3; width: 180px; height: 180px;">
         <span class="my-auto"> Нет фото </span>
     </div>
 </template>
