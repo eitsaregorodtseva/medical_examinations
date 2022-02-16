@@ -12,6 +12,7 @@
 </template>
 
 <script>
+import {serverURL} from '@/api/services'
 export default {
     emits : {
         fileUploaded : (fileId) => {return true}
@@ -35,7 +36,7 @@ export default {
                     file_name : file.name,
                     file_size : file.size
                 }
-                const url = `https://stats.auditory.ru/api/mediaserver/load_file`
+                const url = serverURL + `/api/mediaserver/load_file`
                 const response = await this.$axios.post(url, params)
                 const results = response.data
                 // On success
@@ -59,7 +60,7 @@ export default {
                 formData.append('file_data', file)
 
                 const last_byte = file.size
-                const url = `https://stats.auditory.ru/api/mediaserver/load_file/${fileId}`
+                const url = serverURL + `/api/mediaserver/load_file/${fileId}`
                 const response = await this.$axios.put(url, formData, {
                     params : { last_byte },
                     headers: { 'Content-Type': 'multipart/form-data'}

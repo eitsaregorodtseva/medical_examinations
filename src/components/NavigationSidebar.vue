@@ -48,6 +48,15 @@ const menuList = [
     link : '/'
   },
   {
+    icon: 'medical_services',
+    label: 'Новые осмотры',
+    separator: false,
+    roles: [
+        Role.MedWorker
+      ],
+    link: '/new_exams'
+  },
+  {
     icon: 'description',
     label: 'История осмотров',
     separator: true,
@@ -57,15 +66,6 @@ const menuList = [
         Role.MedWorker
       ],
     link: '/exams_history'
-  },
-  {
-    icon: 'medical_services',
-    label: 'Перейти к осмотрам',
-    separator: false,
-    roles: [
-        Role.MedWorker
-      ],
-    link: '/expect_patient'
   },
 
   {
