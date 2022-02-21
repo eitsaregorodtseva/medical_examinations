@@ -7,6 +7,7 @@
       :columns="columns"
       row-key="exam_datetime"
       :loading="loading"
+      no-data-label="Похоже, пока новых осмотров нет"
       :wrap-cells="true"
       separator="horizontal"
       :style="{'max-height' : height}"
@@ -59,6 +60,14 @@
             {{ props.value }}
           </router-link>
         </q-td>
+      </template>
+      <template v-slot:no-data>
+        <div class="full-width column flex-center text-accent q-gutter-sm">
+          <q-icon size="2em" name="sentiment_satisfied_alt" />
+          <span>
+            Похоже, пока новых осмотров нет
+          </span>
+        </div>
       </template>
     </q-table>
 
@@ -158,7 +167,7 @@ export default {
   } },
   computed : {
     loading () {
-      return !this.exams || (this.exams.length == 0)
+      return !this.exams //|| (this.exams.length == 0)
     }
   },
   methods : {
