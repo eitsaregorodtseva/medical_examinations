@@ -407,24 +407,24 @@ export default {
               console.log(error);
             }
         },
-        req_form() {
+        async req_form() {
             let verdicts = [];
             for (let i of this.checked)
                 verdicts.push(i);
             if (this.checked_13 || this.comment_13 !== '')
                 verdicts.push(13);
             try {
-                postVerdict(this.exam_id, verdicts, this.user_id, this.comment_13);
-                patchMedworkerInExam(this.exam_id, this.user_id, this.user_id);
+                await postVerdict(this.exam_id, verdicts, this.user_id, this.comment_13);
+                await patchMedworkerInExam(this.exam_id, this.user_id, this.user_id);
                 this.$router.push('/new_exams');
             } catch (error) {
             }
         },
-        admit() {
+        async admit() {
             try {
                 let verdicts = [ 1 ];
-                postVerdict(this.exam_id, verdicts, this.user_id);
-                patchMedworkerInExam(this.exam_id, this.user_id, this.user_id);
+                await postVerdict(this.exam_id, verdicts, this.user_id);
+                await patchMedworkerInExam(this.exam_id, this.user_id, this.user_id);
                 this.$router.push('/new_exams');
             } catch (error) {
             }
