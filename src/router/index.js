@@ -12,7 +12,12 @@ const routes = [
       if (!role) {
         return '/auth'
       } else {
-        return '/exams_history'
+        if (role == Role.MedWorker){
+          return '/new_exams'
+        }
+        else{
+          return '/exams_history'
+        }
       }
     }
   },
@@ -61,9 +66,9 @@ const routes = [
     }
   },
   {
-    path: '/expect_patient',
-    name: 'ExpectPatient',
-    component: () => import('../views/ExpectPatient.vue'),
+    path: '/new_exams',
+    name: 'NewExams',
+    component: () => import('../views/NewExams.vue'),
     meta : {
       permittedRoles : [
         Role.MedWorker
