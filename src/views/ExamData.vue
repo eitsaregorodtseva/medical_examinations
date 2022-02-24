@@ -158,8 +158,8 @@
             </div>
           </div>
           <video-players
-            :source1="'https://stats.auditory.ru/' + (exam_data.video1 || '1') + '.mp4'"
-            :source2="'https://stats.auditory.ru/' + (exam_data.video2 || '2') + '.mp4'"
+            :source1="serverURL + '/' + (exam_data.video1 || '1') + '.mp4'"
+            :source2="serverURL + '/' + (exam_data.video2 || '2') + '.mp4'"
             />
         </div>
       </div>
@@ -307,9 +307,11 @@ import AppImage from '@/components/AppImage'
 import { getVerdictList,
     getExamData,
     getExamsHistoryForPersonnel,
-    postVerdict, } from '@/api/exams.api'
+    postVerdict,
+    patchMedworkerInExam, } from '@/api/exams.api'
 import { fullName } from '@/helpers/names'
 import VideoPlayers from '@/components/ExamData/VideoPlayers.vue'
+import {serverURL} from '@/api/services'
 
 export default {
 
@@ -321,6 +323,7 @@ export default {
     },
     data() {
             return {
+                serverURL: serverURL,
                 verd_list: [],
                 exam_data: {},
                 exam_hist: {},
@@ -404,23 +407,25 @@ export default {
               console.log(error);
             }
         },
-        req_form() {
+        async req_form() {
             let verdicts = [];
             for (let i of this.checked)
                 verdicts.push(i);
             if (this.checked_13 || this.comment_13 !== '')
                 verdicts.push(13);
             try {
-                postVerdict(this.exam_id, verdicts, this.user_id, this.comment_13);
-                this.$router.push('/expect_patient');
+                await postVerdict(this.exam_id, verdicts, this.user_id, this.comment_13);
+                await patchMedworkerInExam(this.exam_id, this.user_id, this.user_id);
+                this.$router.push('/new_exams');
             } catch (error) {
             }
         },
-        admit() {
+        async admit() {
             try {
                 let verdicts = [ 1 ];
-                postVerdict(this.exam_id, verdicts, this.user_id);
-                this.$router.push('/expect_patient');
+                await postVerdict(this.exam_id, verdicts, this.user_id);
+                await patchMedworkerInExam(this.exam_id, this.user_id, this.user_id);
+                this.$router.push('/new_exams');
             } catch (error) {
             }
         }
