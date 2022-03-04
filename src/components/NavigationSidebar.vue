@@ -79,6 +79,16 @@ const menuList = [
     link: '/personnel/1'
   },
   {
+    icon: 'description',
+    label: 'Статистика',
+    separator: false,
+    roles: [
+        Role.Admin,
+        Role.Dispatcher
+      ],
+    link: '/statistics',
+  },
+  {
     icon: 'bi-pc-display-horizontal',
     label: 'Терминалы (скоро)',
     separator: false,
