@@ -262,21 +262,20 @@
 
       <q-tabs
         v-model="active_history_tab"
-        dense
         active-color="primary"
         indicator-color="primary"
         align="justify"
         narrow-indicator
-        content-class="q-pt-md"
+        class="shadow-2 q-mt-md"
+        content-class="text-bold"
       >
         <q-tab
           name="history"
           label="История"
         />
         <q-tab
-          name="med-papers"
-          label="Справки (скоро)"
-          disable
+          name="medpapers"
+          label="Справки"
         />
       </q-tabs>
       <q-separator />
@@ -291,8 +290,8 @@
             height="90vh"
           />
         </q-tab-panel>
-        <q-tab-panel name="med-papers">
-
+        <q-tab-panel name="medpapers">
+          <medpapers-grid :personnel-id="exam_data.pers_id" :user-id="user_id" />
         </q-tab-panel>
       </q-tab-panels>
     </div>
@@ -304,6 +303,7 @@
 import SensorDataTable from '@/components/ExamData/SensorDataTable.vue'
 import ExamDataHistoryTable from '@/components/ExamData/ExamDataHistoryTable.vue'
 import AppImage from '@/components/AppImage'
+import MedpapersGrid from '@/components/Medpapers/MedpapersGrid'
 import { getVerdictList,
     getExamData,
     getExamsHistoryForPersonnel,
@@ -322,6 +322,7 @@ export default {
         SensorDataTable,
         VideoPlayers,
         AppImage,
+        MedpapersGrid,
     },
     data() {
             return {
