@@ -3,6 +3,7 @@ import {notify} from '@kyvg/vue3-notification'
 
 
 const serverURL = 'https://stats.auditory.ru';
+const mediaURL = 'https://stats.auditory.ru';
 
 const webAPI = axios.create({
     baseURL: serverURL + '/api/web',
@@ -66,6 +67,7 @@ mediaAPI.interceptors.response.use(responseInterceptor, errorInterceptor);
 
 export {
     serverURL,
+    mediaURL,
     webAPI,
     mediaAPI
 }
