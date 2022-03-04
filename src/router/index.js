@@ -86,6 +86,17 @@ const routes = [
         Role.MedWorker
       ]
     }
+  },
+  {
+    path: '/statistics',
+    name: 'Statistics',
+    component: () => import('../views/Statistics.vue'),
+    meta: {
+      permittedRoles: [
+        Role.Admin,
+        Role.Dispatcher
+      ]
+    }
   }
 ]
 
