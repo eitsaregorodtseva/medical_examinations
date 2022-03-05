@@ -60,8 +60,7 @@ import TerminalsStatsTable from '@/components/TerminalsStatsTable.vue'
 import { getAllTermsStats } from '@/api/terminals.api.js'
 const columns = [
   { name: 'organization_name', label: 'Организация', align: 'left', field: 'organization_name', sortable: true },
-  { name: 'exams_count', label: 'Кол-во осмотров', align: 'left', field: 'exams_count', sortable: true },
-  { name: 'open_terms', label: 'По терминалам', align: 'left', field: 'open_terms', sortable: true },
+  { name: 'exams_count', label: 'Кол-во осмотров', align: 'center', field: 'exams_count', sortable: true },
 ]
 
 export default {
