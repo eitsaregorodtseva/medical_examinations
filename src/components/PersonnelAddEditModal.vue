@@ -239,6 +239,7 @@ export default {
     methods : {
         populateDataFromStorage() {
             this.user_id = sessionStorage.getItem('user_id')
+            this.user_organization_id = sessionStorage.getItem('user_organization_id')
         },
         closeModal () {
             document.getElementById('closeButton-'+this.uuid).click()
@@ -254,6 +255,8 @@ export default {
         },
         async addPersonnel(){
             try {
+                if (this.user_organization_id !== "null")
+                  this.personnel_info.organization = this.user_organization_id
                 const response = await addPersonnelRecord(this.user_id, this.personnel_info)
                 const results = response.data
                 // On success

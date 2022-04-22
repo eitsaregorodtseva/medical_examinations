@@ -123,6 +123,12 @@
             </button>
           </div>
         </div>
+        <div>
+          <medpapers-grid
+            :personnel-id="personnelId"
+            :user-id="user_id"
+          />
+        </div>
       </div>
     </div>
   </q-page>
@@ -136,16 +142,18 @@
     import PersonnelAddEditModal from '@/components/PersonnelAddEditModal'
     import { getPersonnelList, getPersonnelRecord, updatePersonnelRecord } from '@/api/personnel.api'
     import { fullName, nameWithInitials } from '@/helpers/names'
+    import MedpapersGrid from '@/components/Medpapers/MedpapersGrid.vue'
 
     export default {
         components: {
             AppListGroup,
             AppImage,
             PersonnelAddEditModal,
-            AppFileUpload
+            AppFileUpload,
+            MedpapersGrid
         },
 
-        props : {
+        props: {
             personnelId : Number
         },
 
@@ -153,7 +161,28 @@
             user_id : null,
             user_organization_id: null,
             personnel_info : {},
-            personnel_list : [] // of objects {id, name}
+            personnel_list : [], // of objects {id, name}
+            // medpapersList: [
+            //   {
+            //     id : 5,
+            //     name: 'О состонии здоровья',
+            //     expiration_date: '2022-02-17'
+            //   },
+            //   {
+            //     id : 6,
+            //     name: 'О болезни',
+            //     expiration_date: '2023-05-17'
+            //   },
+            //   {
+            //     id : 71234,
+            //     name: 'О чем-то очень длинном и интересном, но ничего не понятно, и это навсегда',
+            //   },
+            //   {
+            //     id : 8,
+            //     name: 'О болезни',
+            //     expiration_date: '2022-05-17'
+            //   },
+            // ]
         }),
 
         computed : {

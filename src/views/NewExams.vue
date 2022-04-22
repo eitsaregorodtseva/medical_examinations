@@ -10,7 +10,9 @@
 <script>
 import ExamsQueueTable from '@/components/ExamsQueueTable.vue'
 import { getExamsHistoryByVerdict } from '@/api/exams.api.js'
-import notificationSound from '@/assets/sounds/done-for-you-612.mp3';
+// const notificationSound = './sounds/done-for-you-612.mp3';
+const notificationSound = './sounds/bell_notification.wav';
+
 export default {
     components : {
         ExamsQueueTable
@@ -42,6 +44,7 @@ export default {
             }
           }
           if (is_new && !this.isJustLoaded){
+            console.log("New exams found")
             this.playSound(notificationSound)
           }
           if (this.isJustLoaded){
@@ -80,7 +83,7 @@ export default {
         },
         playSound(url) {
           const audio = new Audio(url);
-          audio.play(notificationSound);
+          audio.play();
         }
     }
 }

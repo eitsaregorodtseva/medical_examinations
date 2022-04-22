@@ -27,7 +27,7 @@
                     {{ personnelFullName }}
                   </div>
                   <div>
-                    Организация: ООО "Тесты"
+                    Организация: {{ organization_data.name }}
                   </div>
                   <div>
                     Пол: {{ exam_data.gender }}
@@ -37,9 +37,9 @@
                   </div>
                 </q-card-section>
                 <q-card-section>
-                  Ответственный: Бобков Иван Вячеславович
+                  Ответственный: {{ managerFullName }}
                   <br>
-                  Тел: +7 (915) 013-30-11
+                  Тел: {{ organization_data.manager_phone_number }}
                 </q-card-section>
               </q-card>
             </div>
@@ -262,21 +262,20 @@
 
       <q-tabs
         v-model="active_history_tab"
-        dense
         active-color="primary"
         indicator-color="primary"
         align="justify"
         narrow-indicator
-        content-class="q-pt-md"
+        class="shadow-2 q-mt-md"
+        content-class="text-bold"
       >
         <q-tab
           name="history"
           label="История"
         />
         <q-tab
-          name="med-papers"
-          label="Справки (скоро)"
-          disable
+          name="medpapers"
+          label="Справки"
         />
       </q-tabs>
       <q-separator />
@@ -291,8 +290,8 @@
             height="90vh"
           />
         </q-tab-panel>
-        <q-tab-panel name="med-papers">
-
+        <q-tab-panel name="medpapers">
+          <medpapers-grid :personnel-id="exam_data.pers_id" :user-id="user_id" />
         </q-tab-panel>
       </q-tab-panels>
     </div>
@@ -304,6 +303,7 @@
 import SensorDataTable from '@/components/ExamData/SensorDataTable.vue'
 import ExamDataHistoryTable from '@/components/ExamData/ExamDataHistoryTable.vue'
 import AppImage from '@/components/AppImage'
+import MedpapersGrid from '@/components/Medpapers/MedpapersGrid'
 import { getVerdictList,
     getExamData,
     getExamsHistoryForPersonnel,
@@ -312,6 +312,8 @@ import { getVerdictList,
 import { fullName } from '@/helpers/names'
 import VideoPlayers from '@/components/ExamData/VideoPlayers.vue'
 import {serverURL} from '@/api/services'
+import {getPersonnelRecord} from '@/api/personnel.api'
+import {getOneOrganization} from '@/api/organizations.api'
 
 export default {
 
@@ -320,12 +322,14 @@ export default {
         SensorDataTable,
         VideoPlayers,
         AppImage,
+        MedpapersGrid,
     },
     data() {
             return {
                 serverURL: serverURL,
                 verd_list: [],
                 exam_data: {},
+                organization_data: {},
                 exam_hist: {},
                 checked: [],
                 comment_13: '',
@@ -337,7 +341,7 @@ export default {
     },
     computed : {
         dataLoaded () {
-          return this.exam_data && 0 !== Object.keys(this.exam_data).length
+          return this.exam_data && this.organization_data && 0 !== Object.keys(this.exam_data).length
         },
         parsedComplaints () {
             if (this.dataLoaded && this.exam_data.complaints) {
@@ -351,6 +355,13 @@ export default {
               return ''
             } else {
               return fullName(this.exam_data.second_name, this.exam_data.first_name, this.exam_data.father_name)
+            }
+        },
+        managerFullName () {
+            if (!this.dataLoaded) {
+              return ''
+            } else {
+              return fullName(this.organization_data.manager_second_name, this.organization_data.manager_first_name, this.organization_data.manager_father_name)
             }
         },
         medNameWithInitials () {
@@ -399,9 +410,12 @@ export default {
         async getdata() {
             try {
               const exam_data = await getExamData(this.exam_id, this.user_id);
+              const personnel_data = await getPersonnelRecord(this.user_id, exam_data.data.pers_id);
+              const organization_data = await getOneOrganization(this.user_id, personnel_data.data.organization_id);
               const exam_hist = await getExamsHistoryForPersonnel(this.user_id, exam_data.data.pers_id);
               this.is_requested = true;
               this.exam_data = exam_data.data;
+              this.organization_data = organization_data.data;
               this.exam_hist = exam_hist.data;
             } catch (error) {
               console.log(error);
