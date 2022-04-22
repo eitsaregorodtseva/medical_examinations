@@ -10,7 +10,8 @@
 <script>
 import ExamsQueueTable from '@/components/ExamsQueueTable.vue'
 import { getExamsHistoryByVerdict } from '@/api/exams.api.js'
-const notificationSound = './sounds/done-for-you-612.mp3';
+// const notificationSound = './sounds/done-for-you-612.mp3';
+const notificationSound = './sounds/bell_notification.wav';
 
 export default {
     components : {
