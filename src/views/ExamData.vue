@@ -408,7 +408,7 @@ export default {
             }
         },
         async getdata() {
-            try {          
+            try {
               const exam_data = await getExamData(this.exam_id, this.user_id);
               const personnel_data = await getPersonnelRecord(this.user_id, exam_data.data.pers_id);
               const organization_data = await getOneOrganization(this.user_id, personnel_data.data.organization_id);
