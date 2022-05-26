@@ -56,7 +56,7 @@ const routes = [
   {
     path: '/exam_data',
     name: 'ExamData',
-    component: () => import('../views/ExamData.vue'),
+    component: () => import('../components/ExamData/ExamData.vue'),
     meta : {
       permittedRoles : [
         Role.MedWorker,

@@ -35,35 +35,11 @@
       </template>
     </q-table>
 
-    <q-dialog
-      v-model="showExamDialog"
-      transition-show="slide-up"
-      transition-hide="slide-down"
-      :full-width="true"
-      :full-height="true"
-    >
-      <q-card class="d-flex flex-column bg-white">
-        <div class="align-self-end sticky-top bg-white">
-          <q-btn
-            v-close-popup
-            class="justify-self-end"
-            flat
-            icon="close"
-          >
-            <q-tooltip class="bg-white text-primary">
-              Закрыть
-            </q-tooltip>
-          </q-btn>
-        </div>
-        <exam-data />
-      </q-card>
-    </q-dialog>
   </div>
 </template>
 
 <script>
 import moment from 'moment';
-import ExamData from '@/views/ExamData.vue';
 import { nameWithInitials } from '@/helpers/names'
 
 const columns = [
@@ -124,14 +100,12 @@ const parseVerdictsList = (verdicts_list, verdict_comment) => {
 }
 
 export default {
-  components: { ExamData },
   props: {
     exams : Array,
     height: String
   },
   data () {return {
     columns: columns,
-    showExamDialog: false,
     pagination: {
         sortBy: 'exam_datetime',
         descending: true,
@@ -142,12 +116,6 @@ export default {
   computed : {
     loading () {
       return !this.exams || (this.exams.length == 0)
-    }
-  },
-  methods : {
-    onRowClicked(evt, row, index) {
-      sessionStorage.setItem('exam_id', row.exam_id)
-      this.showExamDialog = true
     }
   },
 }

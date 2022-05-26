@@ -316,7 +316,6 @@ import {getPersonnelRecord} from '@/api/personnel.api'
 import {getOneOrganization} from '@/api/organizations.api'
 
 export default {
-
     components: {
         ExamDataHistoryTable,
         SensorDataTable,
@@ -324,6 +323,7 @@ export default {
         AppImage,
         MedpapersGrid,
     },
+    emits: ['verdictMade'],
     data() {
             return {
                 serverURL: serverURL,
@@ -430,7 +430,8 @@ export default {
             try {
                 await postVerdict(this.exam_id, verdicts, this.user_id, this.comment_13);
                 await patchMedworkerInExam(this.exam_id, this.user_id, this.user_id);
-                this.$router.push('/new_exams');
+                // this.$router.push('/new_exams');
+                this.$emit('verdictMade')
             } catch (error) {
             }
         },
@@ -439,7 +440,8 @@ export default {
                 let verdicts = [ 1 ];
                 await postVerdict(this.exam_id, verdicts, this.user_id);
                 await patchMedworkerInExam(this.exam_id, this.user_id, this.user_id);
-                this.$router.push('/new_exams');
+                // this.$router.push('/new_exams');
+                this.$emit('verdictMade')
             } catch (error) {
             }
         }

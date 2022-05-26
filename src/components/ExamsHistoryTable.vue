@@ -82,7 +82,7 @@
             </q-tooltip>
           </q-btn>
         </div>
-        <exam-data />
+        <exam-data @verdict-made="showExamDialog = false"/>
       </q-card>
     </q-dialog>
   <!-- </div> -->
@@ -90,7 +90,7 @@
 
 <script>
 import moment from 'moment';
-import ExamData from '../views/ExamData.vue';
+import ExamData from './ExamData/ExamData.vue';
 import { nameWithInitials, fullName } from '@/helpers/names'
 
 const columns = [
