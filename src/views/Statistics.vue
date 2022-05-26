@@ -29,7 +29,7 @@
 
 <script>
 import OrganizationsStatisticsTable from '@/components/OrganizationsStatisticsTable.vue'
-import { getAllOrganizationsStats } from '@/api/organizations.api.js'
+import { getAllOrganizationsStats, getOneOrganizationStats } from '@/api/organizations.api.js'
 export default {
   components : {
         OrganizationsStatisticsTable
@@ -55,14 +55,18 @@ export default {
           this.showTable = true
           try {
             var response
-            response = await getAllOrganizationsStats(this.user_id, this.dates.from, this.dates.to)
-            this.organizationsList = response.data
-          }
-          catch (err){
+            if (this.user_organization_id) {
+              response = await getOneOrganizationStats(this.user_organization_id, this.user_id, this.dates.from, this.dates.to)
+              this.organizationsList = response.data
+            } else {
+              response = await getAllOrganizationsStats(this.user_id, this.dates.from, this.dates.to)
+              this.organizationsList = response.data
+            }
+          } catch (err) {
             console.log(err)
           }
         }
-        
+
 
     }
 }
