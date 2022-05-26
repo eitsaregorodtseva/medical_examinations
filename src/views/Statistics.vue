@@ -55,13 +55,12 @@ export default {
           this.showTable = true
           try {
             var response
-            if (this.user_organization_id) {
-              response = await getOneOrganizationStats(this.user_organization_id, this.user_id, this.dates.from, this.dates.to)
-              this.organizationsList = response.data
-            } else {
+            if (this.user_organization_id === 'null') {
               response = await getAllOrganizationsStats(this.user_id, this.dates.from, this.dates.to)
-              this.organizationsList = response.data
+            } else {
+              response = await getOneOrganizationStats(this.user_organization_id, this.user_id, this.dates.from, this.dates.to)
             }
+            this.organizationsList = response.data
           } catch (err) {
             console.log(err)
           }
