@@ -15,9 +15,10 @@
         type="date"
         required
       >
-      <button @click="showOrganizationsTable" class="col btn_normal">Показать</button>
+      <button @click="updateOrganizationsTable" class="col btn_normal">Показать</button>
     </div>
     <organizations-statistics-table
+      v-show="showTable"
       :organizations="organizationsList"
       :dates="dates"
       :user_id="user_id"
@@ -39,31 +40,19 @@ export default {
     user_id: null,
     user_organization_id: null,
     organizationsList : [],
+    showTable: false,
   }},
   mounted() {
         this.populateDataFromStorage()
-        this.showOrganizationsTable()
     },
     methods : {
         populateDataFromStorage() {
             this.user_id = sessionStorage.getItem('user_id')
             this.user_organization_id = sessionStorage.getItem('user_organization_id')
         },
-        async fetchExams() {
-            try {
-                var response
-                if (this.user_organization_id !== 'null') {
-                    response = await getExamsHistoryForOrganization(this.user_id, this.user_organization_id)
-                } else {
-                    response = await getExamsHistoryAll(this.user_id)
-                }
-                this.organizationsList = response.data
-            } catch (err) {
 
-            }
-        },
-
-        async showOrganizationsTable() {
+        async updateOrganizationsTable() {
+          this.showTable = true
           try {
             var response
             response = await getAllOrganizationsStats(this.user_id, this.dates.from, this.dates.to)
