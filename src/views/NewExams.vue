@@ -68,11 +68,13 @@ export default {
       queueCheckTimer : '',
       showTable: false,
       examDetailsVisible: false,
+      tabBlinkTimer: null,
+      tabNeedsAttention : false
     }},
     watch : {
       examsList(current, last) {
         if (current.length === 0) {
-          document.title = 'medexam'
+          this.cancelTabBlinking()
         } else {
           var is_new = false
           for (let i = 0; i < current.length; i++) {
@@ -90,9 +92,9 @@ export default {
           }
           if (is_new){
             console.log("New exams found")
+            this.startTabBlinking();
             this.playSound(notificationSound)
           }
-          document.title = '* medexam | ' + current.length + ' в очереди'
         }
       },
       examDetailsVisible(current, last) {
@@ -100,14 +102,23 @@ export default {
         if (current == false && last == true) {
           this.fetchExams()
         }
+      },
+      tabNeedsAttention(current, last) {
+        console.log('attention changed to', current)
+        if (current === true) {
+          this.tabAttentionState()
+        } else {
+          this.tabDefaultState()
+        }
       }
     },
     mounted() {
-      this.populateDataFromStorage()
+      this.populateDataFromStorage();
     },
     beforeUnmount () {
-      document.title = 'medexam';
       this.cancelAutoUpdate();
+      this.cancelTabBlinking();
+      this.tabDefaultState();
     },
     methods : {
         populateDataFromStorage() {
@@ -134,6 +145,32 @@ export default {
         playSound(url) {
           const audio = new Audio(url);
           audio.play();
+        },
+        startTabBlinking() {
+          if (!this.tabBlinkTimer) {
+            this.tabBlinkTimer = setInterval(this.blinkTab, 1000);
+          }
+          this.tabNeedsAttention = true
+        },
+        cancelTabBlinking() {
+          if (this.tabBlinkTimer) {
+            clearInterval(this.tabBlinkTimer);
+            this.tabBlinkTimer = null;
+          }
+          this.tabNeedsAttention = false;
+        },
+        blinkTab() {
+          this.tabNeedsAttention = !this.tabNeedsAttention;
+        },
+        tabDefaultState() {
+          const favicon = document.querySelector("link[rel~='icon']");
+          favicon.href = "favicon.ico";
+          document.title = 'меддопуск.рф';
+        },
+        tabAttentionState() {
+          const favicon = document.querySelector("link[rel~='icon']");
+          favicon.href = "favicon_exclamation.ico";
+          document.title = 'НОВЫЕ ОСМОТРЫ: ' + this.examsList.length;
         }
     }
 }
