@@ -9,7 +9,7 @@ const mediaURL = 'https://меддопуск.рф';
 
 const webAPI = axios.create({
     baseURL: serverURL + '/api/web',
-    timeout: 3000,
+    timeout: 7000,
     headers: {
         "Content-Type": "application/json",
     }
@@ -17,7 +17,7 @@ const webAPI = axios.create({
 
 const mediaAPI = axios.create({
     baseURL: serverURL + '/api/mediaserver',
-    timeout: 3000,
+    timeout: 7000,
     headers: {
         "Content-Type": "application/json",
     }
