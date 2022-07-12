@@ -164,7 +164,7 @@ export default {
         },
         tabDefaultState() {
           const favicon = document.querySelector("link[rel~='icon']");
-          favicon.href = "favicon.ico";
+          favicon.href = "favicon.ico?v=1.0";
           document.title = 'меддопуск.рф';
         },
         tabAttentionState() {
