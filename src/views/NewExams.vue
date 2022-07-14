@@ -34,16 +34,24 @@
     </div>
     <div
       v-else
-      class="row items-center"
+      class="fit column items-center q-gutter-md"
     >
-      <div class="col-auto">
-        Для начала осмотров нажмите кнопку:
+      <div class="col-auto text-h6">
+        Для начала осмотров нажмите кнопку
       </div>
-      <q-btn
-        class="col-auto"
-        label="Начать осмотры"
-        @click="startExamsMonitoring"
-      />
+      <div class="col">
+        <q-btn
+          color="deep-orange"
+          rounded
+          push
+          size="xl"
+          class="text-bold"
+          align="around"
+          icon="touch_app"
+          label="начать осмотры"
+          @click="startExamsMonitoring"
+        />
+      </div>
     </div>
   </q-page>
 </template>
