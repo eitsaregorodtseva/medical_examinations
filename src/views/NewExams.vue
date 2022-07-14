@@ -104,7 +104,6 @@ export default {
         }
       },
       tabNeedsAttention(current, last) {
-        console.log('attention changed to', current)
         if (current === true) {
           this.tabAttentionState()
         } else {
