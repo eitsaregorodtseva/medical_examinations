@@ -61,8 +61,9 @@ import ExamsQueueTable from '@/components/ExamsQueueTable.vue'
 import ExamData from '../components/ExamData/ExamData.vue';
 
 import { getExamsHistoryByVerdict } from '@/api/exams.api.js'
-// const notificationSound = './sounds/done-for-you-612.mp3';
-const notificationSound = './sounds/bell_notification.wav';
+// const notificationSoundURL = './sounds/done-for-you-612.mp3';
+const notificationSoundURL = './sounds/bell_notification.wav';
+const timerWorkerPath = './workers/webWorkerTimer.js'
 
 export default {
     components : {
@@ -77,7 +78,8 @@ export default {
       showTable: false,
       examDetailsVisible: false,
       tabBlinkTimer: null,
-      tabNeedsAttention : false
+      tabNeedsAttention : false,
+      notificationSound: null
     }},
     watch : {
       examsList(current, last) {
@@ -101,7 +103,7 @@ export default {
           if (is_new){
             console.log("New exams found")
             this.startTabBlinking();
-            this.playSound(notificationSound)
+            this.notificationSound.play()
           }
         }
       },
@@ -121,6 +123,7 @@ export default {
     },
     mounted() {
       this.populateDataFromStorage();
+      this.notificationSound = new Audio(notificationSoundURL);
     },
     beforeUnmount () {
       this.cancelAutoUpdate();
@@ -135,7 +138,9 @@ export default {
         startExamsMonitoring() {
           this.showTable = true
           this.fetchExams()
-          this.queueCheckTimer = setInterval(this.fetchExams, 5000);
+          this.queueCheckTimer = new Worker(timerWorkerPath);
+          this.queueCheckTimer.postMessage('5000')
+          this.queueCheckTimer.onmessage = this.fetchExams
         },
         async fetchExams() {
             try {
@@ -147,11 +152,7 @@ export default {
             }
         },
         cancelAutoUpdate() {
-          clearInterval(this.queueCheckTimer);
-        },
-        playSound(url) {
-          const audio = new Audio(url);
-          audio.play();
+          this.queueCheckTimer.terminate();
         },
         startTabBlinking() {
           if (!this.tabBlinkTimer) {
