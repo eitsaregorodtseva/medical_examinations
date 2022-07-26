@@ -156,13 +156,15 @@ export default {
         },
         startTabBlinking() {
           if (!this.tabBlinkTimer) {
-            this.tabBlinkTimer = setInterval(this.blinkTab, 1000);
+            this.tabBlinkTimer = new Worker(timerWorkerPath)
+            this.tabBlinkTimer.postMessage('1000')
+            this.tabBlinkTimer.onmessage = this.blinkTab
           }
           this.tabNeedsAttention = true
         },
         cancelTabBlinking() {
           if (this.tabBlinkTimer) {
-            clearInterval(this.tabBlinkTimer);
+            this.tabBlinkTimer.terminate()
             this.tabBlinkTimer = null;
           }
           this.tabNeedsAttention = false;
