@@ -1,7 +1,4 @@
 import { createApp } from 'vue'
-import 'bootstrap/dist/css/bootstrap.min.css'
-import 'bootstrap/dist/js/bootstrap.min.js'
-import 'bootstrap-icons/font/bootstrap-icons.css'
 import App from './App.vue'
 import './registerServiceWorker'
 import router from './router'
@@ -17,7 +14,7 @@ import { use } from "echarts/core"
 import { Quasar } from 'quasar'
 import quasarUserOptions from './quasar-user-options'
 
-import './assets/style.css'
+import './styles/style.sass'
 
 import {
     CanvasRenderer

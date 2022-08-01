@@ -1,19 +1,27 @@
 <template>
-    <div class="d-flex flex-column m-3">
-        <button class="btn_normal" @click="clickInputFile">
-            <slot></slot>
-        </button>
-        <input class="d-none" id="inputFile" ref="file" type="file"
-        accept=".jpg,.png"
-        @change="handleFileChange">
-    </div>
-
-
+  <q-file
+    v-model="file"
+    color="primary"
+    filled
+    :label="label"
+    accept=".jpg,.png"
+  >
+    <template #prepend>
+      <q-icon name="cloud_upload" />
+    </template>
+    <template #append>
+      <q-icon name="close" @click.stop.prevent="file = null" class="cursor-pointer" />
+    </template>
+    <template #after>
+      <q-btn round dense flat icon="send" @click="handleFileChange" />
+    </template>
+  </q-file>
 </template>
 
 <script>
 import {serverURL} from '@/api/services'
 export default {
+    props: ['label'],
     emits : {
         fileUploaded : (fileId) => {return true}
         },
@@ -21,11 +29,11 @@ export default {
         file : ''
     }},
     methods : {
-        clickInputFile () {
-            document.getElementById('inputFile').click()
+        clear() {
+          this.file = null
         },
         async handleFileChange() {
-            this.file = this.$refs.file.files[0]
+            // this.file = this.$refs.file.files[0]
             // TODO: check if it's empty
             const fileId = await this.preloadFile(this.file)
             this.loadFile(this.file, fileId)

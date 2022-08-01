@@ -1,5 +1,5 @@
 <template>
-  <q-page>
+  <q-page padding>
     <q-inner-loading
       :showing="loading"
       :label="loadingLabel"

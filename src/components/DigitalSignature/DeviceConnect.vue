@@ -1,62 +1,64 @@
 <template>
-  <div class="fixed-center h-50 w-50 d-flex flex-column align-items-center">
+  <app-centered-box :is-error="isError">
     <div
-      id="ds_rect"
-      class="col container h-100 w-100"
-      :class="isError ? 'app_error' : 'app_normal'"
+      class="column fit items-center"
+      :class="{'input_error' : isError}"
     >
-      <div class="form-horizontal h-100 d-flex flex-column justify-content-around align-items-center">
-        <div id="img_cont">
-          <img
-            v-if="isError"
-            id="img"
-            src="@\assets\images\flash-drive(1).png"
-          >
-          <img
-            v-else
-            id="img"
-            src="@\assets\images\flash-drive.png"
-          >
-        </div>
-        <div
+      <div
+        id="img_cont"
+        class="col-6 row items-center"
+      >
+        <img
           v-if="isError"
-          id="err_txt"
-          class="txt_error"
+          id="img"
+          src="@\assets\images\flash-drive(1).png"
         >
-          {{ errorMessage }}
-        </div>
-        <div
-          class="h5 text-center"
-          :class="isError ? 'txt_error' : 'txt_normal'"
+        <img
+          v-else
+          id="img"
+          src="@\assets\images\flash-drive.png"
         >
-          Присоедините к компьютеру носитель ключа электронной подписи.
-        </div>
-        <button
-          class="justify-self-end w-25"
-          :class="isError ? 'btn_error' : 'btn_normal'"
-          type="submit"
-          @click="okClicked"
-        >
-          Готово
-        </button>
       </div>
+      <div
+        class="h5 text-center row items-center col "
+        :class="isError ? 'txt_error' : 'txt_normal'"
+      >
+        Присоедините к компьютеру носитель ключа электронной подписи.
+      </div>
+      <q-btn
+        unelevated
+        rounded
+        text-color="white"
+        class="col-shrink"
+        :class="isError ? 'btn_error' : 'btn_normal'"
+        style="width:100px; height:40px;"
+        label="Ок"
+        :loading="spinButton"
+        @click="okClicked"
+      />
     </div>
-    <button
-      class="mt-3 nav_btn_normal bg-white w-25 "
-      :class="isError ? 'nav_btn_error' : 'nav_btn_normal'"
-      @click="back"
-    >
-      Назад
-    </button>
-  </div>
+    <template #below-box>
+      <q-btn
+        rounded
+        class="nav_btn_normal bg-white"
+        :class="isError ? 'nav_btn_error' : 'nav_btn_normal'"
+        @click="back"
+      >
+        Назад
+      </q-btn>
+    </template>
+  </app-centered-box>
 </template>
 
 <script>
 import { findDevice } from '@/api/rutoken'
+import AppCenteredBox from '@/components/AppCenteredBox'
 export default {
+    components: {
+      AppCenteredBox
+    },
     data: () => ({
         isError: false,
-        errorMessage : ''
     }),
     methods: {
         back() {

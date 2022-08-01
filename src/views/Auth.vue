@@ -1,73 +1,76 @@
 <template>
-  <div
-    id="auth_rect"
-    class="container position-absolute top-50 start-50 translate-middle"
-    :class="isError ? 'app_error' : 'app_normal'"
-  >
-    <form
-      class="form-horizontal"
+  <app-centered-box :is-error="isError">
+    <q-form
+      class="q-pa-md fit column items-center"
       @submit.prevent="auth"
     >
-      <div class="form-group">
-        <div class="row mt-3 d-flex justify-content-center">
-          <div
-            id="text_au"
-            :class="isError ? 'txt_error' : 'txt_normal'"
-          >
-            Авторизация
-          </div>
-        </div>
-        <div class="row mt-3 d-flex justify-content-center">
-          <div
-            v-if="isError"
-            id="mes_er"
-            class="input_error"
-          >
-            Неверный логин или пароль
-          </div>
-        </div>
-        <div class="row mt-3 d-flex justify-content-center">
-          <input
-            v-model.trim="login"
-            class="input"
-            :class="isError ? 'input_error' : 'input_normal'"
-            placeholder="Логин"
-          >
-        </div>
-        <div class="row mt-3 d-flex justify-content-center">
-          <input
-            v-model="password"
-            class="input"
-            :class="isError ? 'input_error' : 'input_normal'"
-            type="password"
-            placeholder="Пароль"
-          >
-        </div>
-        <div class="row mt-3 d-flex justify-content-center">
-          <button
-            id="btn"
-            :class="isError ? 'btn_error' : 'btn_normal'"
-            type="submit"
-          >
-            Войти
-          </button>
-        </div>
+      <div
+        class="text-h4 text-bold col-2"
+        :class="isError ? 'txt_error' : 'txt_normal'"
+      >
+        Авторизация
       </div>
-    </form>
-  </div>
+      <div
+        v-if="isError"
+        id="mes_er"
+        class="input_error col-auto"
+      >
+        Неверный логин или пароль
+      </div>
+      <div class="col-grow self-stretch column justify-center q-gutter-lg">
+        <q-input
+          v-model.trim="login"
+          outlined
+          bg-color="white"
+          label="Логин"
+        />
+        <q-input
+          v-model="password"
+          outlined
+          bg-color="white"
+          :type="showPassword ? 'text' : 'password'"
+          label="Пароль"
+        >
+          <template #append>
+            <q-icon
+              :name="showPassword ? 'visibility' : 'visibility_off'"
+              class="cursor-pointer"
+              @click="showPassword = !showPassword"
+            />
+          </template>
+        </q-input>
+      </div>
+      <div class="col-auto self-center">
+        <q-btn
+          unelevated
+          rounded
+          text-color="white"
+          :class="isError ? 'btn_error' : 'btn_normal'"
+          type="submit"
+        >
+          Войти
+        </q-btn>
+      </div>
+    </q-form>
+  </app-centered-box>
 </template>
 
 <script>
 import { auth } from '@/api/users.api'
 import { Role } from '@/helpers/role'
+import AppCenteredBox from '@/components/AppCenteredBox'
 
 export default {
     name: 'Auth',
+    components: {
+      AppCenteredBox
+    },
     data: () => ({
         login: '',
         password: '',
         returnUrl: '',
-        isError: false
+        isError: false,
+        showPassword: false
     }),
     created () {
         this.returnUrl = this.$route.query.returnUrl
@@ -103,48 +106,3 @@ export default {
     }
 }
 </script>
-
-<style scoped>
-
-button {
-    border-radius: 50px;
-}
-
-#auth_rect {
-    width: 550px;
-    height: 400px;
-    display: block;
-}
-
-.input {
-    border: none;
-    width: 80%;
-    height: 80%;
-}
-
-.row {
-    height: 60px;
-}
-
-#btn {
-    width: 170px;
-    height: 40px;
-}
-
-#text_au {
-    text-align: center;
-    width: 100%;
-    font-size: 30px;
-    font-weight: bold;
-    letter-spacing: -0.017em;
-    padding-top: 3%;
-}
-
-#mes_er {
-    text-align: center;
-    width: 100%;
-    font-weight: bold;
-}
-
-
-</style>

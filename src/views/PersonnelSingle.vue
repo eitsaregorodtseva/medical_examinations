@@ -1,129 +1,113 @@
 <template>
   <q-page>
     <PersonnelAddEditModal
-      id="addModal"
+      v-model="showAddModal"
       title="Новый водитель"
       @personnel-added="onAddModalSuccess"
     />
     <PersonnelAddEditModal
       v-if="personnelInfoLoaded"
-      id="editModal"
+      v-model="showEditModal"
       :title="'Редактировать ' + personnelNameWithInitials"
-      :is-editing="true"
+      is-editing
       :init-personnel-info="personnel_info"
       @personnel-updated="onEditModalSuccess"
     />
-
-    <div class="d-flex w-100 h-100">
-      <nav
-        class="col-lg-3 navbar-expand-md d-flex flex-nowrap sticky-top pe-2"
-        style="height: 100vh"
-      >
-        <a
-          class="d-md-none d-flex align-items-center fw-bold app_normal"
-          data-bs-toggle="collapse"
-          href="#personnelSidebar"
-          aria-controls="personnelSidebar"
-          style="min-width: 33px; writing-mode: vertical-lr; text-orientation: upright; text-decoration: none;"
+    <div class="fit row q-col-gutter-md">
+      <div class="col-3 full-height overflow-auto">
+        <q-toolbar
+          class="text-white bg-white shadow-2 full-width row"
+          style="position: sticky; z-index: 1; top: 0px;"
         >
-          <i class="bi bi-list fs-4 mt-2" />
-          <span class="fs-6 flex-fill text-center">Работники</span>
-        </a>
-
-        <div
-          id="personnelSidebar"
-          class="collapse navbar-collapse"
-          aria-labelledby="personnelSidebarLabel"
+          <q-input
+            v-model="search"
+            borderless
+            dense
+            debounce="300"
+            class="col"
+            placeholder="Поиск"
+          />
+          <q-btn
+            flat
+            round
+            dense
+            icon="search"
+            color="dark"
+            class="col-auto"
+          />
+        </q-toolbar>
+        <q-list
+          v-if="personnelListLoaded"
+          bordered
+          padding
+          class="rounded-borders"
         >
-          <div
-            class="d-flex justify-content-evenly w-100 h-100"
-            style="min-width: 263px;"
+          <q-item
+            v-for="pers in filteredPersonnelList"
+            :key="pers.id"
+            clickable
+            :active="personnelId === pers.id"
+            active-class="active-driver-in-sidebar"
+            @click="changePersonnel(pers.id)"
           >
-            <AppListGroup
-              :items="personnel_list"
-              :active-item-id="personnelId"
-              class="w-100 h-100"
-              @item-clicked="changePersonnel"
-            >
-              <div class="d-flex align-items-center justify-content-between bg-white">
-                <!-- <a
-                  href="#"
-                  class="flex-shrink-1  d-flex align-items-center"
-                >
-                  <i class="bi bi-arrow-90deg-left" />
-                  <div class="p-1">Назад к списку</div>
-                </a> -->
-                <span class=" w-100 text-center fs-6 fw-bold p-1">Работники</span>
-                <button
-                  class="btn_normal p-1"
-                  data-bs-toggle="modal"
-                  data-bs-target="#addModal"
-                >
-                  Добавить
-                </button>
-              </div>
-            </AppListGroup>
-            <a
-              class="d-md-none h-100 text-center app_normal fs-6"
-              data-bs-toggle="collapse"
-              href="#personnelSidebar"
-              aria-controls="personnelSidebar"
-              style=" writing-mode: vertical-lr;  text-decoration: none;"
-            >Скрыть</a>
-          </div>
-        </div>
-      </nav>
-
+            <q-item-section>{{ pers.name }}</q-item-section>
+          </q-item>
+        </q-list>
+      </div>
 
       <div
         v-if="personnelInfoLoaded"
-        class="container"
+        class="col q-pa-md"
       >
-        <div class="row">
-          <div class="col-md-4 d-flex flex-column align-items-center">
-            <AppImage :image-id="personnel_info.photo" />
-            <AppFileUpload @file-uploaded="onImageUploaded">
-              Изменить фото
-            </AppFileUpload>
+        <div class="row q-col-gutter-md">
+          <div class="col-md-4 q-gutter-sm">
+            <AppImage
+              :image-id="personnel_info.photo"
+            />
+            <AppFileUpload
+              ref="imgUploadForm"
+              label="Изменить фото"
+              @file-uploaded="onImageUploaded"
+            />
           </div>
 
 
-          <div class="col-md-8 pt-3 d-flex flex-column align-items-start">
-            <h6># {{ personnel_info.pers_number }}</h6>
-            <h4>{{ personnelFullName }}</h4>
-            <table class="mt-4 table table-borderless">
+          <div class="col-md-8 q-pt-md q-gutter-md">
+            <div class="text-h6"># {{ personnel_info.pers_number }}</div>
+            <div class="text-h4">{{ personnelFullName }}</div>
+            <q-markup-table flat>
               <tbody>
-                <tr>
-                  <th>Пол:</th>
+                <tr class="q-tr--no-hover">
+                  <td>Пол:</td>
                   <td>{{ personnel_info.gender }}</td>
                 </tr>
-                <tr>
-                  <th>Дата рождения:</th>
+                <tr class="q-tr--no-hover">
+                  <td>Дата рождения:</td>
                   <td>
                     {{ $moment(personnel_info.date_of_birth).format('L') }}
                     <span class="text-nowrap">(возраст: {{ personnel_info.age }})</span>
                   </td>
                 </tr>
-                <tr>
-                  <th>Зарегистрирован:</th>
+                <tr class="q-tr--no-hover">
+                  <td>Зарегистрирован:</td>
                   <td>{{ $moment(personnel_info.registration_date).format('LLL') }}</td>
                 </tr>
-                <tr>
-                  <th>Согласие на обработку данных:</th>
+                <tr class="q-tr--no-hover">
+                  <td>Согласие на обработку данных:</td>
                   <td>{{ personnel_info.processing_consent ? 'Да' : 'Нет' }}</td>
                 </tr>
               </tbody>
-            </table>
-            <button
-              class="btn_normal m-3 align-self-center"
-              data-bs-toggle="modal"
-              data-bs-target="#editModal"
+            </q-markup-table>
+            <q-btn
+              class="btn_normal"
+              rounded
+              @click="showEditModal = true"
             >
               Редактировать
-            </button>
+            </q-btn>
           </div>
         </div>
-        <div>
+        <div class="q-pt-md">
           <medpapers-grid
             :personnel-id="personnelId"
             :user-id="user_id"
@@ -162,32 +146,17 @@
             user_organization_id: null,
             personnel_info : {},
             personnel_list : [], // of objects {id, name}
-            // medpapersList: [
-            //   {
-            //     id : 5,
-            //     name: 'О состонии здоровья',
-            //     expiration_date: '2022-02-17'
-            //   },
-            //   {
-            //     id : 6,
-            //     name: 'О болезни',
-            //     expiration_date: '2023-05-17'
-            //   },
-            //   {
-            //     id : 71234,
-            //     name: 'О чем-то очень длинном и интересном, но ничего не понятно, и это навсегда',
-            //   },
-            //   {
-            //     id : 8,
-            //     name: 'О болезни',
-            //     expiration_date: '2022-05-17'
-            //   },
-            // ]
+            search : '',
+            showEditModal : false,
+            showAddModel : false
         }),
 
         computed : {
             personnelInfoLoaded () {
               return this.personnel_info && 0 !== Object.keys(this.personnel_info).length
+            },
+            personnelListLoaded () {
+              return this.personnel_list && 0 !== this.personnel_list.length
             },
             personnelNameWithInitials () {
               if (!this.personnelInfoLoaded) {
@@ -202,12 +171,22 @@
               } else {
                 return fullName(this.personnel_info.second_name, this.personnel_info.first_name, this.personnel_info.father_name)
               }
-            }
+            },
+            filteredPersonnelList() {
+              if (this.search.trim() !== '') {
+                return this.personnel_list.filter(item => {
+                  return item.name.toLowerCase().indexOf(this.search.toLowerCase()) > -1
+                })
+              } else {
+                return this.personnel_list
+              }
+    }
         },
 
         watch : {
             personnelId () {
                 this.fetchPersonnelInfo(this.personnelId)
+                this.$refs.imgUploadForm.clear()
             }
         },
 
@@ -232,11 +211,12 @@
                     this.personnel_info = response.data
                 } catch (err) {
                     if (err.response && err.response.status == 404) {
-                        this.$notify({
-                            type : 'warn',
-                            title : 'Работник не найден',
-                            text : 'Проверьте введенный адрес'
-                            });
+                      // TODO: enable this when there is a page for all personnel
+                        // this.$notify({
+                        //     type : 'warn',
+                        //     title : 'Работник не найден',
+                        //     text : 'Проверьте введенный адрес'
+                        //     });
                     }
                 }
             },
@@ -294,3 +274,11 @@
         }
     }
 </script>
+
+<style lang="sass">
+@import "@/styles/quasar";
+.active-driver-in-sidebar
+  background-color: $secondary
+  color: $dark
+
+</style>

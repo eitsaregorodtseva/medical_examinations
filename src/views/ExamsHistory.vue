@@ -1,5 +1,5 @@
 <template>
-  <q-page>
+  <q-page padding>
     <exams-history-table
       :exams="examsList"
       height="90vh"

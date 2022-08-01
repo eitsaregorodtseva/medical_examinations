@@ -1,42 +1,59 @@
 <template>
-    <div v-if="imageId">
-        <a data-bs-toggle="modal" href="#imgModal">
-            <img :src="serverURL + `/api/mediaserver/get_image?file_id=${imageId}`"
-            class="img-fluid img-thumbnail" alt="">
-        </a>
-        <div class="modal modal-center fade" id="imgModal" tabindex="-1">
-            <div class="modal-dialog modal-lg modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <img :src="serverURL + `/api/mediaserver/get_image?file_id=${imageId}`"
-                        class="img-fluid" alt="">
-                    </div>
-                </div>
-            </div>
+  <div>
+    <q-img
+      contain
+      :src="imageURL"
+      :class="{ 'cursor-pointer' : isLoaded }"
+      :title="isLoaded ? 'Развернуть': ''"
+      style="min-height: 50px; min-width: 50px"
+      @click="isLoaded ? showFullImageDialog = true : {}"
+      @load="isLoaded = true"
+      @error="isLoaded = false"
+    >
+      <template #error>
+        <div class="absolute-full flex flex-center bg-grey-3 text-grey">
+          Нет фото
         </div>
-    </div>
-    <div v-else class="d-flex justify-content-center align-items-center" style="background-color: #d3d3d3; width: 180px; height: 180px;">
-        <span class="my-auto"> Нет фото </span>
-    </div>
+      </template>
+    </q-img>
+    <q-dialog v-model="showFullImageDialog">
+      <q-card class="full-width" style="max-height: 80vh;">
+        <q-img :src="imageURL" class="full-height" style="max-height: 80vh;">
+          <div
+            class="absolute-top-right"
+            style="padding: 0;"
+          >
+            <q-btn
+              v-close-popup
+              icon="close"
+              class="float-right"
+              flat
+              dense
+            />
+          </div>
+        </q-img>
+      </q-card>
+    </q-dialog>
+  </div>
 </template>
 
 <script>
 import {serverURL} from '@/api/services'
 export default {
-    props : {
-        imageId : {
-            type : String,
-        }
-    },
-    data () {return {
-        serverURL: serverURL
-    }}
+  props : {
+    imageId : {
+        type : String,
+    }
+  },
+  data () {return {
+    serverURL: serverURL,
+    showFullImageDialog : false,
+    isLoaded : false,
+  }},
+  computed : {
+    imageURL () {
+      return serverURL + `/api/mediaserver/get_image?file_id=${this.imageId}`
+    }
+  }
 }
 </script>
-
-<style>
-
-</style>

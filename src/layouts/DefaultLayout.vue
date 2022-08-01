@@ -1,18 +1,18 @@
 <template>
-    <q-layout view="hHh LpR lfr" class="q-pa-md">
-      <q-header class="bg-white q-pa-xs" style="color: inherit">
-        <q-toolbar>
-          <q-btn flat round dense icon="menu" class="q-mr-sm" @click="showSidebar = !showSidebar"/>
-          <header-logo />
-          <header-logout-link />
-        </q-toolbar>
-      </q-header>
+  <q-layout view="hHh LpR lfr">
+    <q-header class="bg-white q-pa-xs" style="color: inherit">
+      <q-toolbar>
+        <q-btn flat round dense icon="menu" class="q-mr-sm" @click="showSidebar = !showSidebar"/>
+        <header-logo />
+        <header-logout-link />
+      </q-toolbar>
+    </q-header>
 
-      <q-page-container>
-        <navigation-sidebar v-model="showSidebar" />
-            <router-view />
-      </q-page-container>
-    </q-layout>
+    <q-page-container>
+      <navigation-sidebar v-model="showSidebar" />
+      <router-view />
+    </q-page-container>
+  </q-layout>
 </template>
 
 <script>

@@ -1,5 +1,8 @@
 import { webAPI } from "./services";
 
+const getAllOrganizations = (user_id) => webAPI.get('/organizations',
+    { params : {user_id} });
+
 const getAllOrganizationsStats = (user_id, start_date, end_date) => webAPI.get('/organizations/statistics',
     { params : {user_id, start_date, end_date} });
 
@@ -10,6 +13,7 @@ const getOneOrganization = (user_id, organization_id, ) => webAPI.get(`/organiza
     { params: {user_id, organization_id} });
 
 export {
+    getAllOrganizations,
     getAllOrganizationsStats,
     getOneOrganizationStats,
     getOneOrganization

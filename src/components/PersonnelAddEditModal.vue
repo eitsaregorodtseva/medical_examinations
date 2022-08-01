@@ -1,173 +1,90 @@
 <template>
-  <div
-    class="modal fade"
-    data-bs-backdrop="static"
-    data-bs-keyboard="false"
-    tabindex="-1"
+  <q-dialog
+    :model-value="modelValue"
+    @update:model-value="value => $emit('update:modelValue', value)"
+    @reset="personnel_info = Object.assign({}, initPersonnelInfo)"
   >
-    <div class="modal-dialog modal-dialog-centered ">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">
-            {{ title }}
-          </h5>
-          <!-- Button has unique id to tell instances apart when clicking it from the script -->
-          <button
-            :id="'closeButton-' + uuid"
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="modal"
-            aria-label="Close"
+    <q-card>
+      <q-toolbar class="bg-white">
+        <q-toolbar-title>{{ title }}</q-toolbar-title>
+        <q-btn
+          v-close-popup
+          icon="close"
+          flat
+          @click="$emit('update:modelValue', false)"
+        />
+      </q-toolbar>
+      <q-card-section>
+        <q-form class="q-gutter-sm" @submit.prevent="onSubmit">
+          <q-input
+            v-model.trim="personnel_info.pers_number"
+            label="Таб. №"
           />
-        </div>
-        <form @submit.prevent="onSubmit">
-          <div class="modal-body">
-            <div class="input-group input-group-sm mb-2">
-              <label
-                for="inputPersNumber"
-                class="input-group-text w-25"
-              >Таб. №</label>
-              <input
-                id="inputPersNumber"
-                v-model.trim="personnel_info.pers_number"
-                type="text"
-                class="form-control"
-                required
-              >
-            </div>
-
-            <hr>
-
-            <div class="input-group input-group-sm mb-2">
-              <label
-                for="inputSecondName"
-                class="input-group-text w-25"
-              >Фамилия</label>
-              <input
-                id="inputSecondName"
-                v-model.trim="personnel_info.second_name"
-                type="text"
-                class="form-control"
-                required
-              >
-            </div>
-            <div class="input-group input-group-sm mb-2">
-              <label
-                for="inputFirstName"
-                class="input-group-text w-25"
-              >Имя</label>
-              <input
-                id="inputFirstName"
-                v-model.trim="personnel_info.first_name"
-                type="text"
-                class="form-control"
-                required
-              >
-            </div>
-            <div class="input-group input-group-sm mb-2">
-              <label
-                for="inputFatherName"
-                class="input-group-text w-25"
-              >Отчество</label>
-              <input
-                id="inputFatherName"
-                v-model.trim="personnel_info.father_name"
-                type="text"
-                class="form-control"
-              >
-            </div>
-
-            <hr>
-
-            <div class="form-check-inline">
-              Пол:
-            </div>
-            <div class="form-check form-check-inline">
-              <input
-                id="inputGenderMale"
-                v-model="personnel_info.gender"
-                class="form-check-input"
-                type="radio"
-                name="inputGender"
-                value="м"
-                checked
-              >
-              <label
-                class="form-check-label"
-                for="inputGenderMale"
-              >Муж</label>
-            </div>
-            <div class="form-check form-check-inline">
-              <input
-                id="inputGenderFemale"
-                v-model="personnel_info.gender"
-                class="form-check-input"
-                type="radio"
-                name="inputGender"
-                value="ж"
-              >
-              <label
-                class="form-check-label"
-                for="inputGenderFemale"
-              >Жен</label>
-            </div>
-
-            <hr>
-
-            <div class="input-group input-group-sm mb-2">
-              <label
-                for="inputDateOfBirth"
-                class="input-group-text"
-              >Дата рождения</label>
-              <input
-                id="inputDateOfBirth"
-                v-model="personnel_info.date_of_birth"
-                type="date"
-                class="form-control"
-                required
-              >
-              <label
-                for="inputDateOfBirth"
-                class="input-group-text"
-              >
-                возраст: {{ $moment().diff(personnel_info.date_of_birth, 'years') || ' ' }}
-              </label>
-            </div>
-
-            <hr>
-
-            <div class="form-check form-switch">
-              <label
-                class="form-check-label"
-                for="switchConsent"
-              >Согласие на обработку данных</label>
-              <input
-                id="switchConsent"
-                v-model="personnel_info.processing_consent"
-                class="form-check-input"
-                type="checkbox"
-              >
-            </div>
+          <q-input
+            v-model.trim="personnel_info.second_name"
+            label="Фамилия"
+            dense
+          />
+          <q-input
+            v-model.trim="personnel_info.first_name"
+            label="Имя"
+            dense
+          />
+          <q-input
+            v-model.trim="personnel_info.father_name"
+            label="Отчество"
+            dense
+          />
+          <div class="row items-center">
+            <div class="q-pr-md"> Пол: </div>
+            <q-option-group
+              v-model="personnel_info.gender"
+              :options="[
+                { label: 'Муж', value: 'м' },
+                { label: 'Жен', value: 'ж' }
+              ]"
+              inline
+              dense
+            />
           </div>
-          <div class="modal-footer">
-            <button
-              type="button"
+          <q-input
+            v-model.trim="personnel_info.date_of_birth"
+            label="Дата рождения"
+            type="date"
+            dense
+          >
+            <template #after>
+              <div class="text-caption self-end text-center">
+                возраст: {{ $moment().diff(personnel_info.date_of_birth, 'years') || ' ' }}
+              </div>
+            </template>
+          </q-input>
+          <q-toggle
+            v-model="personnel_info.processing_consent"
+            label="Согласие на обработку данных"
+            left-label
+          />
+          <div class="">
+            <q-btn
               class="btn_error"
-              data-bs-dismiss="modal"
+              rounded
+              type="reset"
+              @click="$emit('update:modelValue', false)"
             >
               Отмена
-            </button>
-            <button
+            </q-btn>
+            <q-btn
               type="submit"
+              rounded
               class="btn_normal"
             >
               Сохранить
-            </button>
+            </q-btn>
           </div>
-        </form>
-      </div>
-    </div>
-  </div>
+        </q-form>
+      </q-card-section>
+    </q-card>
+  </q-dialog>
 </template>
 
 <script>
@@ -205,6 +122,10 @@ export default {
         isEditing: {
             type : Boolean,
             default : false
+        },
+        modelValue: {
+          type : Boolean,
+          default : false
         }
     },
 
@@ -212,12 +133,13 @@ export default {
         // Is emmitted after sucsessful POST request
         personnelAdded : (id) => {return true},
         // Is emmited after sucsessful PATCH request
-        personnelUpdated : () => {return true}
+        personnelUpdated : () => {return true},
+        'update:modelValue' : () => {return true},
     },
 
     data (){ return {
         user_id : null,
-        personnel_info : this.initPersonnelInfo,
+        personnel_info : Object.assign({}, this.initPersonnelInfo),
         uuid : null
     }},
 
@@ -242,7 +164,7 @@ export default {
             this.user_organization_id = sessionStorage.getItem('user_organization_id')
         },
         closeModal () {
-            document.getElementById('closeButton-'+this.uuid).click()
+            this.$emit('update:modelValue', false)
         },
         async updatePersonnelInfo(params) {
             try {
@@ -296,11 +218,11 @@ export default {
 </script>
 
 <style>
-.input-group-text {
+/* .input-group-text {
     color: inherit
 }
 .form-check-input:checked {
     color: #3C61E9;
     border-color: #3C61E9;
-}
+} */
 </style>

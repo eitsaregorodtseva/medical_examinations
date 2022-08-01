@@ -1,5 +1,5 @@
 <template>
-  <q-page>
+  <q-page padding>
     <div
       v-if="showTable"
     >
@@ -119,7 +119,7 @@ export default {
         } else {
           this.tabDefaultState()
         }
-      }
+      },
     },
     mounted() {
       this.populateDataFromStorage();
@@ -152,7 +152,9 @@ export default {
             }
         },
         cancelAutoUpdate() {
-          this.queueCheckTimer.terminate();
+          if (this.queueCheckTimer) {
+            this.queueCheckTimer.terminate();
+          }
         },
         startTabBlinking() {
           if (!this.tabBlinkTimer) {

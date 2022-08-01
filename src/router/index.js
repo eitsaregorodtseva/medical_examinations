@@ -97,6 +97,17 @@ const routes = [
         Role.Dispatcher
       ]
     }
+  },
+  {
+    path: '/reports',
+    name: 'Reports',
+    component: () => import('../views/ReportsExport.vue'),
+    meta: {
+      permittedRoles: [
+        Role.Admin,
+        Role.Dispatcher
+      ]
+    }
   }
 ]
 

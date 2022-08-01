@@ -57,7 +57,7 @@ const menuList = [
     link: '/new_exams'
   },
   {
-    icon: 'description',
+    icon: 'history',
     label: 'История осмотров',
     separator: true,
     roles: [
@@ -79,7 +79,7 @@ const menuList = [
     link: '/personnel/1'
   },
   {
-    icon: 'description',
+    icon: 'assessment',
     label: 'Статистика',
     separator: false,
     roles: [
@@ -89,15 +89,14 @@ const menuList = [
     link: '/statistics',
   },
   {
-    icon: 'bi-pc-display-horizontal',
-    label: 'Терминалы (скоро)',
+    icon: 'file_present',
+    label: 'Отчеты',
     separator: false,
     roles: [
         Role.Admin,
         Role.Dispatcher
       ],
-    link: '/terminals',
-    disable: true,
+    link: '/reports',
   },
 ]
 export default {

@@ -11,7 +11,7 @@
       :wrap-cells="true"
       separator="horizontal"
       :style="{'max-height' : height}"
-      table-header-class="app_normal"
+      table-header-class="app_normal text-black"
       rows-per-page-label="Записей на странице: "
       :pagination="pagination"
       :pagination-label="(firstRowIndex, endRowIndex, totalRowsNumber) => {
@@ -176,6 +176,9 @@ export default {
   &.q-table--loading thead tr:last-child th
     /* height of all previous header rows */
     top: 48px
+
+.exams-table
+    color: black
 
 
 </style>

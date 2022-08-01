@@ -1,5 +1,5 @@
 <template>
-  <q-page>
+  <q-page padding>
     <div class="row q-gutter-md col-6">
       <div class="h6 col">Выберите период</div>
       <!-- <q-date class="col" v-model="model" range minimal /> -->
@@ -30,13 +30,15 @@
 <script>
 import OrganizationsStatisticsTable from '@/components/OrganizationsStatisticsTable.vue'
 import { getAllOrganizationsStats, getOneOrganizationStats } from '@/api/organizations.api.js'
+import moment from 'moment'
+
 export default {
   components : {
         OrganizationsStatisticsTable
     },
   data () {return {
     // model: {from: '2020/07/07', to: '2020/07/17' }
-    dates: {from: '2022-01-01', to: '2022-01-02'},
+    dates: {from: moment().subtract(1, 'months').format('YYYY-MM-DD'), to: moment().format('YYYY-MM-DD')},
     user_id: null,
     user_organization_id: null,
     organizationsList : [],

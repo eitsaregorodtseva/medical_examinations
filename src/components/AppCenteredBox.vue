@@ -1,16 +1,20 @@
 <template>
-  <div class="q-pa-sm q-gutter-md fit">
-    <div class="row items-center justify-center fit">
-      <q-responsive
-        :ratio="4/3"
-        :class="isError ? 'app_error' : 'app_normal'"
-        class="col"
-        style="max-width:600px"
-      >
-        <div class="q-pa-lg">
-          <slot />
+  <div class="q-pa-sm fit">
+    <div class="q-gutter-md fit row justify-center items-center">
+      <div class="col" style="max-width:600px">
+        <q-responsive
+          class=""
+          :ratio="4/3"
+          :class="isError ? 'app_error' : 'app_normal'"
+        >
+          <div class="q-pa-md">
+            <slot />
+          </div>
+        </q-responsive>
+        <div class="q-mt-md row items-start justify-center">
+          <slot name="below-box" />
         </div>
-      </q-responsive>
+      </div>
     </div>
   </div>
 </template>

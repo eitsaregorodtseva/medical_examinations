@@ -10,7 +10,7 @@
       :wrap-cells="true"
       separator="horizontal"
       :style="{'max-height' : height}"
-      table-header-class="app_normal"
+      table-header-class="app_normal text-black"
       rows-per-page-label="Записей на странице: "
       :pagination="pagination"
       :pagination-label="(firstRowIndex, endRowIndex, totalRowsNumber) => {
