@@ -1,9 +1,14 @@
 <template>
-  <q-form @submit="onSubmit" greedy>
+  <q-form
+    greedy
+    @submit="onSubmit"
+  >
     <div v-if="!hideOrganizationSelector">
       <div class="q-pa-md">
         <div class="q-gutter-md">
-          <div class="h6 col">Выберите организацию:</div>
+          <div class="h6 col">
+            Выберите организацию:
+          </div>
           <q-select
             v-model="organization"
             filled
@@ -13,9 +18,9 @@
             option-value="id"
             option-label="name"
             style="width: 250px"
-            @update:model-value="OrganizationChangeValueHandler"
             use-input
             input-debounce="0"
+            @update:model-value="OrganizationChangeValueHandler"
             @filter="organizationFilterFunc"
           >
             <template #no-option>
@@ -30,7 +35,9 @@
       </div>
     </div>
     <div class="q-pa-md">
-      <div class="h6 q-pb-sm">Выберите период:</div>
+      <div class="h6 q-pb-sm">
+        Выберите период:
+      </div>
       <div class="row justify-start">
         <q-input
           v-model="dates.from"
@@ -49,75 +56,89 @@
     </div>
     <div class="q-pa-md">
       <div class="q-gutter-sm">
-        <div class="h6 col">Выберите форму отчета:</div>
+        <div class="h6 col">
+          Выберите форму отчета:
+        </div>
         <q-option-group
-            v-model="reportType"
-            :options="reportTypeOptions"
-            color="primary"
-            @update:model-value="ChangeAdmittanceSelectorState()"
-          />
+          v-model="reportType"
+          :options="reportTypeOptions"
+          color="primary"
+          @update:model-value="ChangeAdmittanceSelectorState()"
+        />
       </div>
     </div>
     <div class="q-pa-md">
       <div class="q-gutter-sm">
-        <div class="h6 col">Укажите параметры:</div>
-          <div class="q-gutter-sm">
-            <div class="row items-center">
-              <div class="q-pa-sm">
-                Сотрудники:
-              </div>
-              <div class="q-pa-sm">
-                <q-option-group
-                  v-model="personnelRadio"
-                  :options="personnelRadioOptions"
-                  color="primary"
-                  inline
-                  @update:model-value="ChangePersonnelSelectorState()"
-                />
-              </div>
-              <div class="q-pa-sm">
-                <q-select
+        <div class="h6 col">
+          Укажите параметры:
+        </div>
+        <div class="q-gutter-sm">
+          <div class="row items-center">
+            <div class="q-pa-sm">
+              Сотрудники:
+            </div>
+            <div class="q-pa-sm">
+              <q-option-group
+                v-model="personnelRadio"
+                :options="personnelRadioOptions"
+                color="primary"
+                inline
+                @update:model-value="ChangePersonnelSelectorState()"
+              />
+            </div>
+            <div class="q-pa-sm">
+              <q-select
+                v-model="personnelSelection"
                 :disable="disablePersonnelSelector"
                 filled
                 use-chips
                 behavior="dialog"
-                v-model="personnelSelection"
                 multiple
                 :rules="[ val => val || 'Пожалуйста, выберите сотрудников' ]"
                 :options="personnelSelectionOptions"
                 option-value="id"
-                :option-label="option => GetFullName(option.second_name,  option.first_name, option.father_name)"
+                :option-label="option => GetFullName(option.second_name, option.first_name, option.father_name)"
                 label="Сотрудники"
                 style="width: 250px"
                 use-input
                 input-debounce="0"
                 @filter="personnelFilterFunc"
-                >
-                  <template #no-option>
-                    <q-item>
-                      <q-item-section class="text-grey">
-                        Сотрудники не найдены. Проверьте данные организации.
-                      </q-item-section>
-                    </q-item>
-                  </template>
-                </q-select>
-              </div>
+              >
+                <template #no-option>
+                  <q-item>
+                    <q-item-section class="text-grey">
+                      Сотрудники не найдены. Проверьте данные организации.
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-select>
             </div>
           </div>
+        </div>
         <div class="q-gutter-sm">
           <div class="row items-center">
             <div class="q-pa-sm">
               Тип осмотра:
             </div>
             <div class="q-pa-sm">
+              <q-option-group
+                v-model="examTypeRadio"
+                :options="examTypeRadioOptions"
+                color="primary"
+                inline
+                @update:model-value="ChangeExamTypeSelectorState()"
+              />
+            </div>
+            <div class="q-pa-sm">
               <q-select
-              filled
-              v-model="examTypeSelection"
-              :rules="[ val => val || 'Пожалуйста, выберите тип осмотра' ]"
-              :options="examTypeSelectionOptions"
-              option-label="name"
-              label="Тип осмотра"
-              style="width: 250px"
+                v-model="examTypeSelection"
+                :disable="disableExamTypeSelector"
+                filled
+                :rules="[ val => val || 'Пожалуйста, выберите тип осмотра' ]"
+                :options="examTypeSelectionOptions"
+                option-label="name"
+                label="Тип осмотра"
+                style="width: 250px"
               >
                 <template #no-option>
                   <q-item>
@@ -150,6 +171,16 @@
     </div>
     <div class="q-pa-md">
       <div class="q-gutter-sm">
+        <q-btn
+          color="primary"
+          label="Сформировать"
+          type="submit"
+          :loading="loadingOnSubmitButton"
+        />
+      </div>
+    </div>
+    <div class="q-pa-md">
+      <div class="q-gutter-sm">
         <q-btn color="primary" label="Сформировать" type="submit" />
       </div>
     </div>
@@ -160,14 +191,75 @@
 import { getAllOrganizations } from '@/api/organizations.api.js'
 import { getPersonnelList } from '@/api/personnel.api.js'
 import { getExamsTypesList, getExamsHistoryAll } from '@/api/exams.api.js'
-import { fullName, nameWithInitials } from '@/helpers/names'
+import { fullName } from '@/helpers/names'
 import moment from 'moment'
 import { Notify } from 'quasar'
-import * as FileSaver from "file-saver";
-import JsExcelTemplate from "js-excel-template/browser/browser";
-//import exams_report_template from "@/assets/excel_templates/exams_report_template.xlsx"
+import { createExamsReport, createSuspendedDriversReport } from './excelReports'
 
 export default {
+  data () {return{
+    user_id: null,
+    user_organization_id: null,
+    chosen_organization_id: null,
+    isRoot: false,
+    organization: null,
+    organizationOptions : null,
+    receivedOrgOptions: null,
+    personnelSelection: null,
+    personnelSelectionOptions : null,
+    receivedPersonnel : null,
+    examTypeSelection: null,
+    examTypeSelectionOptions : null,
+    reportType : 'examReport',
+    personnelRadio : 'all',
+    examTypeRadio : 'all',
+    admittanceRadio : null,
+    reportTypeOptions : [
+        {
+          label: 'Журнал регистрации осмотра',
+          value: 'examReport'
+        },
+        {
+          label: 'Журнал регистрации водителей, отстраненных от управления транспортным средством',
+          value: 'suspendedDriversReport'
+        }
+      ],
+    personnelRadioOptions :  [
+        {
+          label: 'Все',
+          value: 'all'
+        },
+        {
+          label: 'Выбрать',
+          value: 'custom'
+        }
+      ],
+    examTypeRadioOptions :  [
+        {
+          label: 'Все',
+          value: 'all'
+        },
+        {
+          label: 'Выбрать',
+          value: 'custom'
+        }
+      ],
+    admittanceRadioOptions :  [
+        {
+          label: 'Все',
+          value: null
+        },
+        {
+          label: 'Допущен',
+          value: true
+        },
+        {
+          label: 'Не допущен',
+          value: false
+        }
+      ],
+    }
+  },
   data () {return{
     //exams_report_template : exams_report_template,
     user_id: null,
@@ -221,8 +313,10 @@ export default {
       ],
     dates: {from: moment().subtract(1, 'months').format('YYYY-MM-DD'), to: moment().format('YYYY-MM-DD')},
     disablePersonnelSelector: true,
+    disableExamTypeSelector: true,
     disableAdmittanceSelector: false,
     hideOrganizationSelector: false,
+    loadingOnSubmitButton: false
   }},
 
   watch: {
@@ -241,7 +335,7 @@ export default {
         }
         this.getExamsTypes()
     },
-  
+
   methods : {
     organizationFilterFunc (val, update) {
         if (val === '') {
@@ -277,7 +371,7 @@ export default {
       }
       else{
         this.isRoot = false
-      } 
+      }
     },
 
     HideOrgSelector(){
@@ -300,6 +394,15 @@ export default {
       }
     },
 
+    ChangeExamTypeSelectorState(){
+      if (this.examTypeRadio == "custom"){
+        this.disableExamTypeSelector = false
+      }
+      else{
+        this.disableExamTypeSelector = true
+      }
+    },
+
     ChangePersonnelSelectorState(){
       if (this.personnelRadio == "custom"){
         this.disablePersonnelSelector = false
@@ -309,7 +412,6 @@ export default {
       }
     },
 
-    OrganizationChangeValueHandler(){
       if (this.organization != null){
         this.chosen_organization_id = this.organization.id
         this.getPersonnel()
@@ -365,15 +467,14 @@ export default {
             message: 'Неправильно заданы даты. Дата начала осмотров должна быть меньше даты конца осмотров.'
           })
       } else {
+        this.loadingOnSubmitButton = true
         date_from = this.dates.from + "T00:00:00"
         date_to = this.dates.to + "T00:00:00"
 
         var examsFromURL = []
         var isAdmitted = this.admittanceRadio
-        var excelTemplatePath
-        var excelOutputName
 
-        if (this.reportType == "examReport") { 
+        if (this.reportType == "examReport") {
           excelTemplatePath = "/excel_templates/exams_report_template.xlsx"
           excelOutputName = "Журнал_регистрации_осмотра.xlsx"
         } else{
@@ -381,21 +482,18 @@ export default {
           excelTemplatePath = "/excel_templates/suspended_drivers_template.xlsx"
           excelOutputName = "Журнал_осмотров_отстранненых_водителей.xlsx"
         }
-        
+
         if (this.personnelRadio == "custom"){
           for (var i = 0; i < this.personnelSelection.length; i++){
-            var response = await getExamsHistoryAll(this.user_id, null,
-            this.chosen_organization_id, this.personnelSelection[i].pers_id, date_from,
-            date_to, this.examTypeSelection.name, isAdmitted)
+            // set personnel_id
+            requestArgs[3] = this.personnelSelection[i].pers_id
+            var response = await getExamsHistoryAll.apply(this, requestArgs)
             examsFromURL = examsFromURL.concat(response.data)
           }
         } else{
-          var response = await getExamsHistoryAll(this.user_id, null,
-          this.chosen_organization_id, null, date_from,
-          date_to, this.examTypeSelection.name, isAdmitted)
+          var response = await getExamsHistoryAll.apply(this, requestArgs)
           examsFromURL = response.data
         }
-        
         if (examsFromURL.length <= 0){
           Notify.create({
             color: 'warning',
@@ -404,13 +502,11 @@ export default {
             message: 'Результаты по заданным фильтрам не найдены'
           })
         } else {
-          var exams = this.createCorrectExamsArray(examsFromURL)
-          const fetchTable = await fetch(excelTemplatePath)
-          const arrayBuffer = await fetchTable.arrayBuffer()
-          const excelTemplate = await JsExcelTemplate.fromArrayBuffer(arrayBuffer)
-          excelTemplate.set("exams", exams);
-          const blob = await excelTemplate.toBlob()
-          FileSaver.saveAs(blob, excelOutputName);
+          if (this.reportType == "examReport") {
+            await createExamsReport(examsFromURL, this.organization.name, this.dates.from, this.dates.to)
+          } else if (this.reportType == "suspendedDriversReport") {
+            await createSuspendedDriversReport(examsFromURL, this.organization.name, this.dates.from, this.dates.to)
+          }
 
           Notify.create({
               color: 'green-5',
@@ -418,45 +514,6 @@ export default {
               message: 'Отчет сформирован'
             })
         }
+        this.loadingOnSubmitButton = false
       }
-    },
-
-    createCorrectExamsArray(oldExams){
-      var newExams = []
-      var oneExam = {}
-      for (var i = 0; i < oldExams.length; i++){        
-        oneExam.exam_id = oldExams[i].exam_id
-        oneExam.date = oldExams[i].exam_datetime.slice(0,10)
-        oneExam.time = oldExams[i].exam_datetime.slice(11,16)
-        oneExam.pers_name = fullName(oldExams[i].second_name, oldExams[i].first_name, oldExams[i].father_name)
-        oneExam.pers_number = oldExams[i].pers_number
-        oneExam.date_of_birth = oldExams[i].date_of_birth
-        oneExam.gender = oldExams[i].gender
-        if (oldExams[i].complaints != null){
-          oneExam.complaints_all = oldExams[i].complaints.replace(/[^a-zа-яё\s,]/gi, '');
-        } else{
-          oneExam.complaints_all = "Нет"
-        }
-        oneExam.pressure = oldExams[i].pressure_upper + "/" + oldExams[i].pressure_lower
-        oneExam.heart_rate = oldExams[i].heart_rate
-        oneExam.temperature = oldExams[i].temperature.toFixed(1)
-        oneExam.alcohol = oldExams[i].alcohol
-        oneExam.psycho = "Отсутств"
-        oneExam.factors = "Отсутств"
-        oneExam.med_name_with_initials = nameWithInitials(oldExams[i].med_second_name, oldExams[i].med_first_name, oldExams[i].med_father_name)
-        oneExam.med_el_siignature = oldExams[i].med_el_signature
-        oneExam.pers_name_with_initials = nameWithInitials(oldExams[i].second_name, oldExams[i].first_name, oldExams[i].father_name)
-
-        newExams.push(oneExam)
-        oneExam = {}
-      }
-
-      return newExams
     }
-  }
-}
-</script>
-
-<style>
-
-</style>

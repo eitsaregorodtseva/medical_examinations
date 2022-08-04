@@ -13,9 +13,9 @@ const getExamsTypesList = () => webAPI.get('/values/exams_types');
 const getExamData = (exam_id, user_id) => webAPI.get(`/exams/${exam_id}`,
     { params : {user_id} });
 
-const getExamsHistoryAll = (user_id, has_verdict = null, organization_id = null, 
+const getExamsHistoryAll = (user_id, has_verdict = null, organization_id = null,
     personnel_id = null, date_from = null, date_to = null, type = null, admittance = null) => webAPI.get('/exams',
-    { params: {user_id, has_verdict, organization_id, personnel_id, date_from, date_to, 
+    { params: {user_id, has_verdict, organization_id, personnel_id, date_from, date_to,
                 type, admittance} });
 
 const getExamsHistoryForOrganization = (user_id, organization_id) => webAPI.get('/exams',
