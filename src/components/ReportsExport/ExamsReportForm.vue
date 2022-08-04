@@ -179,11 +179,6 @@
         />
       </div>
     </div>
-    <div class="q-pa-md">
-      <div class="q-gutter-sm">
-        <q-btn color="primary" label="Сформировать" type="submit" />
-      </div>
-    </div>
   </q-form>
 </template>
 
@@ -235,59 +230,6 @@ export default {
         }
       ],
     examTypeRadioOptions :  [
-        {
-          label: 'Все',
-          value: 'all'
-        },
-        {
-          label: 'Выбрать',
-          value: 'custom'
-        }
-      ],
-    admittanceRadioOptions :  [
-        {
-          label: 'Все',
-          value: null
-        },
-        {
-          label: 'Допущен',
-          value: true
-        },
-        {
-          label: 'Не допущен',
-          value: false
-        }
-      ],
-    }
-  },
-  data () {return{
-    //exams_report_template : exams_report_template,
-    user_id: null,
-    user_organization_id: null,
-    chosen_organization_id: null,
-    isRoot: false,
-    organization: null,
-    organizationOptions : null,
-    receivedOrgOptions: null,
-    personnelSelection: null,
-    personnelSelectionOptions : null,
-    receivedPersonnel : null,
-    examTypeSelection: null,
-    examTypeSelectionOptions : null,
-    reportType : 'examReport',
-    personnelRadio : 'all',
-    admittanceRadio : null,
-    reportTypeOptions : [
-        {
-          label: 'Журнал регистрации осмотра',
-          value: 'examReport'
-        },
-        {
-          label: 'Журнал регистрации водителей, отстраненных от управления транспортным средством',
-          value: 'failed_drivers_report'
-        }
-      ],
-    personnelRadioOptions :  [
         {
           label: 'Все',
           value: 'all'
@@ -412,6 +354,7 @@ export default {
       }
     },
 
+    OrganizationChangeValueHandler(){
       if (this.organization != null){
         this.chosen_organization_id = this.organization.id
         this.getPersonnel()
@@ -474,13 +417,20 @@ export default {
         var examsFromURL = []
         var isAdmitted = this.admittanceRadio
 
-        if (this.reportType == "examReport") {
-          excelTemplatePath = "/excel_templates/exams_report_template.xlsx"
-          excelOutputName = "Журнал_регистрации_осмотра.xlsx"
-        } else{
-          isAdmitted = false
-          excelTemplatePath = "/excel_templates/suspended_drivers_template.xlsx"
-          excelOutputName = "Журнал_осмотров_отстранненых_водителей.xlsx"
+        var requestArgs = [
+          this.user_id, // 'user_id' -- 0
+          null, // 'has_verdict' -- 1
+          this.chosen_organization_id, // 'organization_id' -- 2
+          null, // 'personnel_id' -- 3
+          date_from, // 'date_from' -- 4
+          date_to, // 'date_to' -- 5
+          null, // 'type' -- 6
+          this.reportType == "suspendedDriversReport" ? false : isAdmitted // 'admittance' -- 7
+        ]
+
+        if (this.examTypeRadio == "custom") {
+          // set exam type
+          requestArgs[6] = this.examTypeSelection.name
         }
 
         if (this.personnelRadio == "custom"){
@@ -517,3 +467,6 @@ export default {
         this.loadingOnSubmitButton = false
       }
     }
+  }
+}
+</script>
