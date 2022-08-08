@@ -150,7 +150,14 @@ const columns = [
     align: 'left',
     field: row => nameWithInitials(row.med_second_name, row.med_first_name, row.med_father_name),
     sortable: true
-  }
+  },
+  { name: 'verdict_datetime',
+    label: 'Время вынесения вердикта', 
+    align: 'left', 
+    field: 'verdict_datetime', 
+    format:  val => val==null ? "" : (moment(val).format('lll')),
+    sortable: true 
+  }  
 ]
 
 const parseVerdictsList = (verdicts_list, verdict_comment) => {
