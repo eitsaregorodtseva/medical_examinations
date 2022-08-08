@@ -1,11 +1,11 @@
 <template>
   <div>
     <q-img
-      contain
+      fit="contain"
       :src="imageURL"
       :class="{ 'cursor-pointer' : isLoaded }"
       :title="isLoaded ? 'Развернуть': ''"
-      style="min-height: 50px; min-width: 50px"
+      style="min-height: 50px; min-width: 50px; max-height: 200px"
       @click="isLoaded ? showFullImageDialog = true : {}"
       @load="isLoaded = true"
       @error="isLoaded = false"

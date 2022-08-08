@@ -1,12 +1,12 @@
 <template>
-  <div class="row items-center justify-center fit">
+  <div class="row fit">
     <video
       ref="video1"
       :src="source1"
       controls
       autoplay
       muted
-      class="col-12 col-xl q-pa-sm"
+      class="col-12 col-lg q-pa-sm"
       @seeked="syncVideoPlayers('video1','video2')"
     />
     <video
@@ -15,7 +15,7 @@
       controls
       autoplay
       muted
-      class="col-12 col-xl q-pa-sm"
+      class="col-12 col-lg q-pa-sm"
       @seeked="syncVideoPlayers('video2','video1')"
     />
   </div>

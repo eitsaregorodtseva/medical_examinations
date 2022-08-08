@@ -70,18 +70,18 @@
       :full-height="true"
     >
       <q-card class="d-flex flex-column bg-white">
-        <div class="align-self-end sticky-top bg-white">
+        <q-toolbar class="bg-white" style="position: sticky; z-index: 1; top: 0px;">
+          <q-space />
           <q-btn
             v-close-popup
-            class="justify-self-end"
-            flat
             icon="close"
+            flat
           >
             <q-tooltip class="bg-white text-primary">
               Закрыть
             </q-tooltip>
           </q-btn>
-        </div>
+        </q-toolbar>
         <exam-data @verdict-made="showExamDialog = false"/>
       </q-card>
     </q-dialog>
@@ -220,5 +220,6 @@ export default {
   &.q-table--loading thead tr:last-child th
     /* height of all previous header rows */
     top: 48px
+
 
 </style>

@@ -4,13 +4,11 @@
     id="given_verdict"
     class="column"
   >
-    <q-card-section>
-      <div class="text-h6 text-center">
-        Вердикт
-      </div>
+    <q-card-section class="text-h6 text-center q-pa-sm">
+      Вердикт
     </q-card-section>
     <q-separator />
-    <q-card-section class="q-pt-none">
+    <q-card-section class="q-pt-sm">
       <span> Автоматический: </span>
       <span>
         <q-badge
@@ -126,7 +124,11 @@
           v-close-popup
           icon="close"
           flat
-        />
+        >
+          <q-tooltip class="bg-white text-primary">
+            Закрыть
+          </q-tooltip>
+        </q-btn>
       </q-toolbar>
       <q-card-section>
         <form

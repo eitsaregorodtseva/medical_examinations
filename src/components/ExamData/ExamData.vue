@@ -9,13 +9,18 @@
     <div
       v-if="dataLoaded"
     >
-      <div class="text-h5 q-mb-lg">Осмотр: № {{ exam_id }} </div>
-      <div class="row justify-around q-col-gutter-md">
+      <div class="text-h5 q-mb-lg">
+        Осмотр: № {{ exam_id }}
+      </div>
+      <div class="row justify-around items-start q-col-gutter-md">
         <div class="col-md col-xl-4 column q-col-gutter-sm">
           <q-card
             class="col-auto"
           >
-            <q-card-section :horizontal="$q.screen.gt.sm" class="fit">
+            <q-card-section
+              :horizontal="$q.screen.gt.sm"
+              class="fit"
+            >
               <q-card-section class="col-md">
                 <app-image
                   :image-id="exam_data.photo"
@@ -34,7 +39,7 @@
                   Пол: {{ exam_data.gender }}
                   <br>
                   Возраст: {{ exam_data.age }}
-                  <q-separator class="q-my-md"/>
+                  <q-separator class="q-my-md" />
                   Ответственный: {{ managerFullName }}
                   <br>
                   Тел: {{ organization_data.manager_phone_number }}
@@ -46,16 +51,36 @@
           <div class="col">
             <sensor-data-table :exam-data="exam_data" />
             <q-card class="q-mt-sm">
-              <q-card-section class="text-h6 text-center">
+              <q-card-section class="text-h6 text-center q-pa-sm">
                 Жалобы
               </q-card-section>
-              <q-card-section class="q-pt-none">
-                {{ parsedComplaints || 'Нет' }}
+              <q-separator />
+              <q-card-section class="q-pa-md text-center">
+                {{ parsedComplaints || 'Нет жалоб' }}
+              </q-card-section>
+            </q-card>
+          </div>
+          <div
+            v-if="$q.screen.lt.lg"
+            class="col-auto"
+          >
+            <q-card>
+              <q-card-section class="text-h6 text-center q-pa-sm">
+                Справки
+              </q-card-section>
+              <q-separator class="q-pt-none" />
+              <q-card-section class="q-pt-sm">
+                <medpapers-grid
+                  class="fit"
+                  dense
+                  :personnel-id="exam_data.pers_id"
+                  :user-id="user_id"
+                />
               </q-card-section>
             </q-card>
           </div>
         </div>
-        <div class="col-md col-xl-6 column q-col-gutter-md justify-around">
+        <div class="col-md col-xl-6 column q-col-gutter-md justify-start">
           <div class="col-auto">
             <exam-verdict
               :exam-id="exam_id"
@@ -70,46 +95,35 @@
             :source1="serverURL + '/' + (exam_data.video1 || '1') + '.mp4'"
             :source2="serverURL + '/' + (exam_data.video2 || '2') + '.mp4'"
           />
+          <div
+            v-if="$q.screen.gt.lg || $q.screen.lg"
+            class="col-auto"
+          >
+            <q-card>
+              <q-card-section class="text-h6 text-center q-pa-sm">
+                Справки
+              </q-card-section>
+              <q-separator class="q-pt-none" />
+              <q-card-section class="q-pt-sm">
+                <medpapers-grid
+                  class="fit"
+                  dense
+                  :personnel-id="exam_data.pers_id"
+                  :user-id="user_id"
+                />
+              </q-card-section>
+            </q-card>
+          </div>
         </div>
       </div>
-
-      <q-tabs
-        v-model="active_history_tab"
-        active-color="primary"
-        indicator-color="primary"
-        align="justify"
-        narrow-indicator
-        class="shadow-2 q-mt-md"
-        content-class="text-bold"
-      >
-        <q-tab
-          name="history"
-          label="История"
-        />
-        <q-tab
-          name="medpapers"
-          label="Справки"
-        />
-      </q-tabs>
-      <q-separator />
-      <q-tab-panels
-        v-model="active_history_tab"
-        animated
-      >
-        <q-tab-panel name="history">
-          <exam-data-history-table
-            v-if="dataLoaded"
-            :exams="exam_hist"
-            height="90vh"
-          />
-        </q-tab-panel>
-        <q-tab-panel name="medpapers">
-          <medpapers-grid
-            :personnel-id="exam_data.pers_id"
-            :user-id="user_id"
-          />
-        </q-tab-panel>
-      </q-tab-panels>
+      <div class="text-h6 q-pa-md">
+        Предыдущие осмотры
+      </div>
+      <exam-data-history-table
+        v-if="dataLoaded"
+        :exams="exam_hist"
+        height="90vh"
+      />
     </div>
   </q-page>
 </template>
