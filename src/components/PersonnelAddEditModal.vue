@@ -15,20 +15,23 @@
         />
       </q-toolbar>
       <q-card-section>
-        <q-form class="q-gutter-sm" @submit.prevent="onSubmit">
+        <q-form class="q-gutter-sm" greedy @submit="onSubmit">
           <q-input
             v-model.trim="personnel_info.pers_number"
             label="Таб. №"
+            :rules="[val => val.length > 0 || 'Введите текст']"
           />
           <q-input
             v-model.trim="personnel_info.second_name"
             label="Фамилия"
             dense
+            :rules="[val => val.length > 0 || 'Введите текст']"
           />
           <q-input
             v-model.trim="personnel_info.first_name"
             label="Имя"
             dense
+            :rules="[val => val.length > 0 || 'Введите текст']"
           />
           <q-input
             v-model.trim="personnel_info.father_name"
@@ -52,6 +55,12 @@
             label="Дата рождения"
             type="date"
             dense
+            lazy-rules="ondemand"
+            :rules="[
+              val => $moment(val).isValid() || 'Неверная дата',
+              val => $moment().diff(val, 'years') < 99 || 'Слишком ранняя дата',
+              val => $moment().diff(val, 'years') > 16 || 'Слишком поздняя дата'
+            ]"
           >
             <template #after>
               <div class="text-caption self-end text-center">
@@ -173,7 +182,13 @@ export default {
                 this.$emit('personnelUpdated')
                 this.closeModal()
 
-            } catch (err) {}
+            } catch (err) {
+              this.$notify({
+                type : 'error',
+                title : 'Ошибка',
+                text : 'Не удалось обновить информацию'
+              });
+            }
         },
         async addPersonnel(){
             try {
@@ -185,7 +200,13 @@ export default {
                 this.$emit('personnelAdded', results.id)
                 this.closeModal()
                 this.personnel_info = emptyForm()
-            } catch (err) {}
+            } catch (err) {
+              this.$notify({
+                type : 'error',
+                title : 'Ошибка',
+                text : 'Не удалось добавить работника'
+              });
+            }
         },
         onSubmit() {
             if (this.isEditing) {

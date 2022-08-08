@@ -2,7 +2,7 @@
   <q-page>
     <PersonnelAddEditModal
       v-model="showAddModal"
-      title="Новый водитель"
+      title="Новый работник"
       @personnel-added="onAddModalSuccess"
     />
     <PersonnelAddEditModal
@@ -15,27 +15,38 @@
     />
     <div class="fit row q-col-gutter-md">
       <div class="col-3 full-height overflow-auto">
-        <q-toolbar
-          class="text-white bg-white shadow-2 full-width row"
+        <div
+          class="q-py-xs bg-white shadow-2 full-width column items-stretch"
           style="position: sticky; z-index: 1; top: 0px;"
         >
-          <q-input
-            v-model="search"
-            borderless
-            dense
-            debounce="300"
-            class="col"
-            placeholder="Поиск"
-          />
-          <q-btn
-            flat
-            round
-            dense
-            icon="search"
-            color="dark"
-            class="col-auto"
-          />
-        </q-toolbar>
+          <div v-if="user_organization_id != 'null'" class="col-auto q-mb-sm">
+            <q-btn
+              dense
+              icon="add"
+              class="full-width text-dark"
+              label="Новый работник"
+              @click="showAddModal = true"
+            />
+          </div>
+          <div class="col row q-px-md">
+            <q-input
+              v-model="search"
+              borderless
+              dense
+              debounce="300"
+              class="col"
+              placeholder="Поиск"
+            />
+            <q-btn
+              flat
+              round
+              dense
+              icon="search"
+              color="dark"
+              class="col-auto"
+            />
+          </div>
+        </div>
         <q-list
           v-if="personnelListLoaded"
           bordered
@@ -120,7 +131,6 @@
 
 
 <script>
-    import AppListGroup from '@/components/AppListGroup'
     import AppImage from '@/components/AppImage'
     import AppFileUpload from '@/components/AppFileUpload'
     import PersonnelAddEditModal from '@/components/PersonnelAddEditModal'
@@ -130,7 +140,6 @@
 
     export default {
         components: {
-            AppListGroup,
             AppImage,
             PersonnelAddEditModal,
             AppFileUpload,
@@ -148,7 +157,7 @@
             personnel_list : [], // of objects {id, name}
             search : '',
             showEditModal : false,
-            showAddModel : false
+            showAddModal : false
         }),
 
         computed : {
