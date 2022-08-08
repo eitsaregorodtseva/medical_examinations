@@ -15,11 +15,12 @@
     />
     <div class="fit row q-col-gutter-md">
       <div class="col-3 full-height overflow-auto">
+        <organization-picker v-if="user_organization_id == 'null'" dense class="full-width" />
         <div
           class="q-py-xs bg-white shadow-2 full-width column items-stretch"
           style="position: sticky; z-index: 1; top: 0px;"
         >
-          <div v-if="user_organization_id != 'null'" class="col-auto q-mb-sm">
+          <div class="col-auto q-mb-sm">
             <q-btn
               dense
               icon="add"
@@ -82,7 +83,6 @@
             />
           </div>
 
-
           <div class="col-md-8 q-pt-md q-gutter-md">
             <div class="text-h6"># {{ personnel_info.pers_number }}</div>
             <div class="text-h4">{{ personnelFullName }}</div>
@@ -137,15 +137,16 @@
     import { getPersonnelList, getPersonnelRecord, updatePersonnelRecord } from '@/api/personnel.api'
     import { fullName, nameWithInitials } from '@/helpers/names'
     import MedpapersGrid from '@/components/Medpapers/MedpapersGrid.vue'
+    import OrganizationPicker from '../components/header/OrganizationPicker.vue'
 
     export default {
         components: {
             AppImage,
             PersonnelAddEditModal,
             AppFileUpload,
-            MedpapersGrid
+            MedpapersGrid,
+            OrganizationPicker
         },
-
         props: {
             personnelId : Number
         },
@@ -196,6 +197,9 @@
             personnelId () {
                 this.fetchPersonnelInfo(this.personnelId)
                 this.$refs.imgUploadForm.clear()
+            },
+            '$store.state.chosenOrganization': function() {
+              this.fetchPersonnelList()
             }
         },
 
@@ -234,8 +238,10 @@
                     var response
                     if (this.user_organization_id !== 'null') {
                         response = await getPersonnelList(this.user_id, this.user_organization_id)
+                    } else if (this.$store.state.chosenOrganization) {
+                        response = await getPersonnelList(this.user_id, this.$store.state.chosenOrganization.id)
                     } else {
-                        response = await getPersonnelList(this.user_id)
+                      response = await getPersonnelList(this.user_id)
                     }
                     const results = response.data
                     this.personnel_list = results.map(personnel_info => ({

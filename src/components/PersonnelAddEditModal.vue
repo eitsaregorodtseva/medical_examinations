@@ -104,7 +104,7 @@ let uuid = 0
 
 function emptyForm() {
     return {
-        organization : 1,
+        organization : null,
         pers_number : '',
         second_name : '',
         first_name : '',
@@ -192,8 +192,16 @@ export default {
         },
         async addPersonnel(){
             try {
-                if (this.user_organization_id !== "null")
+                if (this.user_organization_id !== "null") {
                   this.personnel_info.organization = this.user_organization_id
+                } else if (this.$store.state.chosenOrganization) {
+                  this.personnel_info.organization = this.$store.state.chosenOrganization.id
+                } else {
+                  this.$notify({
+                    type : 'warn',
+                    title : 'Не выбрана организация',
+                  });
+                }
                 const response = await addPersonnelRecord(this.user_id, this.personnel_info)
                 const results = response.data
                 // On success
