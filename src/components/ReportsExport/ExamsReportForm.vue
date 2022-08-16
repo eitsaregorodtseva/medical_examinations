@@ -412,7 +412,7 @@ export default {
       } else {
         this.loadingOnSubmitButton = true
         date_from = this.dates.from + "T00:00:00"
-        date_to = this.dates.to + "T00:00:00"
+        date_to = this.dates.to + "T23:59:59.99999"
 
         var examsFromURL = []
         var isAdmitted = this.admittanceRadio
