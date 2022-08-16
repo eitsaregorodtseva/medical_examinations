@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@aktivco/rutoken-plugin": "^1.0.9",
+    "@babel/polyfill": "^7.12.1",
     "@kyvg/vue3-notification": "^2.3.4",
     "@quasar/extras": "^1.12.5",
     "axios": "^0.21.1",
@@ -15,17 +16,21 @@
     "core-js": "^3.6.5",
     "echarts": "^5.2.0",
     "file-saver": "^2.0.5",
+    "fs": "^0.0.1-security",
     "js-excel-template": "^3.0.1",
     "moment": "^2.29.1",
     "quasar": "^2.5.3",
     "register-service-worker": "^1.7.1",
+    "stream": "^0.0.2",
+    "stream-browserify": "^3.0.0",
     "vue": "^3.0.0",
     "vue-echarts": "^6.0.0",
     "vue-router": "^4.0.0-0",
     "vue3-chart-v2": "^0.8.2",
     "vue3-popper": "^1.2.0",
     "vue3-table-lite": "^1.0.6",
-    "vuex": "^4.0.0-0"
+    "vuex": "^4.0.0-0",
+    "xlsx-template-browserify": "^2.0.1"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^5.0.1",
