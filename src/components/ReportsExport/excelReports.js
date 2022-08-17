@@ -7,21 +7,21 @@ import { fullName, nameWithInitials } from '@/helpers/names'
 import moment from 'moment'
 
 export async function createExamsReport (exams, organizationName, dateFrom, dateTo) {
-    await createReport(exams, organizationName, dateFrom, dateTo, "/excel_templates/exams_report_template.xlsx", "Журнал_регистрации_осмотра.xlsx")
+    await createReport(exams, organizationName, dateFrom, dateTo, "/excel_templates/exams_report_template.xlsx?v=2.0", "Журнал_регистрации_осмотра.xlsx")
 }
 
 export async function createSuspendedDriversReport (exams, organizationName, dateFrom, dateTo) {
-    await createReport(exams, organizationName, dateFrom, dateTo, "/excel_templates/suspended_drivers_template.xlsx", "Журнал_осмотров_отстранненых_водителей.xlsx")
+    await createReport(exams, organizationName, dateFrom, dateTo, "/excel_templates/suspended_drivers_template.xlsx?v=2.0", "Журнал_осмотров_отстранненых_водителей.xlsx")
 }
 
 async function createReport (exams, organizationName, dateFrom, dateTo, excelTemplatePath, outputFileName) {
-    
+
     var formattedExams = await createCorrectExamsArray(exams)
     // Get template excel file
     const fetchTable = await fetch(excelTemplatePath)
     const arrayBuffer = await fetchTable.arrayBuffer()
     // Create a template
-    var option = {imageRatio : 10} 
+    var option = {imageRatio : 10}
     var template = new XlsxTemplate(arrayBuffer, option);
     // Replacements take place on zero and first sheets
     var firstSheetName = "Обложка";
@@ -69,7 +69,7 @@ async function createCorrectExamsArray(oldExams){
       oneExam.medworker_data = med_name_with_initials + '\n' + med_el_signature
       oneExam.pers_name_with_initials = nameWithInitials(oldExams[i].second_name, oldExams[i].first_name, oldExams[i].father_name)
 
-      if (oldExams[i].signature != null && oldExams[i].signature != ""){        
+      if (oldExams[i].signature != null && oldExams[i].signature != ""){
         var signatureURL = serverURL + `/api/mediaserver/get_image?file_id=${oldExams[i].signature}`
         const response = await fetch(signatureURL)
         const imageBlob = await response.blob()
