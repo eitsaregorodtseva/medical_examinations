@@ -3,7 +3,7 @@
     <q-table
       class="exams-table"
       title="Осмотры"
-      :rows="exams"
+      :rows="isFilterApplied ? filtered_data : exams"
       :columns="columns"
       row-key="exam_datetime"
       :loading="loading"
@@ -18,6 +18,34 @@
       }"
       @row-click="onRowClicked"
     >
+      <template v-slot:top>
+        <div class="col-2 q-table__title">Осмотры</div>
+        <q-space />
+        <div class="text-caption q-mr-xs">Фильтры</div>
+        <q-btn
+          color="primary"
+          icon="filter_list"
+          size="md"
+          flat
+          @click="openFilters = true"
+        >
+          <q-badge v-show="isFilterApplied" color="accent" floating></q-badge>
+          <q-tooltip class="bg-white text-primary">
+            Применить фильтры
+          </q-tooltip>
+        </q-btn>
+        <!--<q-btn
+          color="primary"
+          icon="filter_list_off"
+          flat
+          :disable="!isFilterApplied"
+          @click="DropFilters"
+          >
+          <q-tooltip class="bg-white text-primary">
+            Сбросить все фильтры
+          </q-tooltip>
+        </q-btn>-->
+      </template>
       <template #body-cell-auto_admittance="props">
         <q-td :props="props">
           <q-badge
@@ -63,6 +91,26 @@
     </q-table>
 
     <q-dialog
+      v-model="openFilters"
+    >
+      <q-card style="width: 700px; max-width: 80vw;">
+        <q-toolbar class="bg-white" style="position: sticky; z-index: 1; top: 0px;">
+          <q-space />
+          <q-btn
+            v-close-popup
+            icon="close"
+            flat
+          >
+            <q-tooltip class="bg-white text-primary">
+              Закрыть
+            </q-tooltip>
+          </q-btn>
+        </q-toolbar>
+        <exams-history-filter :initFilters='filters' @OnFilterApplied="ApplyFilter($event)"></exams-history-filter>
+      </q-card>
+    </q-dialog>
+
+    <q-dialog
       v-model="showExamDialog"
       transition-show="slide-up"
       transition-hide="slide-down"
@@ -92,6 +140,9 @@
 import moment from 'moment';
 import ExamData from './ExamData/ExamData.vue';
 import { nameWithInitials, fullName } from '@/helpers/names'
+import ExamsHistoryFilter from './Filtering/ExamsHistoryFilter.vue';
+import { getExamsHistoryAll } from '@/api/exams.api.js'
+import { Notify } from 'quasar'
 
 const columns = [
   { name: 'exam_datetime', required: true, label: 'Дата и время', align: 'left', field: 'exam_datetime', format: val => moment(val).format('lll'), sortable: true },
@@ -152,12 +203,12 @@ const columns = [
     sortable: true
   },
   { name: 'verdict_datetime',
-    label: 'Время вынесения вердикта', 
-    align: 'left', 
-    field: 'verdict_datetime', 
+    label: 'Время вынесения вердикта',
+    align: 'left',
+    field: 'verdict_datetime',
     format:  val => val==null ? "" : (moment(val).format('lll')),
-    sortable: true 
-  }  
+    sortable: true
+  }
 ]
 
 const parseVerdictsList = (verdicts_list, verdict_comment) => {
@@ -178,7 +229,9 @@ const parseVerdictsList = (verdicts_list, verdict_comment) => {
 }
 
 export default {
-  components: { ExamData },
+  components: {
+    ExamData,
+    ExamsHistoryFilter },
   props: {
     exams : Array,
     height: String
@@ -186,6 +239,10 @@ export default {
   data () {return {
     columns: columns,
     showExamDialog: false,
+    openFilters: false,
+    filtered_data: [],
+    filters: null,
+    isFilterApplied: false,
     pagination: {
         sortBy: 'exam_datetime',
         descending: true,
@@ -196,9 +253,54 @@ export default {
   computed : {
     loading () {
       return !this.exams || (this.exams.length == 0)
-    }
+    },
   },
   methods : {
+    async ApplyFilter(filtersEventData){
+      this.filters = filtersEventData.appliedFilters
+      var requestArgs = filtersEventData.requestArgs
+
+      if (this.filters != null){
+        this.isFilterApplied = true
+        var examsFromURL = []
+        if (this.filters.personnelRadio == "custom"){
+          for (var i = 0; i < this.filters.personnelSelection.length; i++){
+            // set personnel_id
+            requestArgs[3] = this.filters.personnelSelection[i].pers_id
+            var response = await getExamsHistoryAll.apply(this, requestArgs)
+            examsFromURL = examsFromURL.concat(response.data)
+          }
+        } else{
+          var response = await getExamsHistoryAll.apply(this, requestArgs)
+          examsFromURL = response.data
+        }
+
+        this.filtered_data = examsFromURL
+
+        if (examsFromURL.length <= 0){
+          Notify.create({
+            color: 'warning',
+            textColor: 'white',
+            icon: 'warning',
+            message: 'Результаты по заданным фильтрам не найдены'
+          })
+        } else {
+          Notify.create({
+              color: 'green-5',
+              textColor: 'white',
+              message: 'Фильтры успешно применены'
+            })
+        }
+      } else{
+        this.isFilterApplied = false
+      }
+    },
+
+    DropFilters(){
+      this.isFilterApplied = false
+      this.filters = null
+    },
+
     onRowClicked(evt, row, index) {
       sessionStorage.setItem('exam_id', row.exam_id)
       this.showExamDialog = true
