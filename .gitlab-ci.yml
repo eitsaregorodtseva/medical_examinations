@@ -1,0 +1,35 @@
+image: node:14-buster
+
+stages:
+  - lint
+  - build
+
+cache:
+  paths:
+    - node_modules/
+
+eslint:
+  stage: lint
+  script:
+    - npm ci
+    - npm run lint
+  tags:
+    - docker
+
+eslint-strict:
+  stage: lint
+  script:
+    - npm ci
+    - npx eslint --max-warnings=0 src
+  allow_failure: true
+  tags:
+    - docker
+
+build:
+  stage: build
+  script:
+    - npm ci
+    - npm run build
+  tags:
+    - docker
+
