@@ -21,7 +21,7 @@ async function createReport (exams, organizationName, dateFrom, dateTo, excelTem
     const fetchTable = await fetch(excelTemplatePath)
     const arrayBuffer = await fetchTable.arrayBuffer()
     // Create a template
-    var option = {imageRatio : 10}
+    var option = {imageRatio : 8}
     var template = new XlsxTemplate(arrayBuffer, option);
     // Replacements take place on zero and first sheets
     var firstSheetName = "Обложка";
@@ -68,6 +68,15 @@ async function createCorrectExamsArray(oldExams){
       var med_el_signature = oldExams[i].med_el_signature
       oneExam.medworker_data = med_name_with_initials + '\n' + med_el_signature
       oneExam.pers_name_with_initials = nameWithInitials(oldExams[i].second_name, oldExams[i].first_name, oldExams[i].father_name)
+      if (oldExams[i].admittance == null){
+        oneExam.admittance = ""
+      }
+      else if (oldExams[i].admittance == true){
+        oneExam.admittance = "Допущен"
+      }
+      else{
+        oneExam.admittance = "Не допущен"
+      }
 
       if (oldExams[i].signature != null && oldExams[i].signature != ""){
         var signatureURL = serverURL + `/api/mediaserver/get_image?file_id=${oldExams[i].signature}`

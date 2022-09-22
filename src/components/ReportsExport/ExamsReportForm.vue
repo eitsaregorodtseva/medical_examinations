@@ -328,7 +328,7 @@ export default {
     },
 
     ChangeAdmittanceSelectorState(){
-      if (this.reportType == "failed_drivers_report"){
+      if (this.reportType == "suspendedDriversReport"){
         this.disableAdmittanceSelector = true
       }
       else{
@@ -441,6 +441,7 @@ export default {
             examsFromURL = examsFromURL.concat(response.data)
           }
         } else{
+          // eslint-disable-next-line no-redeclare
           var response = await getExamsHistoryAll.apply(this, requestArgs)
           examsFromURL = response.data
         }
