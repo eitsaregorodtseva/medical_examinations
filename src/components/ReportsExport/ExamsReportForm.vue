@@ -453,10 +453,11 @@ export default {
             message: 'Результаты по заданным фильтрам не найдены'
           })
         } else {
+          var org_name = examsFromURL[0].organization_name
           if (this.reportType == "examReport") {
-            await createExamsReport(examsFromURL, this.organization.name, this.dates.from, this.dates.to)
+            await createExamsReport(examsFromURL, org_name, this.dates.from, this.dates.to)
           } else if (this.reportType == "suspendedDriversReport") {
-            await createSuspendedDriversReport(examsFromURL, this.organization.name, this.dates.from, this.dates.to)
+            await createSuspendedDriversReport(examsFromURL, org_name, this.dates.from, this.dates.to)
           }
 
           Notify.create({
