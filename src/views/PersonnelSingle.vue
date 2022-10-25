@@ -86,6 +86,7 @@
           <div class="col-md-8 q-pt-md q-gutter-md">
             <div class="text-h6"># {{ personnel_info.pers_number }}</div>
             <div class="text-h4">{{ personnelFullName }}</div>
+            <div class="text-h6">{{ personnel_info.organization_name }}</div>
             <q-markup-table flat>
               <tbody>
                 <tr class="q-tr--no-hover">
