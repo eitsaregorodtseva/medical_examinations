@@ -78,7 +78,7 @@
           />
         </q-td>
       </template>
-      <template #body-cell-name="props">
+      <!-- <template #body-cell-name="props">
         <q-td :props="props">
           <router-link
             :to="'/personnel/' + props.row.pers_id"
@@ -87,7 +87,7 @@
             {{ props.value }}
           </router-link>
         </q-td>
-      </template>
+      </template> -->
     </q-table>
 
     <q-dialog
