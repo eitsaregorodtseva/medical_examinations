@@ -90,6 +90,15 @@
               @verdict-made="$emit('verdictMade')"
             />
           </div>
+          <div class="col">
+            <q-btn
+              label="Сообщить о некачественно проведенном осмотре"
+              :href="reportPoorQualityExam"
+              target="_blank"
+              outline
+              no-caps
+            />
+          </div>
           <video-players
             class="col"
             :source1="serverURL + '/' + (exam_data.video1 || '1') + '.mp4'"
@@ -191,6 +200,9 @@ export default {
               return fullName(this.organization_data.manager_second_name, this.organization_data.manager_first_name, this.organization_data.manager_father_name)
             }
         },
+        reportPoorQualityExam() {
+          return `https://docs.google.com/forms/d/e/1FAIpQLSc4n0KyCwgb9wAvILOeRGAWXuMbENT2tw-a8XRste9S6gsRew/viewform?usp=pp_url&entry.760264006=${this.exam_id}&entry.1989991990=${this.user_id}`
+        }
     },
     mounted() {
         this.getdata()
