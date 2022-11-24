@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/require-default-prop -->
 <template>
   <q-card 
     class="col-4" 
@@ -5,7 +6,7 @@
   >
     <q-item>
       <q-item-section>
-        <q-item-label>Название организации</q-item-label>
+        <q-item-label>{{ data.organization_name }}</q-item-label>
       </q-item-section>
     </q-item>
     <q-separator />
@@ -18,7 +19,7 @@
               <div class="col numbers">
                 <div>0</div>
               </div>
-              <div class="col q-ml-xl">
+              <div class="col q-ml-lg">
                 <q-icon 
                   size="30px"
                   name="img:/img/icons/plan.svg"
@@ -35,7 +36,7 @@
                 class="col q-mt-md" 
                 style="font-size: 20px; font-weight: 600; text-align: center"
               >
-                <div>0</div>
+                <div>{{ data.exams_count }}</div>
               </div>
               <div class="col">
                 <q-icon 
@@ -122,3 +123,11 @@
     </q-card-section>
   </q-card>
 </template>
+
+<script>
+export default {
+  props: {
+    data: Object
+  }
+}
+</script>

@@ -1,4 +1,13 @@
-<!-- eslint-disable vue/multi-word-component-names -->
+<!-- eslint-disable vue/require-v-for-key 
+  eslint-disable vue/multi-word-component-names -->
+
+<!-- 
+TODO
+1. спиннер на загрузку
+2. переверстать на row -> column
+3. поведение при сворачивании
+4.
+-->
 <template>
   <q-page>
     <div class="q-pa-md q-ml-xl">
@@ -12,13 +21,34 @@
         align="justify"
         style="width: 90%"
       >
-        <q-tab name="main" label="Главная"></q-tab>
-        <q-tab name="documents" label="Документы"></q-tab>
-        <q-tab name="1c" label="1С"></q-tab>
-        <q-tab name="medworkers" label="Медики"></q-tab>
-        <q-tab name="applications" label="Заявки"></q-tab>
-        <q-tab name="settings" label="Настройки"></q-tab>
-        <q-tab name="help" label="Справка"></q-tab>
+        <q-tab 
+          name="main" 
+          label="Главная" 
+        />
+        <q-tab 
+          name="documents" 
+          label="Документы"
+        />
+        <q-tab 
+          name="1c" 
+          label="1С"
+        />
+        <q-tab 
+          name="medworkers" 
+          label="Медики"
+        />
+        <q-tab 
+          name="applications" 
+          label="Заявки"
+        />
+        <q-tab 
+          name="settings" 
+          label="Настройки"
+        />
+        <q-tab 
+          name="help" 
+          label="Справка"
+        />
       </q-tabs>
       
       <q-tab-panels v-model="tab">
@@ -33,6 +63,7 @@
                 {label: 'Год', value: 'year'}
               ]" 
               style="border-radius: 5px"
+              @click="handleChangePeriod"
             />
             <!-- <q-input 
               v-model="search" 
@@ -51,8 +82,22 @@
             class="q-py-xl row q-gutter-xl" 
             style="justify-content: center;"
           >
-            <exam-card />
-            <terminal-card />
+            <div class="col q-gutter-xl">
+              <div 
+                v-for="org in organizationsList"
+                class="row q-ml-xl" 
+              >
+                <exam-card 
+                  :v-bind="org.organization_id"
+                  :data="org"
+                />
+              </div>
+            </div>
+            <div class="col q-gutter-xl">
+              <div class="row">
+                <terminal-card />
+              </div>
+            </div>
           </div>
         </q-tab-panel>
         <q-tab-panel name="documents" />
@@ -98,6 +143,7 @@
 import ExamCard from '@/views/ExamCard.vue'
 import TerminalCard from '@/views/TerminalCard.vue'
 import { getAllOrganizationsStats, getOneOrganizationStats } from '@/api/organizations.api.js'
+import { getAllTermsStats } from '@/api/terminals.api.js'
 import moment from 'moment'
 import { ref } from 'vue'
 
@@ -118,6 +164,8 @@ export default {
     // model: {from: '2020/07/07', to: '2020/07/17' }
     tab: ref("main"),
     model: ref("today"),
+    current_data: moment().format('YYYY-MM-DD'),
+    first_data: moment().format('YYYY-MM-DD'),
     dates: {from: moment().subtract(1, 'months').format('YYYY-MM-DD'), to: moment().format('YYYY-MM-DD')},
     user_id: null,
     user_organization_id: null,
@@ -126,7 +174,8 @@ export default {
     
   }},
   mounted() {
-        this.populateDataFromStorage()
+        this.populateDataFromStorage(),
+        this.handleChangePeriod()
     },
     methods : {
         populateDataFromStorage() {
@@ -148,10 +197,51 @@ export default {
           } catch (err) {
             console.log(err)
           }
+        },
+
+        handleChangePeriod() {
+          if (this.model === "month") {
+            this.first_data = moment().subtract(30, 'days').format('YYYY-MM-DD')
+          }
+          else {
+            if (this.model === "today") {
+              this.first_data = moment().format('YYYY-MM-DD')
+            }
+            else {
+              this.first_data = moment().subtract(364, 'days').format('YYYY-MM-DD')
+            }
+          }
+          this.updateExamCard()
+          this.updateTerminalCard()
+        },
+
+        async updateExamCard() {
+          try {
+            var response
+            if (this.user_organization_id === 'null') {
+              response = await getAllOrganizationsStats(this.user_id, this.first_data, this.current_data)
+            } else {
+              response = await getOneOrganizationStats(this.user_organization_id, this.user_id, this.first_data, this.current_data)
+            }
+            this.organizationsList = response.data
+            console.log(response.data)
+          } catch (err) {
+            console.log(err)
+          }
+        },
+
+        async updateTerminalCard() {
+          try {
+            var response
+            response = await getAllTermsStats(this.user_id, this.user_organization_id, this.first_data, this.current_data)
+            this.terminalsList = response.data
+            console.log(response.data)
+          } catch (err) {
+            console.log(err)
+          }
         }
-
-
-    }
+    },
+    
 }
 </script>
 
