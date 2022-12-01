@@ -24,7 +24,7 @@
                 class="col q-mt-md" 
                 style="font-size: 26px; font-weight: 600; text-align: center;"
               >
-                <div>0</div>
+                <div> 0 </div>
               </div>
               <div class="col q-mb-xl q-mr-md">
                 <q-icon 
@@ -97,3 +97,11 @@
     </q-card-section>
   </q-card>
 </template>
+
+<script>
+  export default {
+    props: {
+      data: Object
+    }
+  }
+</script>

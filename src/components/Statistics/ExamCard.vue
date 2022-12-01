@@ -1,9 +1,6 @@
 <!-- eslint-disable vue/require-default-prop -->
 <template>
-  <q-card 
-    class="col-4" 
-    style="min-width: 380px; max-width: 380px;"
-  >
+  <q-card class="col-4" style="min-width: 380px; max-width: 380px">
     <q-item>
       <q-item-section>
         <q-item-label>{{ data.organization_name }}</q-item-label>
@@ -20,29 +17,27 @@
                 <div>0</div>
               </div>
               <div class="col q-ml-lg">
-                <q-icon 
-                  size="30px"
-                  name="img:/img/icons/plan.svg"
-                />
+                <q-icon size="30px" name="img:/img/icons/plan.svg" />
               </div>
             </div>
           </q-card>
-          <q-card class="q-px-sm q-pt-lg q-pb-lg q-gutter-xs item-card">
+          <q-card
+            class="q-px-sm q-pt-lg q-pb-lg q-gutter-xs item-card"
+            @click="dialog"
+            style="cursor: pointer"
+          >
             <div style="font-size: 20px; font-weight: 600; text-align: center">
               Осмотров
             </div>
             <div class="row q-pt-lg q-pb-sm">
-              <div 
-                class="col q-mt-md" 
+              <div
+                class="col q-mt-md"
                 style="font-size: 20px; font-weight: 600; text-align: center"
               >
                 <div>{{ data.exams_count }}</div>
               </div>
               <div class="col">
-                <q-icon 
-                  size="50px"
-                  name="img:/img/icons/done.svg"
-                />
+                <q-icon size="50px" name="img:/img/icons/done.svg" />
               </div>
             </div>
           </q-card>
@@ -53,10 +48,7 @@
                 <div>0</div>
               </div>
               <div class="col q-ml-xl">
-                <q-icon 
-                  size="30px"
-                  name="img:/img/icons/ok.svg"
-                />
+                <q-icon size="30px" name="img:/img/icons/ok.svg" />
               </div>
             </div>
           </q-card>
@@ -69,10 +61,7 @@
                 <div>0</div>
               </div>
               <div class="col q-ml-xl">
-                <q-icon 
-                  size="30px"
-                  name="img:/img/icons/denied.svg"
-                />
+                <q-icon size="30px" name="img:/img/icons/denied.svg" />
               </div>
             </div>
           </q-card>
@@ -83,10 +72,7 @@
                 <div>0</div>
               </div>
               <div class="col q-ml-xl">
-                <q-icon 
-                  size="30px"
-                  name="img:/img/icons/alcohol.svg"
-                />
+                <q-icon size="30px" name="img:/img/icons/alcohol.svg" />
               </div>
             </div>
           </q-card>
@@ -97,10 +83,7 @@
                 <div>0</div>
               </div>
               <div class="col q-ml-xl">
-                <q-icon 
-                  size="35px"
-                  name="img:/img/icons/pressure.svg"
-                />
+                <q-icon size="35px" name="img:/img/icons/pressure.svg" />
               </div>
             </div>
           </q-card>
@@ -111,10 +94,7 @@
                 <div>0</div>
               </div>
               <div class="col q-ml-xl">
-                <q-icon 
-                  size="30px"
-                  name="img:/img/icons/other.svg"
-                />
+                <q-icon size="30px" name="img:/img/icons/other.svg" />
               </div>
             </div>
           </q-card>
@@ -127,7 +107,10 @@
 <script>
 export default {
   props: {
-    data: Object
-  }
-}
+    data: Object,
+    dialog: { type: Function },
+  },
+};
 </script>
+
+<style></style>

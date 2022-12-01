@@ -5,63 +5,53 @@
 TODO
 1. спиннер на загрузку
 2. переверстать на row -> column
-3. поведение при сворачивании
+3. поведение при сворачивании + 
 4.
 -->
 <template>
   <q-page>
     <div class="q-pa-md q-ml-xl">
-      <q-tabs 
-        v-model="tab" 
-        dense 
-        active-color="white" 
+      <q-tabs
+        v-model="tab"
+        dense
+        outside-arrows
+        active-color="white"
         active-bg-color="dark"
-        active-radius="20px" 
-        indicator-color="transparent" 
+        active-radius="20px"
+        indicator-color="transparent"
         align="justify"
         style="width: 90%"
       >
-        <q-tab 
-          name="main" 
-          label="Главная" 
-        />
-        <q-tab 
-          name="documents" 
-          label="Документы"
-        />
-        <q-tab 
-          name="1c" 
-          label="1С"
-        />
-        <q-tab 
-          name="medworkers" 
-          label="Медики"
-        />
-        <q-tab 
-          name="applications" 
-          label="Заявки"
-        />
-        <q-tab 
-          name="settings" 
-          label="Настройки"
-        />
-        <q-tab 
-          name="help" 
-          label="Справка"
-        />
+        <q-tab name="main" label="Главная" />
+        <q-tab name="documents" label="Документы" />
+        <q-tab name="1c" label="1С" />
+        <q-tab name="medworkers" label="Медики" />
+        <q-tab name="applications" label="Заявки" />
+        <q-tab name="settings" label="Настройки" />
+        <q-tab name="help" label="Справка" />
       </q-tabs>
-      
+
       <q-tab-panels v-model="tab">
         <q-tab-panel name="main">
-          <div class="q-py-md row">
+          <div class="q-py-md row q-gutter-md">
             <q-btn-toggle
-              v-model="model" 
-              toggle-color="dark" 
+              v-model="org_toggler"
+              toggle-color="dark"
               :options="[
-                {label: 'Сегодня', value: 'today'},
-                {label: 'Месяц', value: 'month'},
-                {label: 'Год', value: 'year'}
-              ]" 
+                { label: 'Всего', value: 'summary' },
+                { label: 'Организации', value: 'organizations' },
+              ]"
+              style="border-radius: 5px"
+              @click="handleChangePeriod"
+            />
+            <q-btn-toggle
+              v-model="model"
+              toggle-color="dark"
+              :options="[
+                { label: 'Сегодня', value: 'today' },
+                { label: 'Месяц', value: 'month' },
+                { label: 'Год', value: 'year' },
+              ]"
               style="border-radius: 5px"
               @click="handleChangePeriod"
             />
@@ -78,39 +68,59 @@ TODO
               </template>
             </q-input> -->
           </div>
-          <div 
-            class="q-py-xl row q-gutter-xl" 
-            style="justify-content: center;"
-          >
-            <div class="col q-gutter-xl">
-              <div 
-                v-for="org in organizationsList"
-                class="row q-ml-xl" 
-              >
-                <exam-card 
-                  :v-bind="org.organization_id"
-                  :data="org"
-                />
-              </div>
-            </div>
-            <div class="col q-gutter-xl">
-              <div class="row">
-                <terminal-card />
-              </div>
+          <div class="fit row wrap justify-center q-gutter-xl q-mt-xs">
+            <div v-for="org in organizationsList">
+              <custom-card
+                class="col-4"
+                :data="org"
+                :dialog="handleToggleShowDialog"
+              />
             </div>
           </div>
+          <div class="q-pa-sm q-gutter-sm">
+            <dialog-calendar :data="show_dialog" />
+            <q-dialog v-model="show_dialog">
+              <q-card class="q-py-sm q-px-md">
+                <q-card-section>
+                  <div class="text-h6">Выбор даты</div>
+                </q-card-section>
+                <q-card-section>
+                  <q-btn-toggle
+                    v-model="toggler"
+                    toggle-color="dark"
+                    :options="[
+                      { label: 'День', value: 'day' },
+                      { label: 'Период', value: 'period' },
+                    ]"
+                    @click="handleSelectPeriod"
+                  />
+                </q-card-section>
+                <q-card-section>
+                  <q-date
+                    v-model="current_date"
+                    color="dark"
+                    :range="rangeState"
+                  />
+                </q-card-section>
+                <q-card-actions align="right">
+                  <q-btn color="dark">Показать</q-btn>
+                </q-card-actions>
+              </q-card>
+            </q-dialog>
+          </div>
+          <!-- </div> -->
         </q-tab-panel>
         <q-tab-panel name="documents" />
         <q-tab-panel name="1c" />
         <q-tab-panel name="medworkers" />
         <q-tab-panel name="applications" />
-      
+
         <q-tab-panel name="settings" />
-      
+
         <q-tab-panel name="help" />
       </q-tab-panels>
     </div>
-      
+
     <!-- <div class="row q-gutter-md col-6">
       <div class="h6 col">Выберите период</div>
       <q-date class="col" v-model="model" range minimal />
@@ -140,133 +150,171 @@ TODO
 
 <script>
 // import OrganizationsStatisticsTable from '@/components/OrganizationsStatisticsTable.vue'
-import ExamCard from '@/views/ExamCard.vue'
-import TerminalCard from '@/views/TerminalCard.vue'
-import { getAllOrganizationsStats, getOneOrganizationStats } from '@/api/organizations.api.js'
-import { getAllTermsStats } from '@/api/terminals.api.js'
-import moment from 'moment'
-import { ref } from 'vue'
+import ExamCard from "@/components/Statistics/ExamCard.vue";
+import TerminalCard from "@/components/Statistics/TerminalCard.vue";
+import HorizontalCard from "@/components/Statistics/HorizontalCard.vue";
+import VerticalCard from "@/components/Statistics/VerticalCard.vue";
+import CustomCard from "@/components/Statistics/CustomCard.vue";
+// import DialogCalendar from '@/components/Statistics/DialogCalendar.vue'
+import {
+  getAllOrganizationsStats,
+  getOneOrganizationStats,
+} from "@/api/organizations.api.js";
+import moment from "moment";
+import { ref } from "vue";
+// import { QCalendarMonth } from '@quasar/quasar-ui-qcalendar'
+import "@quasar/quasar-ui-qcalendar/dist/index.css";
 
 export default {
-  components : {
-        // OrganizationsStatisticsTable,
-        ExamCard,
-        TerminalCard
-    },
-    // setup() {
-    //   return {
-    //     tab: ref("main"),
-    //     model: ref("one"),
-    //   }
-    // },
-  data () {
+  components: {
+    // OrganizationsStatisticsTable,
+    ExamCard,
+    TerminalCard,
+    VerticalCard,
+    HorizontalCard,
+    CustomCard,
+
+    // QCalendarMonth
+  },
+  // setup() {
+  //   return {
+  //     tab: ref("main"),
+  //     model: ref("one"),
+  //   }
+  // },
+  data() {
     return {
-    // model: {from: '2020/07/07', to: '2020/07/17' }
-    tab: ref("main"),
-    model: ref("today"),
-    current_data: moment().format('YYYY-MM-DD'),
-    first_data: moment().format('YYYY-MM-DD'),
-    dates: {from: moment().subtract(1, 'months').format('YYYY-MM-DD'), to: moment().format('YYYY-MM-DD')},
-    user_id: null,
-    user_organization_id: null,
-    organizationsList : [],
-    showTable: false,
-    
-  }},
+      // model: {from: '2020/07/07', to: '2020/07/17' }
+      selectedDate: ref(moment()),
+      calendar: ref(null),
+      startDate: ref(moment()),
+      endDate: ref(moment()),
+      rangeState: false,
+
+      toggler: ref("day"),
+      current_date: ref(moment().format("YYYY/MM/DD")),
+
+      org_toggler: ref("summary"),
+      tab: ref("main"),
+      model: ref("today"),
+      show_dialog: false,
+      current_data: moment().format("YYYY-MM-DD"),
+      first_data: moment().format("YYYY-MM-DD"),
+      dates: {
+        from: moment().subtract(1, "months").format("YYYY-MM-DD"),
+        to: moment().format("YYYY-MM-DD"),
+      },
+      user_id: null,
+      user_organization_id: null,
+      organizationsList: [],
+      showTable: false,
+    };
+  },
   mounted() {
-        this.populateDataFromStorage(),
-        this.handleChangePeriod()
+    this.populateDataFromStorage(), this.handleChangePeriod();
+  },
+  methods: {
+    handleSelectPeriod() {
+      this.rangeState = this.toggler == "day" ? false : true;
+      this.current_date =
+        this.toggler == "day"
+          ? moment().format("YYYY/MM/DD")
+          : {
+              from: moment().subtract(7, "days").format("YYYY/MM/DD"),
+              to: moment().format("YYYY/MM/DD"),
+            };
     },
-    methods : {
-        populateDataFromStorage() {
-            this.user_id = sessionStorage.getItem('user_id')
-            this.user_organization_id = sessionStorage.getItem('user_organization_id')
-        },
+    handleToggleShowDialog() {
+      this.show_dialog = !this.show_dialog;
+    },
 
-        async updateOrganizationsTable() {
-          this.showTable = true
-          try {
-            var response
-            if (this.user_organization_id === 'null') {
-              response = await getAllOrganizationsStats(this.user_id, this.dates.from, this.dates.to)
-            } else {
-              response = await getOneOrganizationStats(this.user_organization_id, this.user_id, this.dates.from, this.dates.to)
-            }
-            this.organizationsList = response.data
-            console.log(response.data)
-          } catch (err) {
-            console.log(err)
-          }
-        },
+    populateDataFromStorage() {
+      this.user_id = sessionStorage.getItem("user_id");
+      this.user_organization_id = sessionStorage.getItem(
+        "user_organization_id"
+      );
+    },
 
-        handleChangePeriod() {
-          if (this.model === "month") {
-            this.first_data = moment().subtract(30, 'days').format('YYYY-MM-DD')
-          }
-          else {
-            if (this.model === "today") {
-              this.first_data = moment().format('YYYY-MM-DD')
-            }
-            else {
-              this.first_data = moment().subtract(364, 'days').format('YYYY-MM-DD')
-            }
-          }
-          this.updateExamCard()
-          this.updateTerminalCard()
-        },
-
-        async updateExamCard() {
-          try {
-            var response
-            if (this.user_organization_id === 'null') {
-              response = await getAllOrganizationsStats(this.user_id, this.first_data, this.current_data)
-            } else {
-              response = await getOneOrganizationStats(this.user_organization_id, this.user_id, this.first_data, this.current_data)
-            }
-            this.organizationsList = response.data
-            console.log(response.data)
-          } catch (err) {
-            console.log(err)
-          }
-        },
-
-        async updateTerminalCard() {
-          try {
-            var response
-            response = await getAllTermsStats(this.user_id, this.user_organization_id, this.first_data, this.current_data)
-            this.terminalsList = response.data
-            console.log(response.data)
-          } catch (err) {
-            console.log(err)
-          }
+    async updateOrganizationsTable() {
+      this.showTable = true;
+      try {
+        var response;
+        if (this.user_organization_id === "null") {
+          response = await getAllOrganizationsStats(
+            this.user_id,
+            this.dates.from,
+            this.dates.to
+          );
+        } else {
+          response = await getOneOrganizationStats(
+            this.user_organization_id,
+            this.user_id,
+            this.dates.from,
+            this.dates.to
+          );
         }
+        this.organizationsList = response.data;
+        console.log(response.data);
+      } catch (err) {
+        console.log(err);
+      }
     },
-    
-}
+
+    handleChangePeriod() {
+      if (this.model === "month") {
+        this.first_data = moment().subtract(30, "days").format("YYYY-MM-DD");
+      } else {
+        if (this.model === "today") {
+          this.first_data = moment().format("YYYY-MM-DD");
+        } else {
+          this.first_data = moment().subtract(364, "days").format("YYYY-MM-DD");
+        }
+      }
+      this.updateExamCard();
+    },
+
+    async updateExamCard() {
+      try {
+        var response;
+        if (this.user_organization_id === "null") {
+          response = await getAllOrganizationsStats(
+            this.user_id,
+            this.first_data,
+            this.current_data
+          );
+        } else {
+          response = await getOneOrganizationStats(
+            this.user_organization_id,
+            this.user_id,
+            this.first_data,
+            this.current_data
+          );
+        }
+        this.organizationsList = response.data;
+        console.log(response.data);
+      } catch (err) {
+        console.log(err);
+      }
+    },
+  },
+};
 </script>
 
-<style> 
-  .q-tabs--dense .q-tab {
-    border-radius: 5px;
-    text-transform: capitalize;
-  }
-  .q-tab-panel {
-    padding-left: 0px;
-  }
-  .q-btn {
-    text-transform: capitalize;
-  }
-  .q-btn .q-focus-helper {
-    display: none;
-  }
-  .btn {
-    cursor: auto;
-  }
-  .numbers {
-    text-align: center;
-    font-size: 20px;
-  }
-  .item-card {
-    border-radius: 10px;
-  }
+<style>
+.q-tabs--dense .q-tab {
+  border-radius: 5px;
+  text-transform: capitalize;
+}
+.q-tab-panel {
+  padding-left: 0px;
+}
+.q-btn {
+  text-transform: capitalize;
+}
+.q-btn .q-focus-helper {
+  display: none;
+}
+.btn {
+  cursor: auto;
+}
 </style>
