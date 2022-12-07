@@ -50,11 +50,7 @@ TODO
             v-if="loadingState"
             style="display: flex; justify: center; margin-top: 20%"
           >
-            <q-spinner-oval
-              color="dark"
-              size="3em"
-              style="margin: auto"
-            ></q-spinner-oval>
+            <q-spinner-oval color="dark" size="3em" style="margin: auto" />>
           </div>
 
           <div v-else>
@@ -80,22 +76,11 @@ TODO
                 style="border-radius: 5px"
                 @click="handleChangePeriod"
               />
-              <!-- <q-select
-                class="col-8"
-                v-model="modelMultiple"
-                outline
-                multiple
-                :options="options"
-                use-chips
-                stack-label
-                label="Выбрать организации"
-                @update:model-value="logSelect"
-              /> -->
             </div>
-            <div class="row q-gutter-md">
+            <div v-if="org_toggler === 'organizations'" class="row q-gutter-md">
               <q-select
-                class="col-8"
                 v-model="modelMultiple"
+                class="col-8"
                 outline
                 multiple
                 :options="options"
@@ -104,16 +89,15 @@ TODO
                 label="Выбрать организации"
                 @update:model-value="filterCards"
               >
-              <template v-slot:append>
-          <q-icon name="close" @click.stop.prevent="modelMultiple = []" @click="filterCards" class="cursor-pointer"></q-icon>
-        </template></q-select>
-              <!-- <q-btn
-                class="col-2 q-mt-lg"
-                color="dark"
-                style="height: 36px"
-                @click="filterCards"
-                >Показать</q-btn
-              > -->
+                <template #append>
+                  <q-icon
+                    name="close"
+                    class="cursor-pointer"
+                    @click.stop.prevent="modelMultiple = []"
+                    @click="filterCards"
+                  />
+                </template>
+              </q-select>
             </div>
             <div class="fit row wrap justify-center q-gutter-xl q-mt-xs">
               <div v-for="org in visibleList">
@@ -127,14 +111,14 @@ TODO
           </div>
 
           <div class="q-pa-sm q-gutter-sm">
-            <calendar-modal
+            <!-- <calendar-modal
               :dialog_state="show_dialog"
               :date="current_date"
               :periodState="toggler"
               :changePeriod="handleSelectPeriod"
               :range_state="rangeState"
-            />
-            <!-- <q-dialog v-model="show_dialog">
+            /> -->
+            <q-dialog v-model="show_dialog">
               <q-card class="q-py-sm q-px-md">
                 <q-card-section>
                   <div class="text-h6">Выбор даты</div>
@@ -152,17 +136,22 @@ TODO
                 </q-card-section>
                 <q-card-section>
                   <q-date
-                  :locale="locale"
+                    :locale="locale"
                     v-model="current_date"
                     color="dark"
                     :range="rangeState"
                   />
                 </q-card-section>
                 <q-card-actions align="right">
-                  <q-btn @click="updateOrganizationsTable" color="dark">Показать</q-btn>
+                  <q-btn 
+                    @click="updateOrganizationsTable" 
+                    color="dark"
+                  >
+                    Показать
+                  </q-btn>
                 </q-card-actions>
               </q-card>
-            </q-dialog> -->
+            </q-dialog>
           </div>
           <!-- </div> -->
         </q-tab-panel>
@@ -205,36 +194,29 @@ TODO
 </template>
 
 <script>
-import OrganizationsStatisticsTable from "@/components/OrganizationsStatisticsTable.vue";
+// import OrganizationsStatisticsTable from "@/components/OrganizationsStatisticsTable.vue";
 import CustomCard from "@/components/Statistics/CustomCard.vue";
 import CalendarModal from "@/components/Statistics/CalendarModal.vue";
 import {
   getAllOrganizationsStats,
   getOneOrganizationStats,
 } from "@/api/organizations.api.js";
-import { getExamsHistoryAll } from "@/api/exams.api.js";
+import {
+  getExamsHistoryAll,
+  getExamsHistoryByPeriod,
+} from "@/api/exams.api.js";
 import moment from "moment";
 import { ref } from "vue";
-// import { QCalendarMonth } from '@quasar/quasar-ui-qcalendar'
 import "@quasar/quasar-ui-qcalendar/dist/index.css";
 
 export default {
   components: {
-    OrganizationsStatisticsTable,
+    // OrganizationsStatisticsTable,
     CustomCard,
     CalendarModal,
-
-    // QCalendarMonth
   },
-  // setup() {
-  //   return {
-  //     tab: ref("main"),
-  //     model: ref("one"),
-  //   }
-  // },
   data() {
     return {
-      // model: {from: '2020/07/07', to: '2020/07/17' }
       modelMultiple: ref(),
       locale: {
         days: "Понедельник_Вторник_Среда_Четверг_Пятница_Суббота_Воскресенье".split(
@@ -281,17 +263,19 @@ export default {
     };
   },
   mounted() {
-    this.populateDataFromStorage(), this.handleChangeOrganization(), this.handleChangePeriod();
+    this.populateDataFromStorage(),
+      this.handleChangePeriod(),
+      this.handleChangeOrganization();
   },
   methods: {
     handleChangeOrganization() {
       if (this.org_toggler === "summary") {
-        this.visibleList = [{organization_name: 'Все организации', exams_count: this.summary}]
+        this.visibleList = [
+          { organization_name: "Все организации", exams_count: this.summary },
+        ];
+      } else {
+        this.visibleList = this.organizationsList;
       }
-      else {
-        this.visibleList = this.organizationsList
-      }
-      
     },
 
     handleSelectPeriod() {
@@ -317,18 +301,30 @@ export default {
 
     async updateOrganizationsTable() {
       this.showTable = true;
+      let period =
+        this.toggler === "day"
+          ? {
+              date_from: moment("2022-12-07T08:52:58.763Z"),
+              date_to: moment("2022-12-07T08:52:58.763Z"),
+            }
+          : {
+              date_from: moment("2022-12-07T08:52:58.763Z"),
+              date_to: moment("2022-12-07T08:52:58.763Z"),
+            };
       try {
         var response;
-        response = await getExamsHistoryAll(this.user_id);
+        response = await getExamsHistoryByPeriod(
+          this.user_id,
+          period.date_from,
+          period.date_to
+        );
         this.examsList = response.data;
-        console.log(response.data);
       } catch (err) {
         console.log(err);
       }
     },
 
     filterCards() {
-      console.log(this.modelMultiple);
       this.visibleList = [];
       if (this.modelMultiple.length > 0) {
         this.organizationsList.map((org, index) => {
@@ -342,6 +338,7 @@ export default {
     },
 
     handleChangePeriod() {
+      this.loadingState = true;
       if (this.model === "month") {
         this.first_data = moment().subtract(30, "days").format("YYYY-MM-DD");
       } else {
@@ -374,14 +371,22 @@ export default {
         this.organizationsList = response.data;
         this.visibleList = response.data;
         this.loadingState = false;
+        this.summary = 0;
         if (this.loadingState === false) {
           this.organizationsList.map((org, index) => {
             this.options.push(org.organization_name);
             this.summary = this.summary + org.exams_count;
           });
         }
-        console.log(this.options);
-        console.log(response.data);
+        this.visibleList =
+          this.org_toggler === "summary"
+            ? [
+                {
+                  organization_name: "Все организации",
+                  exams_count: this.summary,
+                },
+              ]
+            : this.organizationsList;
       } catch (err) {
         console.log(err);
       }
@@ -398,7 +403,8 @@ export default {
 .q-tab-panel {
   padding-left: 0px;
 }
-.q-btn {
+.q-btn,
+.q-btn-toggle {
   text-transform: capitalize;
 }
 .q-btn .q-focus-helper {
