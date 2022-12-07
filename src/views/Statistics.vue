@@ -3,10 +3,10 @@
 
 <!-- 
 TODO
-1. спиннер на загрузку
-2. переверстать на row -> column
+1. спиннер на загрузку +
+2. переверстать на row -> column +
 3. поведение при сворачивании + 
-4.
+4. медиа запросы
 -->
 <template>
   <q-page>
@@ -33,29 +33,7 @@ TODO
 
       <q-tab-panels v-model="tab">
         <q-tab-panel name="main">
-          <div class="q-py-md row q-gutter-md">
-            <q-btn-toggle
-              v-model="org_toggler"
-              toggle-color="dark"
-              :options="[
-                { label: 'Всего', value: 'summary' },
-                { label: 'Организации', value: 'organizations' },
-              ]"
-              style="border-radius: 5px"
-              @click="handleChangePeriod"
-            />
-            <q-btn-toggle
-              v-model="model"
-              toggle-color="dark"
-              :options="[
-                { label: 'Сегодня', value: 'today' },
-                { label: 'Месяц', value: 'month' },
-                { label: 'Год', value: 'year' },
-              ]"
-              style="border-radius: 5px"
-              @click="handleChangePeriod"
-            />
-            <!-- <q-input 
+          <!-- <q-input 
               v-model="search" 
               type="search" 
               label="Поиск"
@@ -67,19 +45,96 @@ TODO
                 <q-icon name="search" />
               </template>
             </q-input> -->
+
+          <div
+            v-if="loadingState"
+            style="display: flex; justify: center; margin-top: 20%"
+          >
+            <q-spinner-oval
+              color="dark"
+              size="3em"
+              style="margin: auto"
+            ></q-spinner-oval>
           </div>
-          <div class="fit row wrap justify-center q-gutter-xl q-mt-xs">
-            <div v-for="org in organizationsList">
-              <custom-card
-                class="col-4"
-                :data="org"
-                :dialog="handleToggleShowDialog"
+
+          <div v-else>
+            <div class="q-py-md row q-gutter-md">
+              <q-btn-toggle
+                v-model="org_toggler"
+                toggle-color="dark"
+                :options="[
+                  { label: 'Всего', value: 'summary' },
+                  { label: 'Организации', value: 'organizations' },
+                ]"
+                style="border-radius: 5px"
+                @click="handleChangeOrganization"
               />
+              <q-btn-toggle
+                v-model="model"
+                toggle-color="dark"
+                :options="[
+                  { label: 'Сегодня', value: 'today' },
+                  { label: 'Месяц', value: 'month' },
+                  { label: 'Год', value: 'year' },
+                ]"
+                style="border-radius: 5px"
+                @click="handleChangePeriod"
+              />
+              <!-- <q-select
+                class="col-8"
+                v-model="modelMultiple"
+                outline
+                multiple
+                :options="options"
+                use-chips
+                stack-label
+                label="Выбрать организации"
+                @update:model-value="logSelect"
+              /> -->
+            </div>
+            <div class="row q-gutter-md">
+              <q-select
+                class="col-8"
+                v-model="modelMultiple"
+                outline
+                multiple
+                :options="options"
+                use-chips
+                stack-label
+                label="Выбрать организации"
+                @update:model-value="filterCards"
+              >
+              <template v-slot:append>
+          <q-icon name="close" @click.stop.prevent="modelMultiple = []" @click="filterCards" class="cursor-pointer"></q-icon>
+        </template></q-select>
+              <!-- <q-btn
+                class="col-2 q-mt-lg"
+                color="dark"
+                style="height: 36px"
+                @click="filterCards"
+                >Показать</q-btn
+              > -->
+            </div>
+            <div class="fit row wrap justify-center q-gutter-xl q-mt-xs">
+              <div v-for="org in visibleList">
+                <custom-card
+                  class="col-4"
+                  :data="org"
+                  :dialog="handleToggleShowDialog"
+                />
+              </div>
             </div>
           </div>
+
           <div class="q-pa-sm q-gutter-sm">
-            <dialog-calendar :data="show_dialog" />
-            <q-dialog v-model="show_dialog">
+            <calendar-modal
+              :dialog_state="show_dialog"
+              :date="current_date"
+              :periodState="toggler"
+              :changePeriod="handleSelectPeriod"
+              :range_state="rangeState"
+            />
+            <!-- <q-dialog v-model="show_dialog">
               <q-card class="q-py-sm q-px-md">
                 <q-card-section>
                   <div class="text-h6">Выбор даты</div>
@@ -97,16 +152,17 @@ TODO
                 </q-card-section>
                 <q-card-section>
                   <q-date
+                  :locale="locale"
                     v-model="current_date"
                     color="dark"
                     :range="rangeState"
                   />
                 </q-card-section>
                 <q-card-actions align="right">
-                  <q-btn color="dark">Показать</q-btn>
+                  <q-btn @click="updateOrganizationsTable" color="dark">Показать</q-btn>
                 </q-card-actions>
               </q-card>
-            </q-dialog>
+            </q-dialog> -->
           </div>
           <!-- </div> -->
         </q-tab-panel>
@@ -149,17 +205,14 @@ TODO
 </template>
 
 <script>
-// import OrganizationsStatisticsTable from '@/components/OrganizationsStatisticsTable.vue'
-import ExamCard from "@/components/Statistics/ExamCard.vue";
-import TerminalCard from "@/components/Statistics/TerminalCard.vue";
-import HorizontalCard from "@/components/Statistics/HorizontalCard.vue";
-import VerticalCard from "@/components/Statistics/VerticalCard.vue";
+import OrganizationsStatisticsTable from "@/components/OrganizationsStatisticsTable.vue";
 import CustomCard from "@/components/Statistics/CustomCard.vue";
-// import DialogCalendar from '@/components/Statistics/DialogCalendar.vue'
+import CalendarModal from "@/components/Statistics/CalendarModal.vue";
 import {
   getAllOrganizationsStats,
   getOneOrganizationStats,
 } from "@/api/organizations.api.js";
+import { getExamsHistoryAll } from "@/api/exams.api.js";
 import moment from "moment";
 import { ref } from "vue";
 // import { QCalendarMonth } from '@quasar/quasar-ui-qcalendar'
@@ -167,12 +220,9 @@ import "@quasar/quasar-ui-qcalendar/dist/index.css";
 
 export default {
   components: {
-    // OrganizationsStatisticsTable,
-    ExamCard,
-    TerminalCard,
-    VerticalCard,
-    HorizontalCard,
+    OrganizationsStatisticsTable,
     CustomCard,
+    CalendarModal,
 
     // QCalendarMonth
   },
@@ -185,11 +235,29 @@ export default {
   data() {
     return {
       // model: {from: '2020/07/07', to: '2020/07/17' }
+      modelMultiple: ref(),
+      locale: {
+        days: "Понедельник_Вторник_Среда_Четверг_Пятница_Суббота_Воскресенье".split(
+          "_"
+        ),
+        daysShort: "Пн_Вт_Ср_Чт_Пт_Сб_Вс".split("_"),
+        months:
+          "Январь_Февраль_Март_Апрель_Май_Июнь_Июль_Август_Сентябрь_Октябрь_Ноябрь_Декабрь".split(
+            "_"
+          ),
+        monthsShort: "Янв_Фев_Мар_Апр_Май_Июнь_Июль_Авг_Сен_Окт_Ноя_Дек".split(
+          "_"
+        ),
+      },
       selectedDate: ref(moment()),
       calendar: ref(null),
       startDate: ref(moment()),
       endDate: ref(moment()),
       rangeState: false,
+      loadingState: true,
+
+      options: [],
+      examsList: [],
 
       toggler: ref("day"),
       current_date: ref(moment().format("YYYY/MM/DD")),
@@ -207,13 +275,25 @@ export default {
       user_id: null,
       user_organization_id: null,
       organizationsList: [],
+      visibleList: [],
       showTable: false,
+      summary: 0,
     };
   },
   mounted() {
-    this.populateDataFromStorage(), this.handleChangePeriod();
+    this.populateDataFromStorage(), this.handleChangeOrganization(), this.handleChangePeriod();
   },
   methods: {
+    handleChangeOrganization() {
+      if (this.org_toggler === "summary") {
+        this.visibleList = [{organization_name: 'Все организации', exams_count: this.summary}]
+      }
+      else {
+        this.visibleList = this.organizationsList
+      }
+      
+    },
+
     handleSelectPeriod() {
       this.rangeState = this.toggler == "day" ? false : true;
       this.current_date =
@@ -239,24 +319,25 @@ export default {
       this.showTable = true;
       try {
         var response;
-        if (this.user_organization_id === "null") {
-          response = await getAllOrganizationsStats(
-            this.user_id,
-            this.dates.from,
-            this.dates.to
-          );
-        } else {
-          response = await getOneOrganizationStats(
-            this.user_organization_id,
-            this.user_id,
-            this.dates.from,
-            this.dates.to
-          );
-        }
-        this.organizationsList = response.data;
+        response = await getExamsHistoryAll(this.user_id);
+        this.examsList = response.data;
         console.log(response.data);
       } catch (err) {
         console.log(err);
+      }
+    },
+
+    filterCards() {
+      console.log(this.modelMultiple);
+      this.visibleList = [];
+      if (this.modelMultiple.length > 0) {
+        this.organizationsList.map((org, index) => {
+          if (this.modelMultiple.includes(org.organization_name)) {
+            this.visibleList.push(org);
+          }
+        });
+      } else {
+        this.visibleList = this.organizationsList;
       }
     },
 
@@ -291,6 +372,15 @@ export default {
           );
         }
         this.organizationsList = response.data;
+        this.visibleList = response.data;
+        this.loadingState = false;
+        if (this.loadingState === false) {
+          this.organizationsList.map((org, index) => {
+            this.options.push(org.organization_name);
+            this.summary = this.summary + org.exams_count;
+          });
+        }
+        console.log(this.options);
         console.log(response.data);
       } catch (err) {
         console.log(err);
