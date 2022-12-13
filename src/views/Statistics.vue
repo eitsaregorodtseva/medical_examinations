@@ -7,6 +7,9 @@ TODO
 2. переверстать на row -> column +
 3. поведение при сворачивании + 
 4. медиа запросы
+5. спустить спиннер +
+6. календарь в отдельный компонент
+7. рефакторинг
 -->
 <template>
   <q-page>
@@ -45,6 +48,53 @@ TODO
                 <q-icon name="search" />
               </template>
             </q-input> -->
+          <div class="q-py-md row q-gutter-md">
+            <q-btn-toggle
+              v-model="org_toggler"
+              toggle-color="dark"
+              :options="[
+                { label: 'Всего', value: 'summary' },
+                { label: 'Организации', value: 'organizations' },
+              ]"
+              style="border-radius: 5px"
+              @click="handleChangeOrganization"
+            />
+            <q-btn-toggle
+              v-model="model"
+              toggle-color="dark"
+              :options="[
+                { label: 'Сегодня', value: 'today' },
+                { label: 'Месяц', value: 'month' },
+                { label: 'Год', value: 'year' },
+              ]"
+              style="border-radius: 5px"
+              @click="handleChangePeriod"
+            />
+            <q-btn v-if="org_toggler === 'organizations'">Фильтры</q-btn>
+          </div>
+
+          <q-dialog>
+            <q-select
+              v-model="modelMultiple"
+              class="col-8"
+              outline
+              multiple
+              :options="options"
+              use-chips
+              stack-label
+              label="Выбрать организации"
+              @update:model-value="filterCards"
+            >
+              <template #append>
+                <q-icon
+                  name="close"
+                  class="cursor-pointer"
+                  @click.stop.prevent="modelMultiple = []"
+                  @click="filterCards"
+                />
+              </template>
+            </q-select>
+          </q-dialog>
 
           <div
             v-if="loadingState"
@@ -54,51 +104,6 @@ TODO
           </div>
 
           <div v-else>
-            <div class="q-py-md row q-gutter-md">
-              <q-btn-toggle
-                v-model="org_toggler"
-                toggle-color="dark"
-                :options="[
-                  { label: 'Всего', value: 'summary' },
-                  { label: 'Организации', value: 'organizations' },
-                ]"
-                style="border-radius: 5px"
-                @click="handleChangeOrganization"
-              />
-              <q-btn-toggle
-                v-model="model"
-                toggle-color="dark"
-                :options="[
-                  { label: 'Сегодня', value: 'today' },
-                  { label: 'Месяц', value: 'month' },
-                  { label: 'Год', value: 'year' },
-                ]"
-                style="border-radius: 5px"
-                @click="handleChangePeriod"
-              />
-            </div>
-            <div v-if="org_toggler === 'organizations'" class="row q-gutter-md">
-              <q-select
-                v-model="modelMultiple"
-                class="col-8"
-                outline
-                multiple
-                :options="options"
-                use-chips
-                stack-label
-                label="Выбрать организации"
-                @update:model-value="filterCards"
-              >
-                <template #append>
-                  <q-icon
-                    name="close"
-                    class="cursor-pointer"
-                    @click.stop.prevent="modelMultiple = []"
-                    @click="filterCards"
-                  />
-                </template>
-              </q-select>
-            </div>
             <div class="fit row wrap justify-center q-gutter-xl q-mt-xs">
               <div v-for="org in visibleList">
                 <custom-card
@@ -140,13 +145,15 @@ TODO
                     v-model="current_date"
                     color="dark"
                     :range="rangeState"
+                    :options="
+                      (date) =>
+                        date >= this.current_date.from &&
+                        date <= this.current_date.to
+                    "
                   />
                 </q-card-section>
                 <q-card-actions align="right">
-                  <q-btn 
-                    @click="updateOrganizationsTable" 
-                    color="dark"
-                  >
+                  <q-btn @click="updateOrganizationsTable" color="dark">
                     Показать
                   </q-btn>
                 </q-card-actions>
@@ -301,15 +308,16 @@ export default {
 
     async updateOrganizationsTable() {
       this.showTable = true;
+      console.log(moment().toISOString());
       let period =
         this.toggler === "day"
           ? {
-              date_from: moment("2022-12-07T08:52:58.763Z"),
-              date_to: moment("2022-12-07T08:52:58.763Z"),
+              date_from: moment(this.current_date).toISOString(),
+              date_to: moment(this.current_date).toISOString(),
             }
           : {
-              date_from: moment("2022-12-07T08:52:58.763Z"),
-              date_to: moment("2022-12-07T08:52:58.763Z"),
+              date_from: moment(this.current_date.from).toISOString(),
+              date_to: moment(this.current_date.to).toISOString(),
             };
       try {
         var response;
