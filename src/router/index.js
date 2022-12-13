@@ -108,6 +108,14 @@ const routes = [
         Role.Dispatcher
       ]
     }
+  },
+  {
+    path: '/sms',
+    name: 'Sms',
+    component: () => import('../components/SmsInform.vue'),
+    meta :{
+      
+    }
   }
 ]
 
