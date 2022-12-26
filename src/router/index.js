@@ -14,7 +14,7 @@ const routes = [
       } else {
         if (role == Role.MedWorker){
           return '/new_exams'
-        }
+        } 
         else{
           return '/exams_history'
         }
@@ -113,8 +113,8 @@ const routes = [
     path: '/sms',
     name: 'Sms',
     component: () => import('../components/SmsInform.vue'),
-    meta :{
-      
+    meta: {
+      layout: 'auth'
     }
   }
 ]
@@ -125,7 +125,10 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  if (!sessionStorage.getItem('full_auth') && !(to.path === '/auth' || to.path === '/dig_sig')) {
+  if (
+    !sessionStorage.getItem('full_auth') &&
+    !(to.path === '/auth' || to.path === '/dig_sig' || to.path === '/sms')
+  ) {
     // the user is not logged in, redirect to auth page
     next({ name: 'Auth', query: { returnUrl: to.path } })
   } else if (to.meta.permittedRoles) {
