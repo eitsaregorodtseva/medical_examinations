@@ -13,6 +13,7 @@
       <q-input 
         v-model="person.second_name" 
         label="Фамилия *" 
+        :disable="user_saved"
         lazy-rules 
         :rules="[
           (val) => (val && val.length > 0) || 'Пожалуйста, заполните это поле' ]" 
@@ -20,6 +21,7 @@
       <q-input 
         v-model="person.first_name" 
         label="Имя *" 
+        :disable="user_saved"
         lazy-rules 
         :rules="[
           (val) => (val && val.length > 0) || 'Пожалуйста, заполните это поле' ]" 
@@ -27,12 +29,14 @@
       <q-input 
         v-model="person.father_name" 
         label="Отчество (при наличии)" 
+        :disable="user_saved"
         lazy-rules 
       />
       <q-select 
         v-model="person.organization_id" 
         :options="organizations" 
         label="Организация *"
+        :disable="user_saved"
         lazy-rules 
         :rules="[(val) => val || 'Пожалуйста, выберите организацию из списка']" 
         style="margin-top: 24px" 
@@ -41,6 +45,7 @@
         v-model="person.tel" 
         type="tel" 
         label="Номер телефона *" 
+        :disable="user_saved"
         lazy-rules
         mask="+7 (###) ###-##-##" 
         fill-mask 
@@ -138,6 +143,7 @@ export default {
       code_approving: ref(false),
       agreement: ref(false),
       code_sent: ref(false),
+      user_saved: ref(false),
       organizations: [],
     };
   },
@@ -209,6 +215,7 @@ export default {
         console.log(response);
         if (response.status === 201) {
           this.sendAllData();
+          this.runTimer();
         }
       } catch (err) {
         console.log(err);
@@ -233,15 +240,16 @@ export default {
           message: 'Ваши данные были успешно сохранены!'
         })
         this.dialog_state = false;
+        this.user_saved = true;
       } catch (err) {
         console.log(err);
         Notify.create({
           color: 'red-5',
           textColor: 'white',
-          message: 'Ошибка! Проверьте правильность введенного Вами кода.'
+          message: 'Ошибка! В данной организации уже существует пользователь с таким номером телефона. Попробуйте изменить данные.'
         });
+        this.dialog_state = false;
         this.code_approving = false;
-        this.runTimer();
       }
       // console.log(this.person.second_name, this.person.first_name, this.person.father_name, this.person.organization_id.value, this.tel_cleared);
     },
