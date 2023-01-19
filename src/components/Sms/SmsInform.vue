@@ -182,22 +182,22 @@ export default {
       this.code_sent = true;
       if (this.person.tel !== this.person_last_state.tel) {
         this.tel_cleared = this.person.tel.replace(/[+() -]/g, '');
-        // try {
-        //   var response = await postPhoneNumber(this.tel_cleared);
-        //   console.log(response);
-        //   Notify.create({
-        //     color: 'green-5',
-        //     textColor: 'white',
-        //     message: 'Код отправлен на Ваш телефон!'
-        //   });
-        // } catch (err) {
-        //   console.log(err);
-        //   Notify.create({
-        //     color: 'red-5',
-        //     textColor: 'white',
-        //     message: 'Ошибка отправки кода!'
-        //   });
-        // }
+        try {
+          var response = await postPhoneNumber(this.tel_cleared);
+          console.log(response);
+          Notify.create({
+            color: 'green-5',
+            textColor: 'white',
+            message: 'Код отправлен на Ваш телефон!'
+          });
+        } catch (err) {
+          console.log(err);
+          Notify.create({
+            color: 'red-5',
+            textColor: 'white',
+            message: 'Ошибка отправки кода!'
+          });
+        }
       }
       this.dialog_state = true;
     },
