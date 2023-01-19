@@ -112,7 +112,7 @@ const routes = [
   {
     path: '/sms',
     name: 'Sms',
-    component: () => import('../components/SmsInform.vue'),
+    component: () => import('../components/Sms/SmsInform.vue'),
     meta: {
       layout: 'auth'
     }
