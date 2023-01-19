@@ -13,7 +13,7 @@
 export default {
 computed: {
     userIsLoggedIn () {
-        return this.$route.path != '/auth' && this.$route.path != '/sms'
+        return this.$route.path != '/' && this.$route.path != '/auth' && this.$route.path != '/sms'
     }
 },
 methods : {
