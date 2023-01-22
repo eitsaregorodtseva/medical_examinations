@@ -1,6 +1,6 @@
 <template>
-  <q-dialog v-model="dialog_state">
-    <q-card class="q-py-sm q-px-md">
+  <q-dialog v-model="dialog">
+    <q-card class="q-py-md q-px-lg">
       <q-card-section>
         <div class="text-h6">Выбор даты</div>
       </q-card-section>
@@ -41,6 +41,7 @@ export default {
   },
   data() {
     return {
+        dialog: true,
         locale: {
         days: 'Понедельник_Вторник_Среда_Четверг_Пятница_Суббота_Воскресенье'.split('_'),
         daysShort: 'Пн_Вт_Ср_Чт_Пт_Сб_Вс'.split('_'),

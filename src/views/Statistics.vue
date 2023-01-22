@@ -13,7 +13,7 @@ TODO
 -->
 <template>
   <q-page>
-    <div class="q-pa-md q-ml-xl">
+    <div class="q-pa-md q-ml-xl" style="min-width: 590px">
       <q-tabs
         v-model="tab"
         dense
@@ -70,10 +70,48 @@ TODO
               style="border-radius: 5px"
               @click="handleChangePeriod"
             />
-            <q-btn v-if="org_toggler === 'organizations'">Фильтры</q-btn>
+              
+            <q-btn 
+              flat
+              icon="filter_list"
+              style="position: absolute; right: 100px"
+              v-if="org_toggler === 'organizations'" 
+              @click="handleToggleFilterDialog"
+            >
+              Фильтры
+            </q-btn>
+            <!-- <q-select
+              v-model="modelMultiple"
+              class="col-8"
+              outline
+              multiple
+              :options="options"
+              use-chips
+              stack-label
+              label="Выбрать организации"
+              @update:model-value="filterCards"
+            >
+              <template #append>
+                <q-icon
+                  name="close"
+                  class="cursor-pointer"
+                  @click.stop.prevent="modelMultiple = []"
+                  @click="filterCards"
+                />
+              </template>
+            </q-select> -->
+            <filter-modal 
+              v-if="filter_state"
+              class="self-end" 
+              :options="options" 
+              :organiz="modelMultiple"
+              @filter-cards="filterCards"
+              @handle-toggle="handleToggleFilterDialog"
+            />
           </div>
-
-          <q-dialog>
+          <!-- <calendar-modal v-if="show_dialog" /> -->
+          
+          <!-- <q-dialog>
             <q-select
               v-model="modelMultiple"
               class="col-8"
@@ -94,7 +132,7 @@ TODO
                 />
               </template>
             </q-select>
-          </q-dialog>
+          </q-dialog> -->
 
           <div
             v-if="loadingState"
@@ -116,14 +154,14 @@ TODO
           </div>
 
           <div class="q-pa-sm q-gutter-sm">
-            <!-- <calendar-modal
-              :dialog_state="show_dialog"
+            <calendar-modal 
+              v-if="show_dialog"
               :date="current_date"
-              :periodState="toggler"
-              :changePeriod="handleSelectPeriod"
+              :period-state="toggler"
+              :change-period="handleSelectPeriod"
               :range_state="rangeState"
-            /> -->
-            <q-dialog v-model="show_dialog">
+            />
+            <!-- <q-dialog v-model="show_dialog">
               <q-card class="q-py-sm q-px-md">
                 <q-card-section>
                   <div class="text-h6">Выбор даты</div>
@@ -158,7 +196,7 @@ TODO
                   </q-btn>
                 </q-card-actions>
               </q-card>
-            </q-dialog>
+            </q-dialog> -->
           </div>
           <!-- </div> -->
         </q-tab-panel>
@@ -204,6 +242,7 @@ TODO
 // import OrganizationsStatisticsTable from "@/components/OrganizationsStatisticsTable.vue";
 import CustomCard from "@/components/Statistics/CustomCard.vue";
 import CalendarModal from "@/components/Statistics/CalendarModal.vue";
+import FilterModal from "@/components/Statistics/FilterModal.vue";
 import {
   getAllOrganizationsStats,
   getOneOrganizationStats,
@@ -219,6 +258,7 @@ import "@quasar/quasar-ui-qcalendar/dist/index.css";
 export default {
   components: {
     // OrganizationsStatisticsTable,
+    FilterModal,
     CustomCard,
     CalendarModal,
   },
@@ -255,6 +295,7 @@ export default {
       tab: ref("main"),
       model: ref("today"),
       show_dialog: false,
+      filter_state: false,
       current_data: moment().format("YYYY-MM-DD"),
       first_data: moment().format("YYYY-MM-DD"),
       dates: {
@@ -295,6 +336,12 @@ export default {
               to: moment().format("YYYY/MM/DD"),
             };
     },
+
+    handleToggleFilterDialog() {
+      console.log(this.filter_state)
+      this.filter_state = !this.filter_state;
+    },
+
     handleToggleShowDialog() {
       this.show_dialog = !this.show_dialog;
     },
@@ -332,17 +379,20 @@ export default {
       }
     },
 
-    filterCards() {
+    filterCards(orgs) {
       this.visibleList = [];
-      if (this.modelMultiple.length > 0) {
+      if (orgs.length > 0) {
         this.organizationsList.map((org, index) => {
-          if (this.modelMultiple.includes(org.organization_name)) {
+          if (orgs.includes(org.organization_name)) {
             this.visibleList.push(org);
+            
           }
         });
       } else {
         this.visibleList = this.organizationsList;
       }
+      this.filter_state = false;
+            this.modelMultiple = orgs;
     },
 
     handleChangePeriod() {
@@ -383,6 +433,7 @@ export default {
         if (this.loadingState === false) {
           this.organizationsList.map((org, index) => {
             this.options.push(org.organization_name);
+            console.log(this.options)
             this.summary = this.summary + org.exams_count;
           });
         }
