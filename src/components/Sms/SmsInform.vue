@@ -1,6 +1,6 @@
 <template>
   <div 
-    class="q-pa-lg q-ml-xl"
+    class="q-py-lg q-pr-lg q-ml-xl"
     style="max-width: 600px"
   >
     <div 
@@ -80,7 +80,7 @@
           >
             Сохранить изменения
           </q-btn>
-          <q-btn 
+          <q-btn
             class="q-mt-lg"
             @click="cancelChanges"
           >
@@ -248,7 +248,7 @@ export default {
           textColor: 'white',
           message: 'Ошибка! В данной организации уже существует пользователь с таким номером телефона. Попробуйте изменить данные.'
         });
-        this.dialog_state = false;
+        this.closePopupDialog();
         this.code_approving = false;
       }
       // console.log(this.person.second_name, this.person.first_name, this.person.father_name, this.person.organization_id.value, this.tel_cleared);
