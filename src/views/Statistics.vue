@@ -1,153 +1,124 @@
-<!-- eslint-disable vue/require-v-for-key 
-  eslint-disable vue/multi-word-component-names -->
-
-<!-- 
-TODO
-1. спиннер на загрузку +
-2. переверстать на row -> column +
-3. поведение при сворачивании + 
-4. медиа запросы
-5. спустить спиннер +
-6. календарь в отдельный компонент
-7. рефакторинг
--->
+<!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <q-page>
-    <div class="q-pa-md q-ml-xl" style="min-width: 590px">
+    <div
+      class="q-pa-md q-ml-xl"
+    >
       <q-tabs
         v-model="tab"
         dense
         outside-arrows
+        mobile-arrows
         active-color="white"
         active-bg-color="dark"
         active-radius="20px"
         indicator-color="transparent"
         align="justify"
         style="width: 90%"
+        :default="200"
+        no-caps
       >
-        <q-tab name="main" label="Главная" />
-        <q-tab name="documents" label="Документы" />
-        <q-tab name="1c" label="1С" />
-        <q-tab name="medworkers" label="Медики" />
-        <q-tab name="applications" label="Заявки" />
-        <q-tab name="settings" label="Настройки" />
-        <q-tab name="help" label="Справка" />
+        <q-tab
+          name="main"
+          label="Главная"
+        />
+        <q-tab
+          name="documents"
+          label="Документы"
+        />
+        <q-tab
+          name="1c"
+          label="1С"
+        />
+        <q-tab
+          name="medworkers"
+          label="Медики"
+        />
+        <q-tab
+          name="applications"
+          label="Заявки"
+        />
+        <q-tab
+          name="settings"
+          label="Настройки"
+        />
+        <q-tab
+          name="help"
+          label="Справка"
+        />
       </q-tabs>
 
       <q-tab-panels v-model="tab">
         <q-tab-panel name="main">
-          <!-- <q-input 
-              v-model="search" 
-              type="search" 
-              label="Поиск"
-              style="float: right;"
-            >
-              <template 
-                v-slot:append
+          <div class="row">
+            <div class="q-py-md row q-gutter-md q-mr-md">
+              <q-btn-toggle
+                v-model="org_toggler"
+                toggle-color="dark"
+                no-caps
+                :options="[
+                  { label: 'Всего', value: 'summary' },
+                  { label: 'Организации', value: 'organizations' },
+                ]"
+                style="border-radius: 5px;"
+                @click="handleChangeOrganization"
+              />
+              <q-btn-toggle
+                v-model="model"
+                toggle-color="dark"
+                no-caps
+                :options="[
+                  { label: 'Сегодня', value: 'today' },
+                  { label: 'Месяц', value: 'month' },
+                  { label: 'Год', value: 'year' },
+                ]"
+                style="border-radius: 5px;"
+                @click="handleChangePeriod"
+              />
+            </div>
+            <div class="col q-py-md q-mr-md"> 
+              <q-btn 
+                v-if="org_toggler === 'organizations'"
+                style="float: right"
+                flat
+                icon="filter_list"
+                no-caps
+                @click="handleToggleFilterDialog"
               >
-                <q-icon name="search" />
-              </template>
-            </q-input> -->
-          <div class="q-py-md row q-gutter-md">
-            <q-btn-toggle
-              v-model="org_toggler"
-              toggle-color="dark"
-              :options="[
-                { label: 'Всего', value: 'summary' },
-                { label: 'Организации', value: 'organizations' },
-              ]"
-              style="border-radius: 5px"
-              @click="handleChangeOrganization"
-            />
-            <q-btn-toggle
-              v-model="model"
-              toggle-color="dark"
-              :options="[
-                { label: 'Сегодня', value: 'today' },
-                { label: 'Месяц', value: 'month' },
-                { label: 'Год', value: 'year' },
-              ]"
-              style="border-radius: 5px"
-              @click="handleChangePeriod"
-            />
-              
-            <q-btn 
-              flat
-              icon="filter_list"
-              style="position: absolute; right: 100px"
-              v-if="org_toggler === 'organizations'" 
-              @click="handleToggleFilterDialog"
-            >
-              Фильтры
-            </q-btn>
-            <!-- <q-select
-              v-model="modelMultiple"
-              class="col-8"
-              outline
-              multiple
-              :options="options"
-              use-chips
-              stack-label
-              label="Выбрать организации"
-              @update:model-value="filterCards"
-            >
-              <template #append>
-                <q-icon
-                  name="close"
-                  class="cursor-pointer"
-                  @click.stop.prevent="modelMultiple = []"
-                  @click="filterCards"
-                />
-              </template>
-            </q-select> -->
-            <filter-modal 
-              v-if="filter_state"
-              class="self-end" 
-              :options="options" 
-              :organiz="modelMultiple"
-              @filter-cards="filterCards"
-              @handle-toggle="handleToggleFilterDialog"
-            />
+                Фильтры
+              </q-btn>
+              <filter-modal 
+                v-if="filter_state"
+                class="self-end" 
+                :options="options" 
+                :organiz="modelMultiple"
+                @filter-cards="filterCards"
+                @handle-toggle="handleToggleFilterDialog"
+              />
+            </div>
           </div>
-          <!-- <calendar-modal v-if="show_dialog" /> -->
-          
-          <!-- <q-dialog>
-            <q-select
-              v-model="modelMultiple"
-              class="col-8"
-              outline
-              multiple
-              :options="options"
-              use-chips
-              stack-label
-              label="Выбрать организации"
-              @update:model-value="filterCards"
-            >
-              <template #append>
-                <q-icon
-                  name="close"
-                  class="cursor-pointer"
-                  @click.stop.prevent="modelMultiple = []"
-                  @click="filterCards"
-                />
-              </template>
-            </q-select>
-          </q-dialog> -->
 
           <div
             v-if="loadingState"
             style="display: flex; justify: center; margin-top: 20%"
           >
-            <q-spinner-oval color="dark" size="3em" style="margin: auto" />>
+            <q-spinner-oval
+              color="dark"
+              size="3em"
+              style="margin: auto"
+            />
           </div>
 
           <div v-else>
             <div class="fit row wrap justify-center q-gutter-xl q-mt-xs">
-              <div v-for="org in visibleList">
+              <div 
+                v-for="org in visibleList" 
+                :key="org"
+              >
                 <custom-card
                   class="col-4"
                   :data="org"
-                  :dialog="handleToggleShowDialog"
+                  @show-dialog="handleToggleShowDialog"
                 />
               </div>
             </div>
@@ -155,50 +126,49 @@ TODO
 
           <div class="q-pa-sm q-gutter-sm">
             <calendar-modal 
-              v-if="show_dialog"
+              v-if="model !== 'today' && show_dialog"
               :date="current_date"
               :period-state="toggler"
-              :change-period="handleSelectPeriod"
               :range_state="rangeState"
+              :first_data="first_data"
+              :current_data="current_data"
+              @change-period="handleSelectPeriod"
+              @update-table="updateOrganizationsTable"
+              @handle-toggle="handleToggleShowDialog"
             />
-            <!-- <q-dialog v-model="show_dialog">
-              <q-card class="q-py-sm q-px-md">
-                <q-card-section>
-                  <div class="text-h6">Выбор даты</div>
-                </q-card-section>
-                <q-card-section>
-                  <q-btn-toggle
-                    v-model="toggler"
-                    toggle-color="dark"
-                    :options="[
-                      { label: 'День', value: 'day' },
-                      { label: 'Период', value: 'period' },
-                    ]"
-                    @click="handleSelectPeriod"
+            <q-dialog 
+              v-model="show_exams" 
+              style="width: 3000px; max-width: 3000px;"
+            >
+              <q-card 
+                style="max-width: 3000px" 
+                class="q-pa-xs"
+              >
+                <q-card-section class="q-pa-xs">
+                  <q-btn
+                    flat
+                    icon="west"
+                    @click="show_exams = false"
                   />
                 </q-card-section>
-                <q-card-section>
-                  <q-date
-                    :locale="locale"
-                    v-model="current_date"
-                    color="dark"
-                    :range="rangeState"
-                    :options="
-                      (date) =>
-                        date >= this.current_date.from &&
-                        date <= this.current_date.to
-                    "
-                  />
+                <q-card-section class="q-pt-xs">
+                  <div v-if="examsList.length > 0">
+                    <exams-history-table 
+                      :exams="examsList"
+                      height="80vh"
+                    />
+                  </div>
+                  <div v-else>
+                    <q-spinner-oval
+                      color="dark"
+                      size="3em"
+                      style="margin: auto"
+                    />
+                  </div>
                 </q-card-section>
-                <q-card-actions align="right">
-                  <q-btn @click="updateOrganizationsTable" color="dark">
-                    Показать
-                  </q-btn>
-                </q-card-actions>
               </q-card>
-            </q-dialog> -->
+            </q-dialog>
           </div>
-          <!-- </div> -->
         </q-tab-panel>
         <q-tab-panel name="documents" />
         <q-tab-panel name="1c" />
@@ -237,30 +207,27 @@ TODO
     /> -->
   </q-page>
 </template>
-
 <script>
-// import OrganizationsStatisticsTable from "@/components/OrganizationsStatisticsTable.vue";
 import CustomCard from "@/components/Statistics/CustomCard.vue";
 import CalendarModal from "@/components/Statistics/CalendarModal.vue";
 import FilterModal from "@/components/Statistics/FilterModal.vue";
+import ExamsHistoryTable from "../components/ExamsHistoryTable.vue";
 import {
   getAllOrganizationsStats,
   getOneOrganizationStats,
 } from "@/api/organizations.api.js";
 import {
-  getExamsHistoryAll,
   getExamsHistoryByPeriod,
 } from "@/api/exams.api.js";
 import moment from "moment";
 import { ref } from "vue";
-import "@quasar/quasar-ui-qcalendar/dist/index.css";
 
 export default {
   components: {
-    // OrganizationsStatisticsTable,
     FilterModal,
     CustomCard,
     CalendarModal,
+    ExamsHistoryTable
   },
   data() {
     return {
@@ -282,11 +249,12 @@ export default {
       calendar: ref(null),
       startDate: ref(moment()),
       endDate: ref(moment()),
-      rangeState: false,
+      rangeState: ref(false),
       loadingState: true,
 
       options: [],
       examsList: [],
+      show_exams: ref(false),
 
       toggler: ref("day"),
       current_date: ref(moment().format("YYYY/MM/DD")),
@@ -312,8 +280,8 @@ export default {
   },
   mounted() {
     this.populateDataFromStorage(),
-      this.handleChangePeriod(),
-      this.handleChangeOrganization();
+    this.handleChangePeriod(),
+    this.handleChangeOrganization();
   },
   methods: {
     handleChangeOrganization() {
@@ -326,8 +294,9 @@ export default {
       }
     },
 
-    handleSelectPeriod() {
-      this.rangeState = this.toggler == "day" ? false : true;
+    handleSelectPeriod(period) {
+      this.toggler = period;
+      this.rangeState = this.toggler === "day" ? false : true;
       this.current_date =
         this.toggler == "day"
           ? moment().format("YYYY/MM/DD")
@@ -338,12 +307,16 @@ export default {
     },
 
     handleToggleFilterDialog() {
-      console.log(this.filter_state)
       this.filter_state = !this.filter_state;
     },
 
     handleToggleShowDialog() {
-      this.show_dialog = !this.show_dialog;
+      if (this.model !== 'today') {
+        this.show_dialog = !this.show_dialog;
+      }    
+      else {
+        this.updateOrganizationsTable(moment(new Date(this.current_data)).subtract(1, 'days').toString())
+      }
     },
 
     populateDataFromStorage() {
@@ -353,18 +326,30 @@ export default {
       );
     },
 
-    async updateOrganizationsTable() {
+    prepareDate(date) {
+      let new_date = new Date(date);
+      new_date.setUTCHours(0,0,0,0)
+      return new_date.toISOString()
+    },
+
+    async updateOrganizationsTable(date_from_modal) {
       this.showTable = true;
-      console.log(moment().toISOString());
+      let start_date = typeof date_from_modal === "string" ?
+        this.prepareDate(moment(new Date(date_from_modal)).add(1, 'days')) :
+        this.prepareDate(moment(new Date(date_from_modal.from)).add(1, 'days'));
+      let end_date = typeof date_from_modal === "string" ?
+        this.prepareDate(moment(new Date(date_from_modal)).add(2, 'days')) :
+        this.prepareDate(moment(new Date(date_from_modal.to)).add(1, 'days'));
+
       let period =
         this.toggler === "day"
           ? {
-              date_from: moment(this.current_date).toISOString(),
-              date_to: moment(this.current_date).toISOString(),
+              date_from: start_date,
+              date_to: end_date,
             }
           : {
-              date_from: moment(this.current_date.from).toISOString(),
-              date_to: moment(this.current_date.to).toISOString(),
+              date_from: start_date,
+              date_to: end_date,
             };
       try {
         var response;
@@ -374,6 +359,9 @@ export default {
           period.date_to
         );
         this.examsList = response.data;
+        if (this.examsList.length > 0) {
+          this.show_exams = true;
+        }
       } catch (err) {
         console.log(err);
       }
@@ -382,10 +370,9 @@ export default {
     filterCards(orgs) {
       this.visibleList = [];
       if (orgs.length > 0) {
-        this.organizationsList.map((org, index) => {
+        this.organizationsList.map((org) => {
           if (orgs.includes(org.organization_name)) {
             this.visibleList.push(org);
-            
           }
         });
       } else {
@@ -431,9 +418,8 @@ export default {
         this.loadingState = false;
         this.summary = 0;
         if (this.loadingState === false) {
-          this.organizationsList.map((org, index) => {
+          this.organizationsList.map((org) => {
             this.options.push(org.organization_name);
-            console.log(this.options)
             this.summary = this.summary + org.exams_count;
           });
         }
@@ -453,23 +439,25 @@ export default {
   },
 };
 </script>
-
-<style>
+<style scoped>
 .q-tabs--dense .q-tab {
   border-radius: 5px;
-  text-transform: capitalize;
+  /* text-transform: capitalize; */
 }
 .q-tab-panel {
   padding-left: 0px;
 }
-.q-btn,
+/* .q-btn,
 .q-btn-toggle {
-  text-transform: capitalize;
-}
+  text-transform: capitalize !important;
+} */
 .q-btn .q-focus-helper {
   display: none;
 }
 .btn {
   cursor: auto;
+}
+.q-btn >>> .q-icon {
+  margin-right: 10px;
 }
 </style>
