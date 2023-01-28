@@ -1,7 +1,7 @@
 <template>
   <q-dialog
-    v-model="dialog" 
-    persistent
+    :model-value="modelValue"
+    @update:model-value="value => $emit('update:modelValue', value)"
   >
     <q-card
       class="q-pt-md q-px-md"
@@ -17,7 +17,7 @@
           flat
           round
           dense
-          @click="$emit('handle-toggle')"
+          @click="$emit('update:modelValue', false)"
         />
       </q-card-section>
       <q-card-section>
@@ -25,28 +25,26 @@
           Выберите организации:
         </div>
         <q-select
-          v-model="modelMultiple"
+          v-model="filterValues"
+          :options="filterOptions"
           class="col-8"
           outline
           multiple
-          :options="modelOptions"
           use-chips
           use-input
           stack-label
           input-debounce="0"
           label="Организации"
-          @filter="filterFn"
+          @filter="handleFilterOptions"
         >
           <template #append>
             <q-icon
               name="close"
               class="cursor-pointer"
-              @click.stop.prevent="modelMultiple = []"
+              @click.stop.prevent="filterValues = []"
             />
           </template>
-          <template 
-            #no-option
-          >
+          <template #no-option>
             <q-item>
               <q-item-section class="text-grey">
                 Нет результатов
@@ -59,11 +57,15 @@
         <div class="row q-gutter-md q-mt-xl">
           <q-btn
             color="dark"
-            @click="$emit('filter-cards', modelMultiple)"
+            no-caps
+            @click="$emit('filterCards', filterValues)"
           >
             Применить
           </q-btn>
-          <q-btn @click="resetFilters">
+          <q-btn
+            no-caps
+            @click="handleResetFilters"
+          >
             Сбросить
           </q-btn>
         </div>
@@ -71,53 +73,62 @@
     </q-card>
   </q-dialog>
 </template>
+
 <script>
 import { ref } from "vue";
 export default {
-    props: {
-        options: {
-          type: Array,
-          default() {
-            return []
-          }
-        },
-        organiz: {
-          type: Array,
-          default() {
-            return []
-          },
-        }
-
-    },
-    emits: ['filter-cards', 'handle-toggle'],
-    data() {
-        return {
-            modelMultiple: ref(),
-            modelOptions: ref(),
-            dialog: true,
-        }   
-    },
-    mounted() {
-      this.modelMultiple = this.organiz;
-      this.modelOptions = this.options;
-    },
-    methods: {
-      resetFilters() {
-        this.modelMultiple = [];
-      },
-      filterFn (val, update) {
-        update(() => {
-          if (val === '') {
-            this.modelOptions = this.options
-          }
-          else {
-            const needle = val.toLowerCase()
-            this.modelOptions = this.options.filter(
-              v => v.toLowerCase().indexOf(needle) > -1
-            )
-          }
-        })
+  props: {
+    options: {
+      type: Array,
+      default() {
+        return []
       }
+    },
+    values: {
+      type: Array,
+      default() {
+        return []
+      },
+    },
+    modelValue: {
+      type : Boolean,
+      default : false
+    },
+  },
+  emits: {
+    filterCards: () => { return true },
+    'update:modelValue': () => { return true }
+  },
+  data() {
+    return {
+      filterValues: ref(),
+      filterOptions: ref(),
     }
+  },
+  mounted() {
+    this.filterValues = this.values;
+    this.filterOptions = this.options;
+  },
+  updated() {
+    this.filterValues = this.values;
+  },
+  methods: {
+    handleResetFilters() {
+      this.filterValues = [];
+    },
+    handleFilterOptions(value, update) {
+      update(() => {
+        if (value === '') {
+          this.filterOptions = this.options;
+        }
+        else {
+          const needle = value.toLowerCase();
+          this.filterOptions = this.options.filter(
+            v => v.toLowerCase().indexOf(needle) > -1
+          );
+        }
+      })
+    }
+  }
 }
 </script>

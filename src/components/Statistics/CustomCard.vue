@@ -14,7 +14,7 @@
         <q-card
           class="col q-mb-md q-pa-md"
           style="cursor: pointer; border-radius: 10px"
-          @click="$emit('show-dialog')"
+          @click="$emit('show-modal')"
         >
           <div style="font-size: 20px; font-weight: 600; text-align: center">
             Осмотров
@@ -138,7 +138,7 @@
         <q-card
           class="col q-mb-md q-pa-md"
           style="cursor: pointer; border-radius: 10px"
-          @click="dialog"
+          @click="$emit('show-modal')"
         >
           <div style="font-size: 20px; font-weight: 600; text-align: center">
             Всего
@@ -233,15 +233,7 @@ export default {
   props: {
     data: Object, //TODO дефолтное значение
   },
-  emits: ['show-dialog'],
-  data() {
-    return {
-      currentCardStyle: {
-        cursor: 'pointer',
-        borderRadius: '10px'
-    }
-    }
-  },
+  emits: ['show-modal'],
 };
 </script>
 

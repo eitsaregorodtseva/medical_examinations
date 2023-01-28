@@ -1,0 +1,275 @@
+<template>
+  <div class="row">
+    <div class="col">
+      <div class="q-py-md row q-gutter-md">
+        <organization-toggler
+          @change-organization="handleChangeOrganization"
+        />
+        <period-toggler
+          @change-period="handleChangePeriod"
+        /> 
+      </div>
+    </div>
+    <div class="col q-py-md q-mr-lg"> 
+      <q-btn 
+        v-if="organization_toggle_state === 'organizations'"
+        style="float: right"
+        flat
+        icon="filter_list"
+        no-caps
+        @click="filter_state = true"
+      >
+        Фильтры
+      </q-btn>
+    </div>
+  </div>
+
+  <div
+    v-if="loading_state"
+    style="display: flex; justify: center; margin-top: 20%"
+  >
+    <q-spinner-oval
+      color="dark"
+      size="3em"
+      style="margin: auto"
+    />
+  </div>
+
+  <div v-else>
+    <div class="fit row wrap justify-center q-gutter-xl q-mt-xs">
+      <div 
+        v-for="org in visibleOrganizationsList" 
+        :key="org"
+      >
+        <custom-card
+          class="col-4"
+          :data="org"
+          @show-modal="handleToggleShowDialog"
+        />
+      </div>
+    </div>
+  </div>
+
+  <filter-modal 
+    v-model="filter_state"
+    class="self-end" 
+    :options="organizationNamesList" 
+    :values="filterValues"
+    @filter-cards="filterCards"
+  />
+  <calendar-modal 
+    v-model="calendar_state"
+    :today-date="current_date"
+    :first-date="first_date"
+    @update-table="updateExamsHistoryTable"
+  />
+  <exams-modal
+    v-model="exams_table_state"
+    :period="period_toggler_state"
+    :exams-list="examsList"
+  />
+</template>
+
+<script>
+import CustomCard from "@/components/Statistics/CustomCard.vue";
+import CalendarModal from "@/components/Statistics/CalendarModal.vue";
+import FilterModal from "@/components/Statistics/FilterModal.vue";
+import ExamsModal from "./ExamsModal.vue";
+import OrganizationToggler from "./OrganizationToggler.vue";
+import PeriodToggler from "./PeriodToggler.vue";
+import {
+  getAllOrganizationsStats,
+  getOneOrganizationStats,
+} from "@/api/organizations.api.js";
+import {
+  getExamsHistoryByPeriod,
+} from "@/api/exams.api.js";
+import moment from "moment";
+import { ref } from "vue";
+
+export default {
+  components: {
+    CustomCard,
+    FilterModal,
+    ExamsModal,
+    CalendarModal,
+    OrganizationToggler,
+    PeriodToggler,
+  },
+  data() {
+    return {
+      //togglers
+      organization_toggle_state: ref("summary"),
+      period_toggler_state: ref("today"),
+
+      //organizations
+      organizationsList: [],
+      visibleOrganizationsList: [],
+      summary: 0,
+
+      //calendar
+
+      current_date: moment().format("YYYY-MM-DD"),
+      first_date: moment().format("YYYY-MM-DD"),
+
+      //filter
+      filterValues: [],
+      organizationNamesList: [],
+      
+      //states
+      tab: ref("main"),
+      calendar_state: false,
+      filter_state: false,
+      exams_table_state: false,
+      loading_state: true,
+      
+      //variables
+      examsList: [],
+      
+      user_id: null,
+      user_organization_id: null,
+    };
+  },
+  mounted() {
+    this.populateDataFromStorage(),
+    this.handleChangePeriod('today'),
+    this.handleChangeOrganization('summary');
+  },
+  methods: {
+    populateDataFromStorage() {
+      this.user_id = sessionStorage.getItem("user_id");
+      this.user_organization_id = sessionStorage.getItem(
+        "user_organization_id"
+      );
+    },
+
+    handleChangeOrganization(organization_toggle_state) {
+      this.organization_toggle_state = organization_toggle_state;
+      if (this.organization_toggle_state === "summary") {
+        this.visibleOrganizationsList = [
+          { organization_name: "Все организации", exams_count: this.summary },
+        ];
+      } else {
+        this.visibleOrganizationsList = this.organizationsList;
+      }
+    },
+
+    handleChangePeriod(period_toggler_state) {
+      this.period_toggler_state = period_toggler_state;
+      this.loading_state = true;
+      if (this.period_toggler_state === "month") {
+        this.first_date = moment().subtract(30, "days").format("YYYY-MM-DD");
+      } else {
+        if (this.period_toggler_state === "today") {
+          this.first_date = moment().format("YYYY-MM-DD");
+        } else {
+          this.first_date = moment().subtract(364, "days").format("YYYY-MM-DD");
+        }
+      }
+      this.updateExamCard();
+    },
+
+    handleToggleShowDialog() {
+      if (this.period_toggler_state !== 'today') {
+        this.calendar_state = true;
+      }    
+      else {
+        this.updateExamsHistoryTable(moment(new Date(this.current_date)).subtract(1, 'days').toString())
+      }
+    },
+
+    prepareDate(date) {
+      let new_date = new Date(date);
+      new_date.setUTCHours(0,0,0,0)
+      return new_date.toISOString()
+    },
+
+    async updateExamsHistoryTable(date_from_modal) {
+      let start_date = typeof date_from_modal === "string" ?
+        this.prepareDate(moment(new Date(date_from_modal)).add(1, 'days')) :
+        this.prepareDate(moment(new Date(date_from_modal.from)).add(1, 'days'));
+      let end_date = typeof date_from_modal === "string" ?
+        this.prepareDate(moment(new Date(date_from_modal)).add(2, 'days')) :
+        this.prepareDate(moment(new Date(date_from_modal.to)).add(2, 'days'));
+
+      try {
+        var response;
+        response = await getExamsHistoryByPeriod(
+          this.user_id,
+          start_date,
+          end_date
+        );
+        this.examsList = response.data;
+        if (this.examsList.length > 0) {
+          this.exams_table_state = true;
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    },
+
+    filterCards(values) {
+      this.visibleOrganizationsList = [];
+      if (values.length > 0) {
+        this.organizationsList.map((org) => {
+          if (values.includes(org.organization_name)) {
+            this.visibleOrganizationsList.push(org);
+          }
+        });
+      } else {
+        this.visibleOrganizationsList = this.organizationsList;
+      }
+      this.filter_state = false;
+      this.filterValues = values;
+    },
+
+    async updateExamCard() {
+      try {
+        var response;
+        if (this.user_organization_id === "null") {
+          response = await getAllOrganizationsStats(
+            this.user_id,
+            this.first_date,
+            this.current_date
+          );
+        } else {
+          response = await getOneOrganizationStats(
+            this.user_organization_id,
+            this.user_id,
+            this.first_date,
+            this.current_date
+          );
+        }
+        this.organizationsList = response.data;
+        this.loading_state = false;
+        this.summary = 0;
+        if (this.loading_state === false) {
+          this.organizationsList.map((org) => {
+            this.organizationNamesList.push(org.organization_name);
+            this.summary = this.summary + org.exams_count;
+          });
+        }
+        this.visibleOrganizationsList =
+          this.organization_toggle_state === "summary"
+            ? [
+                {
+                  organization_name: "Все организации",
+                  exams_count: this.summary,
+                },
+              ]
+            : this.organizationsList;
+      } catch (err) {
+        console.log(err);
+      }
+    },
+  },
+};
+</script>
+<style scoped>
+.q-btn .q-focus-helper {
+  display: none;
+}
+.q-btn >>> .q-icon {
+  margin-right: 10px;
+}
+</style>
