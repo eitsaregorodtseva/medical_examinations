@@ -1,5 +1,5 @@
 <template>
-  <div class="row">
+  <div class="row q-pl-xs">
     <div class="col">
       <div class="q-py-md row q-gutter-md">
         <organization-toggler
@@ -10,18 +10,10 @@
         /> 
       </div>
     </div>
-    <div class="col q-py-md q-mr-lg"> 
-      <q-btn 
-        v-if="organization_toggle_state === 'organizations'"
-        style="float: right"
-        flat
-        icon="filter_list"
-        no-caps
-        @click="filter_state = true"
-      >
-        Фильтры
-      </q-btn>
-    </div>
+    <filter-button 
+      :organization-toggler-state="organization_toggler_state"
+      @update-filter-state="filter_state = true"
+    />
   </div>
 
   <div
@@ -35,18 +27,19 @@
     />
   </div>
 
-  <div v-else>
-    <div class="fit row wrap justify-center q-gutter-xl q-mt-xs">
-      <div 
-        v-for="org in visibleOrganizationsList" 
-        :key="org"
-      >
-        <custom-card
-          class="col-4"
-          :data="org"
-          @show-modal="handleToggleShowDialog"
-        />
-      </div>
+  <div
+    v-else
+    class="fit row wrap justify-center q-gutter-xl q-mt-xs"
+  >
+    <div 
+      v-for="org in visibleOrganizationsList" 
+      :key="org"
+    >
+      <custom-card
+        class="col-4"
+        :data="org"
+        @show-modal="handleToggleShowDialog"
+      />
     </div>
   </div>
 
@@ -77,6 +70,8 @@ import FilterModal from "@/components/Statistics/FilterModal.vue";
 import ExamsModal from "./ExamsModal.vue";
 import OrganizationToggler from "./OrganizationToggler.vue";
 import PeriodToggler from "./PeriodToggler.vue";
+import FilterButton from "./FilterButton.vue";
+import { Role } from '../../helpers/role';
 import {
   getAllOrganizationsStats,
   getOneOrganizationStats,
@@ -93,13 +88,14 @@ export default {
     FilterModal,
     ExamsModal,
     CalendarModal,
+    FilterButton,
     OrganizationToggler,
-    PeriodToggler,
+    PeriodToggler
   },
   data() {
     return {
       //togglers
-      organization_toggle_state: ref("summary"),
+      organization_toggler_state: ref("summary"),
       period_toggler_state: ref("today"),
 
       //organizations
@@ -124,10 +120,12 @@ export default {
       loading_state: true,
       
       //variables
+      Role,
       examsList: [],
       
       user_id: null,
       user_organization_id: null,
+      user_role: null,
     };
   },
   mounted() {
@@ -141,11 +139,12 @@ export default {
       this.user_organization_id = sessionStorage.getItem(
         "user_organization_id"
       );
+      this.user_role = sessionStorage.getItem('user_role');
     },
 
-    handleChangeOrganization(organization_toggle_state) {
-      this.organization_toggle_state = organization_toggle_state;
-      if (this.organization_toggle_state === "summary") {
+    handleChangeOrganization(organization_toggler_state) {
+      this.organization_toggler_state = organization_toggler_state;
+      if (this.organization_toggler_state === "summary") {
         this.visibleOrganizationsList = [
           { organization_name: "Все организации", exams_count: this.summary },
         ];
@@ -249,8 +248,8 @@ export default {
             this.summary = this.summary + org.exams_count;
           });
         }
-        this.visibleOrganizationsList =
-          this.organization_toggle_state === "summary"
+        if (this.user_role === Role.Admin) {
+          this.visibleOrganizationsList = this.organization_toggler_state === "summary" 
             ? [
                 {
                   organization_name: "Все организации",
@@ -258,6 +257,10 @@ export default {
                 },
               ]
             : this.organizationsList;
+        }
+        else {
+          this.visibleOrganizationsList = this.organizationsList;
+        }
       } catch (err) {
         console.log(err);
       }
@@ -268,8 +271,5 @@ export default {
 <style scoped>
 .q-btn .q-focus-helper {
   display: none;
-}
-.q-btn >>> .q-icon {
-  margin-right: 10px;
 }
 </style>
