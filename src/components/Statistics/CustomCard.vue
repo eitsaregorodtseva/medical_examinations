@@ -1,7 +1,6 @@
 <template>
   <q-card
     class="col-5"
-    style="max-width: 590px"
   >
     <q-item>
       <q-item-section>
@@ -16,17 +15,17 @@
           style="cursor: pointer; border-radius: 10px"
           @click="$emit('show-modal')"
         >
-          <div style="font-size: 20px; font-weight: 600; text-align: center">
+          <div style="font-size: 18px; font-weight: 600; text-align: center">
             Осмотров
           </div>
           <div class="row q-mt-md">
             <div
-              class="col q-ml-lg q-mt-sm"
+              class="col-7 q-ml-sm q-mt-sm q-mr-xs"
               style="font-size: 20px; font-weight: 600; text-align: center"
             >
               <div>{{ data.exams_count }}</div>
             </div>
-            <div class="col">
+            <div class="col-2 q-mr-xs">
               <q-icon
                 size="45px"
                 name="img:/img/icons/done.svg"
@@ -140,7 +139,7 @@
           style="cursor: pointer; border-radius: 10px"
           @click="$emit('show-modal')"
         >
-          <div style="font-size: 20px; font-weight: 600; text-align: center">
+          <div style="font-size: 18px; font-weight: 600; text-align: center">
             Всего
           </div>
           <div class="row q-mt-md">
@@ -237,7 +236,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .item-card {
   border-radius: 10px;
   height: 100px;
@@ -246,5 +245,8 @@ export default {
 .numbers {
   text-align: center;
   font-size: 20px;
+}
+.q-card {
+  max-width: 590px;
 }
 </style>

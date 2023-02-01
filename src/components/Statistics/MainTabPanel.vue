@@ -191,6 +191,7 @@ export default {
         this.prepareDate(moment(new Date(date_from_modal)).add(2, 'days')) :
         this.prepareDate(moment(new Date(date_from_modal.to)).add(2, 'days'));
 
+        // this.exams_table_state = true;
       try {
         var response;
         response = await getExamsHistoryByPeriod(

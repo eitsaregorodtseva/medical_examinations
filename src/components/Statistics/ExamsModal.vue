@@ -34,18 +34,20 @@
           />
         </div>
       </q-card-section>
-      <q-card-section class="row q-pt-xs">
+      <q-card-section class="row q-pt-xs justify-center">
         <div v-if="examsList.length > 0">
           <exams-history-table
             :exams="examsList"
             height="80vh"
           />
         </div>
-        <div v-else>
+        <div
+          v-else
+          class="q-ma-lg"
+        >
           <q-spinner-oval
             color="dark"
             size="3em"
-            style="margin: auto"
           />
         </div>
       </q-card-section>
