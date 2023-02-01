@@ -24,8 +24,14 @@
         <div>Выберите один день или интервал, выделив дату начала и дату конца.</div>
       </q-card-section>
       <q-card-section>
-        <div>
+        <div v-if="calendarState === 'month'">
           <month-calendar 
+            :active-period="active_period"
+            @get-interval="getInterval"
+          />
+        </div>
+        <div v-else>
+          <year-calendar 
             :active-period="active_period"
             @get-interval="getInterval"
           />
@@ -48,10 +54,12 @@
 import moment from "moment";
 import { ref } from 'vue';
 import MonthCalendar from "./MonthCalendar.vue";
+import YearCalendar from "./YearCalendar.vue";
 
 export default {
   components: {
-    MonthCalendar
+    MonthCalendar,
+    YearCalendar
   },
   props: {
     todayDate: {
@@ -65,7 +73,11 @@ export default {
     modelValue: {
       type: Boolean,
       default: false
-    }
+    },
+    calendarState: {
+      type: String,
+      default: 'month'
+    },
   },
   emits: {
     updateTable: () => { return true },

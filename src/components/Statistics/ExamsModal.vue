@@ -56,9 +56,11 @@
 </template>
 <script>
 import ExamsHistoryTable from '../ExamsHistoryTable.vue';
+// import TerminalsHistoryTable from './TerminalsHistoryTable.vue';
 export default {
   components: {
-    ExamsHistoryTable
+    ExamsHistoryTable,
+    // TerminalsHistoryTable
   },
   props: {
     period: {

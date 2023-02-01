@@ -1,67 +1,29 @@
 <template>
-  <div class="row justify-center items-center text-center q-mb-md">
-    <q-btn 
-      flat
-      icon="navigate_before"
-      @click="onPrev"
-    />
-    <div style="display: flex;  flex-wrap: nowrap; font-weight: 600; text-transform: capitalize;">
-      {{ formattedMonth }}
-    </div>
-    <q-btn 
-      flat
-      icon="navigate_next"
-      @click="onNext"
-    />
-  </div>
-  <q-calendar-month
-    ref="calendar"
-    v-model="selectedDate"
-    animated
-    bordered
-    focusable
-    hoverable
-    no-outside-days
-    style="cursor: pointer"
-    :locale="locale"
-    :selected-start-end-dates="startEndDates"
-    :range="true"
-    :day-min-height="60"
-    :day-height="0"
-    :weekdays="[1, 2, 3, 4, 5, 6, 0]"
-    :disabled-before="activePeriod.from"
-    :disabled-after="activePeriod.to"
-    @mousedown-day="onMouseDownDay"
-    @mouseup-day="onMouseUpDay"
-    @mousemove-day="onMouseMoveDay"
-    @change="onChange"
-    @moved="onMoved"
-    @click-date="onClickDate"
-    @click-day="onClickDay"
-    @click-workweek="onClickWorkweek"
-    @click-head-workweek="onClickHeadWorkweek"
-    @click-head-day="onClickHeadDay"
-  >
-    <template #day="{ scope: { timestamp } }">
-      <template
-        v-for="event in eventsMap[timestamp.date]"
-        :key="event.id"
-      >
-        <div
-          :class="badgeClasses('day')"
-          class="my-event"
-          style="display: flex; align-items: center"
-        >
-          <div style="width: 35px; border-radius: 50%; background-color: #2A0B71; margin-top: 5px;">   
-            <!-- TODO        -->
-            <div class="title q-calendar__ellipsis">
-              {{ event.title }}
-            </div>
-          </div>
+    <div class="row justify-center items-center text-center q-mb-md">
+        <q-btn flat unelevated icon="navigate_before" :disabled="disable_before" @click="onPrev" />
+        <div style="display: flex;  flex-wrap: nowrap; font-weight: 600; text-transform: capitalize;">
+            {{ formattedMonth }}
         </div>
-      </template>
-    </template>
-  </q-calendar-month>
+        <q-btn flat unelevated icon="navigate_next" :disable="disable_after" @click="onNext" />
+    </div>
+    <q-calendar-month ref="calendar" v-model="selectedDate" animated bordered focusable hoverable no-outside-days
+        style="cursor: pointer" :locale="locale" :selected-start-end-dates="startEndDates" :range="true"
+        :day-min-height="60" :day-height="0" :weekdays="[1, 2, 3, 4, 5, 6, 0]" :disabled-before="activePeriod.from"
+        :disabled-after="activePeriod.to" @mousedown-day="onMouseDownDay" @mouseup-day="onMouseUpDay"
+        @mousemove-day="onMouseMoveDay" @change="onChange" @click-day="onClickDay">
+        <template #day="{ scope: { timestamp } }">
+            <template v-for="event in eventsMap[timestamp.date]" :key="event.id">
+                <div :class="badgeClasses('day')" class="my-event" style="display: flex; align-items: center">
+                    <div style="width: 35px; border-radius: 50%; background-color: #2A0B71; margin-top: 5px;">
+                        <!-- TODO        -->
+                        <div class="title q-calendar__ellipsis">
+                            {{ event.title }}
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </template>
+    </q-calendar-month>
 </template>
 
 <script>
@@ -119,7 +81,9 @@ export default {
                     title: '24',
                     date: getCurrentDay(1),
                 },
-            ]
+            ],
+            disable_before: ref(false),
+            disable_after: ref(false),
         }
     },
     computed: {
@@ -174,8 +138,12 @@ export default {
         },
         formattedMonth() {
             const date = new Date(this.selectedDate)
+            console.log(this.selectedDate)
             return this.monthFormatter().format(date) + ' ' + date.getFullYear()
         }
+    },
+    updated() {
+        console.log('month', this.activePeriod)
     },
     methods: {
         badgeClasses() {
@@ -205,14 +173,20 @@ export default {
             this.$refs.calendar.next()
         },
         // onMoved(data) {
-            // console.log('onMoved', data)
+        // console.log('onMoved', data)
         // },
         onChange(data) {
-            // this.$emit('get-interval', this.startEndDates)
-            console.log('onChange', data)
+            this.disable_after = new Date(this.activePeriod.to).getMonth() ===
+                new Date(this.selectedDate).getMonth() &&
+                new Date(this.activePeriod.to).getFullYear() === 
+                new Date(this.selectedDate).getFullYear();
+            this.disable_before = new Date(this.activePeriod.from).getMonth() === 
+                new Date(this.selectedDate).getMonth() && 
+                new Date(this.activePeriod.from).getFullYear() === 
+                new Date(this.selectedDate).getFullYear();
         },
         // onClickDate(data) {
-            // console.log('onClickDate', data)
+        // console.log('onClickDate', data)
         // },
         onClickDay() {
             // console.log('onClickDay', data)
@@ -220,13 +194,13 @@ export default {
             this.$emit('get-interval', this.startEndDates)
         },
         // onClickWorkweek(data) {
-            // console.log('onClickWorkweek', data)
+        // console.log('onClickWorkweek', data)
         // },
         // onClickHeadDay(data) {
-            // console.log('onClickHeadDay', data)
+        // console.log('onClickHeadDay', data)
         // },
         // onClickHeadWorkweek(data) {
-            // console.log('onClickHeadWorkweek', data)
+        // console.log('onClickHeadWorkweek', data)
         // },
 
         onMouseDownDay({ scope, event }) {
@@ -281,4 +255,9 @@ export default {
   color: white
 .rounded-border
   border-radius: 2px
+
+.q-btn:disabled 
+  background: transparent 
+.q-btn:hover 
+  background: transparent 
 </style>

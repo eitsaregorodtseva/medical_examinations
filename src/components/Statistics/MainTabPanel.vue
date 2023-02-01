@@ -54,6 +54,7 @@
     v-model="calendar_state"
     :today-date="current_date"
     :first-date="first_date"
+    :calendar-state="period_toggler_state"
     @update-table="updateExamsHistoryTable"
   />
   <exams-modal
