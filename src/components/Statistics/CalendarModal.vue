@@ -5,7 +5,7 @@
   >
     <q-card 
       class="q-py-md q-px-lg"
-      style="width: 1000px"
+      style="width: 800px;"
     >
       <q-card-section class="row">
         <div class="text-h6">
@@ -20,9 +20,9 @@
           @click="$emit('update:modelValue', false)"
         />
       </q-card-section>
-      <q-card-section class="text-center">
+      <!-- <q-card-section class="text-center">
         <div>Выберите один день или интервал, выделив дату начала и дату конца.</div>
-      </q-card-section>
+      </q-card-section> -->
       <q-card-section>
         <div v-if="calendarState === 'month'">
           <month-calendar 
