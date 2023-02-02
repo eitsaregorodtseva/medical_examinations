@@ -102,7 +102,16 @@ export default {
       //organizations
       organizationsList: [],
       visibleOrganizationsList: [],
-      summary: 0,
+      summary: [{
+        organization_name: '',
+        all_exams_count: 0,
+        new_exams_count: 0,
+        admission_count: 0,
+        non_admission_count: 0,
+        alco_count: 0,
+        pressure_heart_count: 0,
+        other_count: 0,
+      }],
 
       //calendar
 
@@ -146,9 +155,7 @@ export default {
     handleChangeOrganization(organization_toggler_state) {
       this.organization_toggler_state = organization_toggler_state;
       if (this.organization_toggler_state === "summary") {
-        this.visibleOrganizationsList = [
-          { organization_name: "Все организации", exams_count: this.summary },
-        ];
+        this.visibleOrganizationsList = this.summary;
       } else {
         this.visibleOrganizationsList = this.organizationsList;
       }
@@ -243,21 +250,32 @@ export default {
         }
         this.organizationsList = response.data;
         this.loading_state = false;
-        this.summary = 0;
+        this.summary = [{
+          organization_name: '',
+          all_exams_count: 0,
+          new_exams_count: 0,
+          admission_count: 0,
+          non_admission_count: 0,
+          alco_count: 0,
+          pressure_heart_count: 0,
+          other_count: 0,
+        }];
         if (this.loading_state === false) {
           this.organizationsList.map((org) => {
             this.organizationNamesList.push(org.organization_name);
-            this.summary = this.summary + org.exams_count;
+            this.summary.all_exams_count = this.summary.all_exams_count + org.all_exams_count;
+            this.summary.new_exams_count = this.summary.new_exams_count + org.new_exams_count;
+            this.summary.admission_count = this.summary.admission_count + org.admission_count;
+            this.summary.non_admission_count = this.summary.non_admission_count + org.non_admission_count;
+            this.summary.alco_count = this.summary.alco_count + org.alco_count;
+            this.summary.pressure_heart_count = this.summary.pressure_heart_count + org.pressure_heart_count;
+            this.summary.other_count = this.summary.other_count + org.other_count;
           });
         }
+        this.summary[0].organization_name = "Все организации";
         if (this.user_role === Role.Admin) {
           this.visibleOrganizationsList = this.organization_toggler_state === "summary" 
-            ? [
-                {
-                  organization_name: "Все организации",
-                  exams_count: this.summary,
-                },
-              ]
+            ? this.summary
             : this.organizationsList;
         }
         else {

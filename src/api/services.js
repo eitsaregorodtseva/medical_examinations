@@ -2,10 +2,10 @@ import axios from 'axios';
 import {notify} from '@kyvg/vue3-notification'
 
 
-const serverURL = 'https://меддопуск.рф';
-const mediaURL = 'https://меддопуск.рф';
-// const serverURL = 'https://stats.auditory.ru';
-// const mediaURL = 'https://stats.auditory.ru';
+// const serverURL = 'https://меддопуск.рф';
+// const mediaURL = 'https://меддопуск.рф';
+const serverURL = 'https://stats.auditory.ru';
+const mediaURL = 'https://stats.auditory.ru';
 
 const webAPI = axios.create({
     baseURL: serverURL + '/api/web',

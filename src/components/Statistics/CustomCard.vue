@@ -23,7 +23,7 @@
               class="col-7 q-ml-sm q-mt-sm q-mr-xs"
               style="font-size: 20px; font-weight: 600; text-align: center"
             >
-              <div>{{ data.exams_count }}</div>
+              <div>{{ data.all_exams_count }}</div>
             </div>
             <div class="col-2 q-mr-xs">
               <q-icon
@@ -43,7 +43,7 @@
               <div>План</div>
               <div class="row">
                 <div class="col numbers q-mt-md">
-                  <div>0</div>
+                  <div>{{ data.new_exams_count }}</div>
                 </div>
                 <div class="col q-mt-sm q-ml-md">
                   <q-icon
@@ -57,7 +57,7 @@
               <div>Алкоголь</div>
               <div class="row">
                 <div class="col numbers q-mt-md">
-                  <div>0</div>
+                  <div>{{ data.alco_count }}</div>
                 </div>
                 <div class="col q-mt-sm q-ml-md">
                   <q-icon
@@ -73,7 +73,7 @@
               <div>Допуски</div>
               <div class="row">
                 <div class="col numbers q-mt-md">
-                  <div>0</div>
+                  <div>{{ data.admission_count }}</div>
                 </div>
                 <div class="col q-mt-sm q-ml-md">
                   <q-icon
@@ -87,7 +87,7 @@
               <div>Давление/пульс</div>
               <div class="row">
                 <div class="col numbers">
-                  <div>0</div>
+                  <div>{{ data.pressure_heart_count }}</div>
                 </div>
                 <div class="col q-ml-md">
                   <q-icon
@@ -103,7 +103,7 @@
               <div>Недопуск, всего</div>
               <div class="row">
                 <div class="col numbers">
-                  <div>0</div>
+                  <div>{{ data.non_admission_count }}</div>
                 </div>
                 <div class="col q-ml-md">
                   <q-icon
@@ -117,7 +117,7 @@
               <div>Прочее</div>
               <div class="row">
                 <div class="col numbers q-mt-md">
-                  <div>0</div>
+                  <div>{{ data.other_count }}</div>
                 </div>
                 <div class="col q-mt-md q-ml-md">
                   <q-icon
@@ -230,7 +230,21 @@
 <script>
 export default {
   props: {
-    data: Object, //TODO дефолтное значение
+    data: {
+      type: Object,
+      default() {
+        return {
+          organization_name: '',
+          all_exams_count: 0,
+          new_exams_count: 0,
+          admission_count: 0,
+          non_admission_count: 0,
+          alco_count: 0,
+          pressure_heart_count: 0,
+          other_count: 0,
+        }
+      }, 
+    },
   },
   emits: ['show-modal'],
 };
