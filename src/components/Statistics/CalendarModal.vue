@@ -20,9 +20,6 @@
           @click="$emit('update:modelValue', false)"
         />
       </q-card-section>
-      <!-- <q-card-section class="text-center">
-        <div>Выберите один день или интервал, выделив дату начала и дату конца.</div>
-      </q-card-section> -->
       <q-card-section>
         <div v-if="calendarState === 'month'">
           <month-calendar 
@@ -53,8 +50,8 @@
 <script>
 import moment from "moment";
 import { ref } from 'vue';
-import MonthCalendar from "./MonthCalendar.vue";
-import YearCalendar from "./YearCalendar.vue";
+import MonthCalendar from "./components/Calendars/MonthCalendar.vue";
+import YearCalendar from "./components/Calendars/YearCalendar.vue";
 
 export default {
   components: {

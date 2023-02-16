@@ -29,7 +29,7 @@
 
 <script>
 import MonthCalendar from './MonthCalendar.vue';
-import MonthComponent from './MonthComponent.vue';
+import MonthComponent from '../../MonthComponent.vue';
 
 export default {
     components: {

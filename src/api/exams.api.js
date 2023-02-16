@@ -36,6 +36,9 @@ const patchMedworkerInExam = (exam_id, user_id, medworker_id) => webAPI.patch(`/
 const getExamsHistoryByPeriod = (user_id, date_from, date_to) => webAPI.get('/exams',
 { params: {user_id, date_from, date_to} });
 
+const getExamsHistoryForOrganizationByPeriod = (user_id, organization_id, date_from, date_to) => webAPI.get('/exams',
+    { params: {user_id, organization_id, date_from, date_to} });
+
 export {
     getQueueSize,
     getNextPatient,
@@ -48,5 +51,6 @@ export {
     getExamsHistoryByVerdict,
     postVerdict,
     patchMedworkerInExam,
-    getExamsHistoryByPeriod
+    getExamsHistoryByPeriod,
+    getExamsHistoryForOrganizationByPeriod
 }

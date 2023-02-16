@@ -14,7 +14,7 @@
 </template>
 <script>
 import { ref } from 'vue';
-import { Role } from '../../helpers/role';
+import { Role } from '../../../helpers/role';
 
 export default {
   emits: ['change-organization'],

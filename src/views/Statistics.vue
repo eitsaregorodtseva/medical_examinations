@@ -25,7 +25,7 @@
 <script>
 import { ref } from "vue";
 import MainTabPanel from "@/components/Statistics/MainTabPanel.vue";
-import NavigationNavbar from "../components/Statistics/NavigationNavbar.vue";
+import NavigationNavbar from "../components/Statistics/components/NavigationNavbar.vue";
 
 export default {
   components: {

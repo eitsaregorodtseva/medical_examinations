@@ -13,7 +13,7 @@
   </div>
 </template>
 <script>
-import { Role } from '../../helpers/role';
+import { Role } from '../../../helpers/role';
 
 export default {
     props: {

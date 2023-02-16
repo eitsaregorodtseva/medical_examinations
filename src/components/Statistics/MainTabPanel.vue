@@ -2,15 +2,11 @@
   <div class="row q-pl-xs">
     <div class="col">
       <div class="q-py-md row q-gutter-md">
-        <organization-toggler
-          @change-organization="handleChangeOrganization"
-        />
-        <period-toggler
-          @change-period="handleChangePeriod"
-        /> 
+        <organization-toggler @change-organization="handleChangeOrganization" />
+        <period-toggler @change-period="handleChangePeriod" />
       </div>
     </div>
-    <filter-button 
+    <filter-button
       :organization-toggler-state="organization_toggler_state"
       @update-filter-state="filter_state = true"
     />
@@ -31,8 +27,8 @@
     v-else
     class="fit row wrap justify-center q-gutter-xl q-mt-xs"
   >
-    <div 
-      v-for="org in visibleOrganizationsList" 
+    <div
+      v-for="org in visibleOrganizationsList"
       :key="org"
     >
       <custom-card
@@ -43,24 +39,25 @@
     </div>
   </div>
 
-  <filter-modal 
+  <filter-modal
     v-model="filter_state"
-    class="self-end" 
-    :options="organizationNamesList" 
+    class="self-end"
+    :options="organizationNamesList"
     :values="filterValues"
     @filter-cards="filterCards"
   />
-  <calendar-modal 
+  <calendar-modal
     v-model="calendar_state"
     :today-date="current_date"
     :first-date="first_date"
     :calendar-state="period_toggler_state"
-    @update-table="updateExamsHistoryTable"
+    @update-table="updateHistoryTable"
   />
-  <exams-modal
-    v-model="exams_table_state"
+  <table-history-modal
+    v-model="table_state"
     :period="period_toggler_state"
-    :exams-list="examsList"
+    :items-type="current_part"
+    :items-list="itemsList"
   />
 </template>
 
@@ -68,10 +65,10 @@
 import CustomCard from "@/components/Statistics/CustomCard.vue";
 import CalendarModal from "@/components/Statistics/CalendarModal.vue";
 import FilterModal from "@/components/Statistics/FilterModal.vue";
-import ExamsModal from "./ExamsModal.vue";
-import OrganizationToggler from "./OrganizationToggler.vue";
-import PeriodToggler from "./PeriodToggler.vue";
-import FilterButton from "./FilterButton.vue";
+import TableHistoryModal from "./TableHistoryModal.vue";
+import OrganizationToggler from "./components/OrganizationToggler.vue";
+import PeriodToggler from "./components/PeriodToggler.vue";
+import FilterButton from "./components/FilterButton.vue";
 import { Role } from '../../helpers/role';
 import {
   getAllOrganizationsStats,
@@ -79,15 +76,18 @@ import {
 } from "@/api/organizations.api.js";
 import {
   getExamsHistoryByPeriod,
+  getExamsHistoryForOrganizationByPeriod
 } from "@/api/exams.api.js";
 import moment from "moment";
 import { ref } from "vue";
+import { getAllTermsStats, getOneTermnStats } from "../../api/terminals.api";
+import { Notify } from 'quasar';
 
 export default {
   components: {
     CustomCard,
     FilterModal,
-    ExamsModal,
+    TableHistoryModal,
     CalendarModal,
     FilterButton,
     OrganizationToggler,
@@ -121,18 +121,23 @@ export default {
       //filter
       filterValues: [],
       organizationNamesList: [],
-      
+
       //states
       tab: ref("main"),
       calendar_state: false,
       filter_state: false,
-      exams_table_state: false,
+      table_state: false,
       loading_state: true,
-      
+
       //variables
       Role,
+      itemsList: [],
       examsList: [],
-      
+      terminalsList: [],
+
+      current_part: '',
+      current_organization: 0,
+
       user_id: null,
       user_organization_id: null,
       user_role: null,
@@ -140,8 +145,8 @@ export default {
   },
   mounted() {
     this.populateDataFromStorage(),
-    this.handleChangePeriod('today'),
-    this.handleChangeOrganization('summary');
+      this.handleChangePeriod('today'),
+      this.handleChangeOrganization('summary');
   },
   methods: {
     populateDataFromStorage() {
@@ -176,43 +181,162 @@ export default {
       this.updateExamCard();
     },
 
-    handleToggleShowDialog() {
-      if (this.period_toggler_state !== 'today') {
-        this.calendar_state = true;
-      }    
-      else {
-        this.updateExamsHistoryTable(moment(new Date(this.current_date)).subtract(1, 'days').toString())
+    handleToggleShowDialog(value, id, requestFlag) {
+      this.current_part = value;
+      this.current_organization = id;
+      if (requestFlag) {
+        if (this.period_toggler_state !== 'today') {
+          this.calendar_state = true;
+        }
+        else {
+          if (value === "exams") {
+            this.updateExamsHistoryTable(moment(new Date(this.current_date)).subtract(1, 'days').toString(), this.current_organization)
+          }
+          else {
+            this.updateTerminalsHistoryTable(moment(new Date(this.current_date)).subtract(1, 'days').toString(), this.current_organization)
+          }
+        }
       }
     },
 
     prepareDate(date) {
       let new_date = new Date(date);
-      new_date.setUTCHours(0,0,0,0)
+      new_date.setUTCHours(0, 0, 0, 0)
       return new_date.toISOString()
     },
 
-    async updateExamsHistoryTable(date_from_modal) {
-      let start_date = typeof date_from_modal === "string" ?
-        this.prepareDate(moment(new Date(date_from_modal)).add(1, 'days')) :
-        this.prepareDate(moment(new Date(date_from_modal.from)).add(1, 'days'));
-      let end_date = typeof date_from_modal === "string" ?
-        this.prepareDate(moment(new Date(date_from_modal)).add(2, 'days')) :
-        this.prepareDate(moment(new Date(date_from_modal.to)).add(2, 'days'));
+    preparePeriod(date, exams) {
+      let start_date;
+      let end_date;
+      if (exams) {
+        start_date = typeof date === "string" ?
+          this.prepareDate(moment(new Date(date)).add(1, 'days')) :
+          this.prepareDate(moment(new Date(date.from)).add(1, 'days'));
+        end_date = typeof date === "string" ?
+          this.prepareDate(moment(new Date(date)).add(2, 'days')) :
+          this.prepareDate(moment(new Date(date.to)).add(2, 'days'));
+      }
+      else {
+        start_date = typeof date === "string" ?
+          moment(new Date(date)).add(1, 'days').format('YYYY-MM-DD') :
+          moment(new Date(date.from)).add(1, 'days').format('YYYY-MM-DD');
+        end_date = typeof date === "string" ?
+          moment(new Date(date)).add(2, 'days').format('YYYY-MM-DD') :
+          moment(new Date(date.to)).add(2, 'days').format('YYYY-MM-DD');
+      }
+      return { start: start_date, end: end_date }
+    },
 
-        // this.exams_table_state = true;
-      try {
-        var response;
-        response = await getExamsHistoryByPeriod(
-          this.user_id,
-          start_date,
-          end_date
-        );
-        this.examsList = response.data;
-        if (this.examsList.length > 0) {
-          this.exams_table_state = true;
+    updateHistoryTable(date_from_modal) {
+      if (this.current_part === 'exams') {
+        this.updateExamsHistoryTable(date_from_modal, this.current_organization);
+      }
+      else {
+        this.updateTerminalsHistoryTable(date_from_modal, this.current_organization);
+      }
+    },
+
+    async updateExamsHistoryTable(date_from_modal) {
+      const date = this.preparePeriod(date_from_modal, true);
+      if (this.current_organization !== undefined) {
+        try {
+          var response;
+          response = await getExamsHistoryForOrganizationByPeriod(
+            this.user_id,
+            this.current_organization,
+            date.start,
+            date.end
+          );
+          this.examsList = this.itemsList = response.data;
+          if (this.examsList.length > 0) {
+            this.table_state = true;
+          }
+          else {
+            Notify.create({
+              color: 'warning',
+              textColor: 'white',
+              icon: 'warning',
+              message: 'В данный период не было осмотров.'
+            })
+          }
+        } catch (err) {
+          console.log(err);
         }
-      } catch (err) {
-        console.log(err);
+      }
+      else {
+        try {
+          response = await getExamsHistoryByPeriod(
+            this.user_id,
+            date.start,
+            date.end
+          );
+          this.examsList = this.itemsList = response.data;
+          if (this.examsList.length > 0) {
+            this.table_state = true;
+          }
+          else {
+            Notify.create({
+              color: 'warning',
+              textColor: 'white',
+              icon: 'warning',
+              message: 'В данный период не было осмотров.'
+            })
+          }
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    },
+
+    async updateTerminalsHistoryTable(date_from_modal) {
+      const date = this.preparePeriod(date_from_modal, false);
+      if (this.current_organization !== undefined) {
+        try {
+          var response;
+          response = await getOneTermnStats(
+            this.user_id,
+            this.current_organization,
+            date.start,
+            date.end
+          );
+          this.terminalsList = this.itemsList = response.data;
+          if (this.terminalsList.length > 0) {
+            this.table_state = true;
+          }
+          else {
+            Notify.create({
+              color: 'warning',
+              textColor: 'white',
+              icon: 'warning',
+              message: 'В данный период не было осмотров.'
+            })
+          }
+        } catch (err) {
+          console.log(err);
+        }
+      }
+      else {
+        try {
+          response = await getAllTermsStats(
+            this.user_id,
+            date.start,
+            date.end
+          );
+          this.terminalsList = this.itemsList = response.data;
+          if (this.terminalsList.length > 0) {
+            this.table_state = true;
+          }
+          else {
+            Notify.create({
+              color: 'warning',
+              textColor: 'white',
+              icon: 'warning',
+              message: 'В данный период не было осмотров.'
+          })
+          }
+        } catch (err) {
+          console.log(err);
+        }
       }
     },
 
@@ -263,18 +387,18 @@ export default {
         if (this.loading_state === false) {
           this.organizationsList.map((org) => {
             this.organizationNamesList.push(org.organization_name);
-            this.summary.all_exams_count = this.summary.all_exams_count + org.all_exams_count;
-            this.summary.new_exams_count = this.summary.new_exams_count + org.new_exams_count;
-            this.summary.admission_count = this.summary.admission_count + org.admission_count;
-            this.summary.non_admission_count = this.summary.non_admission_count + org.non_admission_count;
-            this.summary.alco_count = this.summary.alco_count + org.alco_count;
-            this.summary.pressure_heart_count = this.summary.pressure_heart_count + org.pressure_heart_count;
-            this.summary.other_count = this.summary.other_count + org.other_count;
+            this.summary[0].all_exams_count = this.summary[0].all_exams_count + org.all_exams_count;
+            this.summary[0].new_exams_count = this.summary[0].new_exams_count + org.new_exams_count;
+            this.summary[0].admission_count = this.summary[0].admission_count + org.admission_count;
+            this.summary[0].non_admission_count = this.summary[0].non_admission_count + org.non_admission_count;
+            this.summary[0].alco_count = this.summary[0].alco_count + org.alco_count;
+            this.summary[0].pressure_heart_count = this.summary[0].pressure_heart_count + org.pressure_heart_count;
+            this.summary[0].other_count = this.summary[0].other_count + org.other_count;
           });
         }
         this.summary[0].organization_name = "Все организации";
         if (this.user_role === Role.Admin) {
-          this.visibleOrganizationsList = this.organization_toggler_state === "summary" 
+          this.visibleOrganizationsList = this.organization_toggler_state === "summary"
             ? this.summary
             : this.organizationsList;
         }

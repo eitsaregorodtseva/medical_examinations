@@ -12,8 +12,8 @@
       <q-card-section class="col-6">
         <q-card
           class="col q-mb-md q-pa-md"
-          style="cursor: pointer; border-radius: 10px"
-          @click="$emit('show-modal')"
+          :style="{'cursor': data.all_exams_count ? 'pointer' : 'auto', 'border-radius': '10px'}"
+          @click="$emit('show-modal', 'exams', data.organization_id, data.all_exams_count)"
         >
           <div style="font-size: 18px; font-weight: 600; text-align: center">
             Осмотров
@@ -136,8 +136,8 @@
       <q-card-section class="col-6">
         <q-card
           class="col q-mb-md q-pa-md"
-          style="cursor: pointer; border-radius: 10px"
-          @click="$emit('show-modal')"
+          :style="{'cursor': 0 ? 'pointer' : 'auto', 'border-radius': '10px'}"
+          @click="$emit('show-modal', 'terminals', data.organization_id, 0)"
         >
           <div style="font-size: 18px; font-weight: 600; text-align: center">
             Всего
@@ -234,6 +234,7 @@ export default {
       type: Object,
       default() {
         return {
+          organization_id: 0,
           organization_name: '',
           all_exams_count: 0,
           new_exams_count: 0,
