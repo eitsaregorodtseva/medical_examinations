@@ -1,28 +1,30 @@
 <template>
   <div class="col-2 text-center">
-    <q-btn 
-      style="min-width: 100px; width: 100px"
+    <q-btn
+      style="min-width: 90px; width: 90px; text-transform: capitalize; font-size: 12px;"
       color="dark"
       no-caps
+      @click="$emit('change-month', dates)"
     >
-      <div>{{ title }}</div>
+      {{ title }}
     </q-btn>
-    
-    <div> {{ count }}</div>
   </div>
 </template>
 
 <script>
 export default {
-    props: {
-        title: {
-            type: String,
-            default: ""
-        },
-        count: {
-            type: String,
-            default: ""
-        },
+  props: {
+    title: {
+      type: String,
+      default: ""
+    },
+    dates: {
+      type: Object,
+      default() {
+        return {}
+      }
     }
+  },
+  emits: ['change-month']
 }
 </script>

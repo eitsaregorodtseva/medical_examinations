@@ -1,53 +1,81 @@
 <template>
-    <div class="row justify-center items-center text-center q-mb-md">
-        <q-btn flat unelevated icon="navigate_before" :disabled="disable_before" @click="onPrev" />
-        <div style="display: flex;  flex-wrap: nowrap; font-weight: 600; text-transform: capitalize;">
-            {{ formattedMonth }}
-        </div>
-        <q-btn flat unelevated icon="navigate_next" :disable="disable_after" @click="onNext" />
+  <div class="column items-center text-center">
+    <div class="row items-center q-mb-md">
+      <q-btn
+        flat
+        unelevated
+        icon="navigate_before"
+        :disabled="disable_before"
+        @click="onPrev"
+      />
+      <div style="display: flex;  flex-wrap: nowrap; font-weight: 600; text-transform: capitalize;">
+        {{ formattedMonth }}
+      </div>
+      <q-btn
+        flat
+        unelevated
+        icon="navigate_next"
+        :disable="disable_after"
+        @click="onNext"
+      />
     </div>
-    <q-calendar-month ref="calendar" v-model="selectedDate" animated bordered focusable hoverable no-outside-days
-        style="cursor: pointer" :locale="locale" :selected-start-end-dates="startEndDates" :range="true"
-        :day-min-height="60" :day-height="0" :weekdays="[1, 2, 3, 4, 5, 6, 0]" :disabled-before="activePeriod.from"
-        :disabled-after="activePeriod.to" @mousedown-day="onMouseDownDay" @mouseup-day="onMouseUpDay"
-        @mousemove-day="onMouseMoveDay" @change="onChange" @click-day="onClickDay">
-        <template #day="{ scope: { timestamp } }">
-            <template v-for="event in eventsMap[timestamp.date]" :key="event.id">
-                <div :class="badgeClasses('day')" class="my-event" style="display: flex; align-items: center">
-                    <div style="width: 35px; border-radius: 50%; background-color: #2A0B71; margin-top: 5px;">
-                        <!-- TODO        -->
-                        <div class="title q-calendar__ellipsis">
-                            {{ event.title }}
-                        </div>
-                    </div>
-                </div>
-            </template>
+    <q-calendar-month
+      ref="calendar"
+      v-model="selectedDate"
+      animated
+      bordered
+      focusable
+      hoverable
+      no-active-date
+      no-outside-days
+      style="cursor: pointer"
+      :locale="locale"
+      :selected-start-end-dates="startEndDates"
+      :range="true"
+      :day-min-height="50"
+      :day-height="0"
+      :weekdays="[1, 2, 3, 4, 5, 6, 0]"
+      :disabled-before="activePeriod.from"
+      :disabled-after="activePeriod.to"
+      @mousedown-day="onMouseDownDay"
+      @mouseup-day="onMouseUpDay"
+      @mousemove-day="onMouseMoveDay"
+      @change="onChange"
+      @click-day="onClickDay"
+    >
+      <template #day="{ scope: { timestamp } }">
+        <template
+          v-for="event in eventsMap[timestamp.date]"
+          :key="event.id"
+        >
+          <div
+            :class="badgeClasses('day')"
+            class="my-event"
+            style="display: flex; align-items: center"
+          >
+            <div style="width: 30px; border-radius: 50%; background-color: #2A0B71; margin-top: 3px;">
+              <!-- TODO        -->
+              <div class="title q-calendar__ellipsis">
+                {{ event.title }}
+              </div>
+            </div>
+          </div>
         </template>
+      </template>
     </q-calendar-month>
+  </div>
 </template>
 
 <script>
 import { ref } from 'vue';
 import {
     QCalendarMonth,
-    addToDate,
-    parseDate,
-    parseTimestamp,
     getDayIdentifier,
     today
 } from '@quasar/quasar-ui-qcalendar/src/index.js'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarVariables.sass'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarTransitions.sass'
 import '@quasar/quasar-ui-qcalendar/src/QCalendarMonth.sass'
-
-const CURRENT_DAY = new Date()
-function getCurrentDay(day) {
-    const newDay = new Date(CURRENT_DAY)
-    newDay.setDate(day)
-    const tm = parseDate(newDay)
-    return tm.date
-}
-
 
 function leftClick(e) {
     return e.button === 0
@@ -63,6 +91,16 @@ export default {
             default() {
                 return {}
             }
+        },
+        examsCount: {
+            type: Array,
+            default() {
+                return []
+            }
+        },
+        handleSelectedDate: {
+            type: String,
+            default: today()
         }
     },
     emits: ['get-interval'],
@@ -75,13 +113,7 @@ export default {
             mouseDown: ref(false),
             mobile: ref(true),
             locale: "ru",
-            events: [
-                {
-                    id: 1,
-                    title: '24',
-                    date: getCurrentDay(1),
-                },
-            ],
+
             disable_before: ref(false),
             disable_after: ref(false),
         }
@@ -89,23 +121,14 @@ export default {
     computed: {
         eventsMap() {
             const map = {}
-            if (this.events.length > 0) {
-                this.events.forEach(event => {
-                    (map[event.date] = (map[event.date] || [])).push(event)
-                    if (event.days !== undefined) {
-                        let timestamp = parseTimestamp(event.date)
-                        let days = event.days
-                        // add a new event for each day
-                        // skip 1st one which would have been done above
-                        do {
-                            timestamp = addToDate(timestamp, { day: 1 })
-                            if (!map[timestamp.date]) {
-                                map[timestamp.date] = []
-                            }
-                            map[timestamp.date].push(event)
-                            // already accounted for 1st day
-                        } while (--days > 1)
-                    }
+
+            if (this.examsCount.length > 0) {
+                this.examsCount.forEach(event => {
+                    (map[event.calendar] = (map[event.calendar] || [])).push({
+                        id: map.length,
+                        title: event.exams,
+                        date: event.calendar
+                    })
                 })
             }
             return map
@@ -138,12 +161,13 @@ export default {
         },
         formattedMonth() {
             const date = new Date(this.selectedDate)
-            console.log(this.selectedDate)
             return this.monthFormatter().format(date) + ' ' + date.getFullYear()
         }
     },
-    updated() {
-        console.log('month', this.activePeriod)
+    watch: {
+        handleSelectedDate() {
+            this.selectedDate = this.handleSelectedDate;
+        }
     },
     methods: {
         badgeClasses() {
@@ -163,19 +187,13 @@ export default {
                 //
             }
         },
-        onToday() {
-            this.$refs.calendar.moveToToday()
-        },
         onPrev() {
             this.$refs.calendar.prev()
         },
         onNext() {
             this.$refs.calendar.next()
         },
-        // onMoved(data) {
-        // console.log('onMoved', data)
-        // },
-        onChange(data) {
+        onChange() {
             this.disable_after = new Date(this.activePeriod.to).getMonth() ===
                 new Date(this.selectedDate).getMonth() &&
                 new Date(this.activePeriod.to).getFullYear() === 
@@ -185,23 +203,9 @@ export default {
                 new Date(this.activePeriod.from).getFullYear() === 
                 new Date(this.selectedDate).getFullYear();
         },
-        // onClickDate(data) {
-        // console.log('onClickDate', data)
-        // },
         onClickDay() {
-            // console.log('onClickDay', data)
-            // console.log(this.startEndDates)
             this.$emit('get-interval', this.startEndDates)
         },
-        // onClickWorkweek(data) {
-        // console.log('onClickWorkweek', data)
-        // },
-        // onClickHeadDay(data) {
-        // console.log('onClickHeadDay', data)
-        // },
-        // onClickHeadWorkweek(data) {
-        // console.log('onClickHeadWorkweek', data)
-        // },
 
         onMouseDownDay({ scope, event }) {
             if (leftClick(event)) {
@@ -213,7 +217,6 @@ export default {
                     this.mouseDown = false
                     return
                 }
-                // mouse is down, start selection and capture current
                 this.mouseDown = true
                 this.anchorTimestamp = scope.timestamp
                 this.otherTimestamp = scope.timestamp
@@ -221,7 +224,6 @@ export default {
         },
         onMouseUpDay({ scope, event }) {
             if (leftClick(event)) {
-                // mouse is up, capture last and cancel selection
                 this.otherTimestamp = scope.timestamp
                 this.mouseDown = false
             }
@@ -238,9 +240,9 @@ export default {
 <style lang="sass" scoped>
 .my-event
   position: relative
-  font-size: 14px
+  font-size: 12px
   width: 100%
-  margin: 5px 0 0 0
+  margin: 2px 0 0 0
   justify-content: center
   text-overflow: ellipsis
   overflow: hidden
