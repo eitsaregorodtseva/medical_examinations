@@ -5,7 +5,7 @@
   >
     <q-card 
       class="q-py-md q-px-lg"
-      style="width: 800px;"
+      style="min-width: 300px; width: 900px;"
     >
       <q-card-section class="row">
         <div class="text-h6">
@@ -24,12 +24,14 @@
         <div v-if="calendarState === 'month'">
           <month-calendar 
             :active-period="active_period"
+            :exams-count="examsCount"
             @get-interval="getInterval"
           />
         </div>
         <div v-else>
           <year-calendar 
             :active-period="active_period"
+            :exams-count="examsCount"
             @get-interval="getInterval"
           />
         </div>
@@ -52,6 +54,8 @@ import moment from "moment";
 import { ref } from 'vue';
 import MonthCalendar from "./components/Calendars/MonthCalendar.vue";
 import YearCalendar from "./components/Calendars/YearCalendar.vue";
+import { getExamsCountByPeriod,
+  getExamsCountForOrganizationByPeriod } from "@/api/exams.api.js"
 
 export default {
   components: {
@@ -75,6 +79,10 @@ export default {
       type: String,
       default: 'month'
     },
+    organizationId: {
+      type: Number,
+      default: 0
+    }
   },
   emits: {
     updateTable: () => { return true },
@@ -87,17 +95,28 @@ export default {
       active_period: {
         from: moment().format("YYYY-MM-DD"),
         to: moment().format("YYYY-MM-DD")
-      }
+      },
+      examsCount: [],
+
+      user_id: undefined,
     }
   },
-  updated() {
-    this.active_period = { 
-      from: moment(new Date(this.firstDate)).format("YYYY-MM-DD"), 
-      to: moment(new Date(this.todayDate)).add(1, 'days').format("YYYY-MM-DD") 
-    };
-    this.handleChangePeriod();
+mounted() {
+  this.populateDataFromStorage();
+},
+updated() {
+  this.active_period = { 
+    from: moment(new Date(this.firstDate)).format("YYYY-MM-DD"), 
+    to: moment(new Date(this.todayDate)).add(1, 'days').format("YYYY-MM-DD") 
+  };
+  this.handleChangePeriod();
+  this.getExamsCount();
   },
   methods: {
+    populateDataFromStorage() {
+      this.user_id = sessionStorage.getItem("user_id");
+    },
+
     handleChangePeriod() {
       this.current_date =
         this.period_toggle_state == "day"
@@ -112,6 +131,39 @@ export default {
       this.current_date = {
         from: moment(new Date(interval[0])).format("YYYY/MM/DD"), 
         to: moment(new Date(interval[1])).format("YYYY/MM/DD")
+      }
+    },
+
+    async getExamsCount() {
+      let date_from = moment(new Date(this.active_period.from)).add(1, 'days').format("YYYY-MM-DD");
+      let date_to = moment(new Date(this.active_period.to)).subtract(1, 'days').format("YYYY-MM-DD");
+      if (this.organizationId) {
+        var response;
+        try {
+          response = await getExamsCountForOrganizationByPeriod(
+              this.user_id,
+              date_from,
+              date_to,
+              this.organizationId,
+            );
+            this.examsCount = response.data
+          } 
+           catch (err) {
+          console.log(err);
+        }
+      }
+      else {
+        try {
+          response = await getExamsCountByPeriod(
+              this.user_id,
+              date_from,
+              date_to
+            );
+            this.examsCount = response.data
+          } 
+           catch (err) {
+          console.log(err);
+        }
       }
     }
   }

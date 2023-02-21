@@ -38,6 +38,12 @@ const getExamsHistoryByPeriod = (user_id, date_from, date_to) => webAPI.get('/ex
 
 const getExamsHistoryForOrganizationByPeriod = (user_id, organization_id, date_from, date_to) => webAPI.get('/exams',
     { params: {user_id, organization_id, date_from, date_to} });
+    
+const getExamsCountByPeriod = (user_id, start_date, end_date) => webAPI.get('/calendar',
+    { params: {user_id, start_date, end_date} });
+
+const getExamsCountForOrganizationByPeriod = (user_id, start_date, end_date, organization_id) => webAPI.get('/calendar',
+    { params: {user_id, start_date, end_date, organization_id} });
 
 export {
     getQueueSize,
@@ -52,5 +58,7 @@ export {
     postVerdict,
     patchMedworkerInExam,
     getExamsHistoryByPeriod,
-    getExamsHistoryForOrganizationByPeriod
+    getExamsHistoryForOrganizationByPeriod,
+    getExamsCountByPeriod,
+    getExamsCountForOrganizationByPeriod
 }

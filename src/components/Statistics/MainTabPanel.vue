@@ -51,6 +51,7 @@
     :today-date="current_date"
     :first-date="first_date"
     :calendar-state="period_toggler_state"
+    :organization-id="current_organization"
     @update-table="updateHistoryTable"
   />
   <table-history-modal
@@ -145,8 +146,8 @@ export default {
   },
   mounted() {
     this.populateDataFromStorage(),
-      this.handleChangePeriod('today'),
-      this.handleChangeOrganization('summary');
+    this.handleChangePeriod('today'),
+    this.handleChangeOrganization('summary');
   },
   methods: {
     populateDataFromStorage() {
