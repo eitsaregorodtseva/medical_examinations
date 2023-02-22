@@ -53,7 +53,7 @@ const navigationList = [
     },
     {
         name: "medworkers",
-        label: "Медики",
+        label: "Медперсонал",
         roles: [
             Role.Admin,
         ],
