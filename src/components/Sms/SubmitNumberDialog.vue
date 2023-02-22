@@ -161,7 +161,7 @@ export default {
 .q-btn {
   text-transform: none;
 }
-.q-btn >>> .q-icon {
+.q-btn ::v-deep(.q-icon) {
   margin-right: 10px;
 }
 .q-btn:disabled {

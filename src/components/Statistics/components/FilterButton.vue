@@ -32,7 +32,7 @@ export default {
 }
 </script>
 <style scoped>
-.q-btn >>> .q-icon {
+.q-btn ::v-deep(.q-icon) {
   margin-right: 10px;
 }
 </style>
