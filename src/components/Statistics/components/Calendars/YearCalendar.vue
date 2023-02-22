@@ -11,11 +11,11 @@
         </div>
         <div class="row q-gutter-sm">
           <div
-            v-for="month in year.periods"
+            v-for="month in year.months"
             :key="month"
           >
             <month-component
-              :title="month.month"
+              :title="month.title"
               :dates="month.dates"
               @change-month="onButtonClicked"
             />
@@ -66,31 +66,28 @@ export default {
   },
   computed: {
     buttonsData() {
-      let new_structure = [];
-      const first_date_year = new Date(this.activePeriod.from).getFullYear()
-      const last_date_year = new Date(this.activePeriod.to).getFullYear()
-      new_structure.push({ year: first_date_year, periods: [] })
-      if (last_date_year !== first_date_year) {
-        new_structure.push({ year: last_date_year, periods: [] })
-      }
-      var dateStart = moment(this.activePeriod.from);
-      var dateEnd = moment(this.activePeriod.to);
-      var interim = dateStart.clone();
+      var buttons_info = [];
+      const first_year = new Date(this.activePeriod.from).getFullYear();
+      const last_year = new Date(this.activePeriod.to).getFullYear();
 
-      while (dateEnd > interim || interim.format('M') === dateEnd.format('M')) {
-        if (new Date(interim).getFullYear() === first_date_year) {
-          const index = new_structure.findIndex((item) => item.year === first_date_year)
-          const end = new Date(first_date_year, new Date(interim).getMonth() + 1, 0);
-          new_structure[index].periods.push({ month: this.monthFormatter().format(interim), dates: { start: interim.format('YYYY-MM-01'), end: moment(end).format('YYYY-MM-DD') } })
-        }
-        else {
-          const index = new_structure.findIndex((item) => item.year === last_date_year)
-          const end = new Date(last_date_year, new Date(interim).getMonth() + 1, 0);
-          new_structure[index].periods.push({ month: this.monthFormatter().format(interim), dates: { start: interim.format('YYYY-MM-01'), end: moment(end).format('YYYY-MM-DD') } })
-        }
-        interim.add(1, 'month');
+      buttons_info.push({ year: first_year, months: [] });
+      if (last_year !== first_year) {
+        buttons_info.push({ year: last_year, months: [] });
       }
-      return new_structure;
+
+      var dateStart = moment(this.activePeriod.from);
+      const dateEnd = moment(this.activePeriod.to);
+
+      while (dateEnd > dateStart || dateStart.format('M') === dateEnd.format('M')) {
+        const year = new Date(dateStart).getFullYear();
+        const index = buttons_info.findIndex((item) => item.year === year);
+        buttons_info[index].months.push({ 
+          title: this.monthFormatter().format(dateStart), 
+          start_date: dateStart.format('YYYY-MM-01') 
+        });
+        dateStart.add(1, 'month');
+      }
+      return buttons_info;
     }
   },
   methods: {
@@ -111,7 +108,7 @@ export default {
     },
 
     onButtonClicked(dates) {
-      this.selectedDate = dates.start
+      this.selectedDate = dates
     }
   }
 }

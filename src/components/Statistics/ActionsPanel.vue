@@ -20,9 +20,9 @@
   </div>
 </template>
 <script>
-import OrganizationToggler from "./OrganizationToggler.vue";
-import PeriodToggler from "./PeriodToggler.vue";
-import FilterButton from "./FilterButton.vue";
+import OrganizationToggler from "./components/OrganizationToggler.vue";
+import PeriodToggler from "./components/PeriodToggler.vue";
+import FilterButton from "./components/FilterButton.vue";
 export default {
   components: {
     OrganizationToggler,
