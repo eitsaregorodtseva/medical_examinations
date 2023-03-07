@@ -1,40 +1,48 @@
 <template>
   <!-- <div class="q-pa-md q-gutter-sm"> -->
-    <q-table
-      class="exams-table"
-      title="Осмотры"
-      :rows="isFilterApplied ? filtered_data : exams"
-      :columns="columns"
-      row-key="exam_datetime"
-      :loading="loading"
-      :wrap-cells="true"
-      separator="horizontal"
-      :style="{'max-height' : height}"
-      table-header-class="app_normal text-black"
-      rows-per-page-label="Записей на странице: "
-      :pagination="pagination"
-      :pagination-label="(firstRowIndex, endRowIndex, totalRowsNumber) => {
-        return firstRowIndex + ' - ' + endRowIndex + ' из ' + totalRowsNumber
-      }"
-      @row-click="onRowClicked"
-    >
-      <template v-slot:top>
-        <div class="col-2 q-table__title">Осмотры</div>
-        <q-space />
-        <div class="text-caption q-mr-xs">Фильтры</div>
-        <q-btn
-          color="primary"
-          icon="filter_list"
-          size="md"
-          flat
-          @click="openFilters = true"
-        >
-          <q-badge v-show="isFilterApplied" color="accent" floating></q-badge>
-          <q-tooltip class="bg-white text-primary">
-            Применить фильтры
-          </q-tooltip>
-        </q-btn>
-        <!--<q-btn
+  <q-table
+    class="exams-table"
+    title="Осмотры"
+    :rows="isFilterApplied ? filtered_data : exams"
+    :columns="columns"
+    row-key="exam_datetime"
+    :loading="loading"
+    :wrap-cells="true"
+    separator="horizontal"
+    :style="{'max-height' : height}"
+    table-header-class="app_normal text-black"
+    rows-per-page-label="Записей на странице: "
+    :pagination="pagination"
+    :pagination-label="(firstRowIndex, endRowIndex, totalRowsNumber) => {
+      return firstRowIndex + ' - ' + endRowIndex + ' из ' + totalRowsNumber
+    }"
+    @row-click="onRowClicked"
+  >
+    <template #top>
+      <div class="col-2 q-table__title">
+        Осмотры
+      </div>
+      <q-space />
+      <div class="text-caption q-mr-xs">
+        Фильтры
+      </div>
+      <q-btn
+        color="primary"
+        icon="filter_list"
+        size="md"
+        flat
+        @click="openFilters = true"
+      >
+        <q-badge
+          v-show="isFilterApplied"
+          color="accent"
+          floating
+        />
+        <q-tooltip class="bg-white text-primary">
+          Применить фильтры
+        </q-tooltip>
+      </q-btn>
+      <!--<q-btn
           color="primary"
           icon="filter_list_off"
           flat
@@ -45,40 +53,40 @@
             Сбросить все фильтры
           </q-tooltip>
         </q-btn>-->
-      </template>
-      <template #body-cell-auto_admittance="props">
-        <q-td :props="props">
-          <q-badge
-            outline
-            v-if="props.row.auto_admittance === true"
-            color="positive"
-            :label="props.value"
-          />
-          <q-badge
-            outline
-            v-if="props.row.auto_admittance === false"
-            color="negative"
-            :label="props.value"
-          />
-        </q-td>
-      </template>
-      <template #body-cell-admittance="props">
-        <q-td :props="props">
-          <q-badge
-            v-if="props.row.admittance === true"
-            color="positive"
-            text-color="black"
-            :label="props.value"
-          />
-          <q-badge
-            v-if="props.row.admittance === false"
-            color="negative"
-            text-color="white"
-            :label="props.value"
-          />
-        </q-td>
-      </template>
-      <!-- <template #body-cell-name="props">
+    </template>
+    <template #body-cell-auto_admittance="props">
+      <q-td :props="props">
+        <q-badge
+          v-if="props.row.auto_admittance === true"
+          outline
+          color="positive"
+          :label="props.value"
+        />
+        <q-badge
+          v-if="props.row.auto_admittance === false"
+          outline
+          color="negative"
+          :label="props.value"
+        />
+      </q-td>
+    </template>
+    <template #body-cell-admittance="props">
+      <q-td :props="props">
+        <q-badge
+          v-if="props.row.admittance === true"
+          color="positive"
+          text-color="black"
+          :label="props.value"
+        />
+        <q-badge
+          v-if="props.row.admittance === false"
+          color="negative"
+          text-color="white"
+          :label="props.value"
+        />
+      </q-td>
+    </template>
+    <!-- <template #body-cell-name="props">
         <q-td :props="props">
           <router-link
             :to="'/personnel/' + props.row.pers_id"
@@ -88,51 +96,60 @@
           </router-link>
         </q-td>
       </template> -->
-    </q-table>
+  </q-table>
 
-    <q-dialog
-      v-model="openFilters"
-    >
-      <q-card style="width: 700px; max-width: 80vw;">
-        <q-toolbar class="bg-white" style="position: sticky; z-index: 1; top: 0px;">
-          <q-space />
-          <q-btn
-            v-close-popup
-            icon="close"
-            flat
-          >
-            <q-tooltip class="bg-white text-primary">
-              Закрыть
-            </q-tooltip>
-          </q-btn>
-        </q-toolbar>
-        <exams-history-filter :initFilters='filters' @OnFilterApplied="ApplyFilter($event)"></exams-history-filter>
-      </q-card>
-    </q-dialog>
+  <q-dialog
+    v-model="openFilters"
+  >
+    <q-card style="width: 700px; max-width: 80vw;">
+      <q-toolbar
+        class="bg-white"
+        style="position: sticky; z-index: 1; top: 0px;"
+      >
+        <q-space />
+        <q-btn
+          v-close-popup
+          icon="close"
+          flat
+        >
+          <q-tooltip class="bg-white text-primary">
+            Закрыть
+          </q-tooltip>
+        </q-btn>
+      </q-toolbar>
+      <exams-history-filter
+        :init-filters="filters"
+        @on-filter-applied="ApplyFilter($event)"
+      />
+    </q-card>
+  </q-dialog>
 
-    <q-dialog
-      v-model="showExamDialog"
-      transition-show="slide-up"
-      transition-hide="slide-down"
-      :full-width="true"
-      :full-height="true"
-    >
-      <q-card class="d-flex flex-column bg-white">
-        <q-toolbar class="bg-white" style="position: sticky; z-index: 1; top: 0px;">
-          <q-space />
-          <q-btn
-            v-close-popup
-            icon="close"
-            flat
-          >
-            <q-tooltip class="bg-white text-primary">
-              Закрыть
-            </q-tooltip>
-          </q-btn>
-        </q-toolbar>
-        <exam-data @verdict-made="showExamDialog = false"/>
-      </q-card>
-    </q-dialog>
+  <q-dialog
+    v-model="showExamDialog"
+    transition-show="slide-up"
+    transition-hide="slide-down"
+    :full-width="true"
+    :full-height="true"
+  >
+    <q-card class="d-flex flex-column bg-white">
+      <q-toolbar
+        class="bg-white"
+        style="position: sticky; z-index: 1; top: 0px;"
+      >
+        <q-space />
+        <q-btn
+          v-close-popup
+          icon="close"
+          flat
+        >
+          <q-tooltip class="bg-white text-primary">
+            Закрыть
+          </q-tooltip>
+        </q-btn>
+      </q-toolbar>
+      <exam-data @verdict-made="showExamDialog = false" />
+    </q-card>
+  </q-dialog>
   <!-- </div> -->
 </template>
 
@@ -242,7 +259,7 @@ export default {
     openFilters: false,
     filtered_data: [],
     filters: null,
-    isFilterApplied: false,
+    isFilterApplied: true,
     pagination: {
         sortBy: 'exam_datetime',
         descending: true,
@@ -252,14 +269,19 @@ export default {
   } },
   computed : {
     loading () {
-      return !this.exams || (this.exams.length == 0)
+      return !this.filtered_data || (this.filtered_data.length == 0)
     },
+  },
+  watch: {
+    exams() {
+      this.filtered_data = this.exams
+    }
   },
   methods : {
     async ApplyFilter(filtersEventData){
       this.filters = filtersEventData.appliedFilters
       var requestArgs = filtersEventData.requestArgs
-
+      
       if (this.filters != null){
         this.isFilterApplied = true
         var examsFromURL = []
@@ -271,10 +293,10 @@ export default {
             examsFromURL = examsFromURL.concat(response.data)
           }
         } else{
-          var response = await getExamsHistoryAll.apply(this, requestArgs)
+          response = await getExamsHistoryAll.apply(this, requestArgs)
           examsFromURL = response.data
         }
-
+        
         this.filtered_data = examsFromURL
 
         if (examsFromURL.length <= 0){
@@ -301,7 +323,7 @@ export default {
       this.filters = null
     },
 
-    onRowClicked(evt, row, index) {
+    onRowClicked(evt, row) {
       sessionStorage.setItem('exam_id', row.exam_id)
       this.showExamDialog = true
     }

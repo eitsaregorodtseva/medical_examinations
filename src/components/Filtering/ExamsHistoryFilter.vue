@@ -3,7 +3,10 @@
     greedy
     @submit="onSubmit"
   >
-    <div class="q-pa-md" v-if="!hideOrganizationSelector">
+    <div 
+      v-if="!hideOrganizationSelector"
+      class="q-pa-md"
+    >
       <div class="q-gutter-md">
         <div class="h6 col">
           Выберите организацию:
@@ -175,11 +178,10 @@
 <script>
 import { getAllOrganizations } from '@/api/organizations.api.js'
 import { getPersonnelList } from '@/api/personnel.api.js'
-import { getExamsTypesList, getExamsHistoryAll } from '@/api/exams.api.js'
+import { getExamsTypesList } from '@/api/exams.api.js'
 import { fullName } from '@/helpers/names'
 import moment from 'moment'
 import { Notify } from 'quasar'
-import { List } from 'echarts/core'
 
 function emptyForm() {
     return {
@@ -189,7 +191,10 @@ function emptyForm() {
         personnelRadio : 'all',
         examTypeRadio : 'all',
         admittanceRadio : null,
-        dates: {from: moment().subtract(1, 'months').format('YYYY-MM-DD'), to: moment().format('YYYY-MM-DD')},
+        dates: {
+          from: moment().format('YYYY-MM-DD'), 
+          to: moment().format('YYYY-MM-DD')
+        },
     }
 }
 
