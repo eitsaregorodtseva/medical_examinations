@@ -3,6 +3,7 @@
     <q-header class="bg-white q-pa-xs" style="color: inherit">
       <q-toolbar>
         <q-btn flat round dense icon="menu" class="q-mr-sm" @click="showSidebar = !showSidebar"/>
+        <!-- <q-btn v-if="this.user_role === Role.MedWorker" flat round dense icon="menu" class="q-mr-sm" @click="showSidebar = !showSidebar"/> -->
         <header-logo />
         <header-logout-link />
       </q-toolbar>
@@ -10,6 +11,8 @@
 
     <q-page-container>
       <navigation-sidebar v-model="showSidebar" />
+
+      <!-- <navigation-sidebar v-if="this.user_role === Role.MedWorker" v-model="showSidebar" /> -->
       <router-view />
     </q-page-container>
   </q-layout>
@@ -19,15 +22,27 @@
 import HeaderLogo from '@/components/header/HeaderLogo.vue'
 import HeaderLogoutLink from '@/components/header/HeaderLogoutLink.vue'
 import NavigationSidebar from '@/components/NavigationSidebar.vue'
+import { Role } from '../helpers/role'
 export default {
     components: {
         HeaderLogo,
         HeaderLogoutLink,
         NavigationSidebar,
     },
-    data () { return {
-      showSidebar : true
-    }}
+    data () { 
+      return {
+      Role,
+      showSidebar : true,
+      user_role: undefined
+    }},
+    mounted() {
+      this.populateDataFromStorage();
+    },
+    methods: {
+      populateDataFromStorage() {
+        this.user_role = sessionStorage.getItem('user_role');
+    },
+    }
 }
 </script>
 
