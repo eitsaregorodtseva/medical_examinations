@@ -1,6 +1,8 @@
 <template>
   <q-card
     class="col-5"
+    flat 
+    bordered
   >
     <q-item>
       <q-item-section>
@@ -27,7 +29,7 @@
             </div>
             <div class="col-2 q-mr-xs">
               <q-icon
-                size="45px"
+                size="40px"
                 name="img:/img/icons/done.svg"
               />
             </div>

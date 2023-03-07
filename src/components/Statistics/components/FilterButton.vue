@@ -1,7 +1,9 @@
 <template>
-  <div class="col-4 q-py-md q-mr-lg"> 
-    <q-btn 
-      v-if="organizationTogglerState === 'organizations' && role === Role.Admin"
+  <div
+    v-if="organizationTogglerState === 'organizations' && role === Role.Admin" 
+    class="col-4 q-py-md q-mr-lg"
+  > 
+    <q-btn
       style="float: right"
       flat
       icon="filter_list"

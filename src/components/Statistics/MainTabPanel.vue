@@ -1,15 +1,19 @@
 <template>
-  <div class="row q-pl-xs">
-    <div class="col">
-      <div class="q-py-md row q-gutter-md">
-        <organization-toggler @change-organization="handleChangeOrganization" />
-        <period-toggler @change-period="handleChangePeriod" />
+  <div class="fit row wrap q-pl-xs q-gutter-md">
+    <div>
+      <div class="col q-mr-xl">
+        <div class="row q-py-md q-gutter-md">
+          <organization-toggler @change-organization="handleChangeOrganization" />
+          <period-toggler @change-period="handleChangePeriod" />
+        </div>
       </div>
     </div>
-    <filter-button
-      :organization-toggler-state="organization_toggler_state"
-      @update-filter-state="filter_state = true"
-    />
+    <div class="col q-ml-xl">
+      <filter-button
+        :organization-toggler-state="organization_toggler_state"
+        @update-filter-state="filter_state = true"
+      />
+    </div>
   </div>
 
   <div
