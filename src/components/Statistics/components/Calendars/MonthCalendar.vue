@@ -54,7 +54,6 @@
             style="display: flex; align-items: center"
           >
             <div style="width: 30px; border-radius: 50%; background-color: #2A0B71; margin-top: 3px;">
-              <!-- TODO        -->
               <div class="title q-calendar__ellipsis">
                 {{ event.title }}
               </div>

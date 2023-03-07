@@ -83,7 +83,10 @@ export default {
         const index = buttons_info.findIndex((item) => item.year === year);
         buttons_info[index].months.push({ 
           title: this.monthFormatter().format(dateStart), 
-          start_date: dateStart.format('YYYY-MM-01') 
+          dates: {
+            start_date: this.countStartDate(dateStart), 
+            end_date: moment(this.countEndDate(dateStart)).format('YYYY-MM-DD')
+          }
         });
         dateStart.add(1, 'month');
       }
@@ -91,7 +94,7 @@ export default {
     }
   },
   methods: {
-    monthFormatter() { //TODO refactor
+    monthFormatter() {
       try {
         return new Intl.DateTimeFormat(this.locale || undefined, {
           month: 'long',
@@ -103,12 +106,32 @@ export default {
       }
     },
 
+    countStartDate(date) {
+      let start_date = moment(this.activePeriod.from);
+      if (new Date(start_date).getFullYear() === new Date(date).getFullYear() && start_date.format('M') === date.format('M')) {
+        return date.format('YYYY-MM-DD');
+      }
+      else {
+        return date.format('YYYY-MM-01');
+      }
+    },
+
+    countEndDate(date) {
+      let end_date = moment(this.activePeriod.to);
+      if (new Date(end_date).getFullYear() === new Date(date).getFullYear() && end_date.format('M') === date.format('M')) {
+        return date.format('YYYY-MM-DD');
+      }
+      else {
+        return moment(new Date(new Date(date).getFullYear(), new Date(date).getMonth() + 1, 0));
+      }
+    },
+
     passInterval(data) {
       this.$emit('get-interval', data)
     },
 
     onButtonClicked(dates) {
-      this.selectedDate = dates
+      this.selectedDate = dates.start_date
     }
   }
 }

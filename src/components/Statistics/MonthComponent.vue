@@ -19,8 +19,10 @@ export default {
       default: ""
     },
     dates: {
-      type: String,
-      default: ""
+      type: Object,
+      default() {
+        return {}
+      }
     }
   },
   emits: ['change-month']
