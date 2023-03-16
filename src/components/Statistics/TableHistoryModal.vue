@@ -63,7 +63,7 @@
   </q-dialog>
 </template>
 <script>
-import ExamsHistoryTable from '../ExamsHistoryTable.vue';
+import ExamsHistoryTable from './ExamsHistoryTable.vue';
 import TerminalsHistoryTable from './TerminalsHistoryTable.vue';
 export default {
   components: {
