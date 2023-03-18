@@ -8,7 +8,7 @@
       class="q-pa-xs col"
     >
       <q-card-section
-        v-if="period !== 'today'"
+        v-if="itemsType === 'exams' && period !== 'today'"
         class="row q-pa-xs"
       >
         <q-btn
