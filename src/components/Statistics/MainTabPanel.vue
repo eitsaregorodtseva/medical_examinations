@@ -107,19 +107,8 @@ export default {
       //organizations
       organizationsList: [],
       visibleOrganizationsList: [],
-      summary: [{
-        organization_name: '',
-        all_exams_count: 0,
-        new_exams_count: 0,
-        admission_count: 0,
-        non_admission_count: 0,
-        alco_count: 0,
-        pressure_heart_count: 0,
-        other_count: 0,
-      }],
 
       //calendar
-
       current_date: moment().format("YYYY-MM-DD"),
       first_date: moment().format("YYYY-MM-DD"),
 
@@ -150,8 +139,8 @@ export default {
   },
   mounted() {
     this.populateDataFromStorage(),
-    this.handleChangePeriod('today'),
-    this.handleChangeOrganization('summary');
+      this.handleChangePeriod('today'),
+      this.handleChangeOrganization('summary');
   },
   methods: {
     populateDataFromStorage() {
@@ -164,11 +153,8 @@ export default {
 
     handleChangeOrganization(organization_toggler_state) {
       this.organization_toggler_state = organization_toggler_state;
-      if (this.organization_toggler_state === "summary") {
-        this.visibleOrganizationsList = this.summary;
-      } else {
-        this.visibleOrganizationsList = this.organizationsList;
-      }
+      this.loading_state = true;
+      this.updateExamCard();
     },
 
     handleChangePeriod(period_toggler_state) {
@@ -190,16 +176,30 @@ export default {
       this.current_part = value;
       this.current_organization = id;
       if (requestFlag) {
-        if (this.period_toggler_state !== 'today') {
-          this.calendar_state = true;
+        if (value === "terminals") {
+          this.updateTerminalsHistoryTable(moment(new Date(this.current_date)).subtract(1, 'days').toString(), this.current_organization)
+
         }
         else {
-          if (value === "exams") {
-            this.updateExamsHistoryTable(moment(new Date(this.current_date)).subtract(1, 'days').toString(), this.current_organization)
+          if (this.period_toggler_state !== 'today') {
+            this.calendar_state = true;
           }
           else {
-            this.updateTerminalsHistoryTable(moment(new Date(this.current_date)).subtract(1, 'days').toString(), this.current_organization)
+            // if (value === "exams") { // return if calendar logic for terminals
+            this.updateExamsHistoryTable(moment(new Date(this.current_date)).subtract(1, 'days').toString(), this.current_organization)
+            // }
           }
+          // if (this.period_toggler_state !== 'today') {
+          //   this.calendar_state = true;
+          // }
+          // else {
+          //   if (value === "exams") {
+          //     this.updateExamsHistoryTable(moment(new Date(this.current_date)).subtract(1, 'days').toString(), this.current_organization)
+          //   }
+          //   else {
+          //     this.updateTerminalsHistoryTable(moment(new Date(this.current_date)).subtract(1, 'days').toString(), this.current_organization)
+          //   }
+          // }
         }
       }
     },
@@ -337,7 +337,7 @@ export default {
               textColor: 'white',
               icon: 'warning',
               message: 'В данный период не было осмотров.'
-          })
+            })
           }
         } catch (err) {
           console.log(err);
@@ -364,11 +364,22 @@ export default {
       try {
         var response;
         if (this.user_organization_id === "null") {
-          response = await getAllOrganizationsStats(
-            this.user_id,
-            this.first_date,
-            this.current_date
-          );
+          if (this.organization_toggler_state === "summary") {
+            response = await getAllOrganizationsStats(
+              this.user_id,
+              this.first_date,
+              this.current_date,
+              true
+            );
+          }
+          else {
+            response = await getAllOrganizationsStats(
+              this.user_id,
+              this.first_date,
+              this.current_date,
+              false
+            );
+          }
         } else {
           response = await getOneOrganizationStats(
             this.user_organization_id,
@@ -377,39 +388,13 @@ export default {
             this.current_date
           );
         }
+        console.log(response.data)
         this.organizationsList = response.data;
         this.loading_state = false;
-        this.summary = [{
-          organization_name: '',
-          all_exams_count: 0,
-          new_exams_count: 0,
-          admission_count: 0,
-          non_admission_count: 0,
-          alco_count: 0,
-          pressure_heart_count: 0,
-          other_count: 0,
-        }];
-        if (this.loading_state === false) {
-          this.organizationsList.map((org) => {
-            this.organizationNamesList.push(org.organization_name);
-            this.summary[0].all_exams_count = this.summary[0].all_exams_count + org.all_exams_count;
-            this.summary[0].new_exams_count = this.summary[0].new_exams_count + org.new_exams_count;
-            this.summary[0].admission_count = this.summary[0].admission_count + org.admission_count;
-            this.summary[0].non_admission_count = this.summary[0].non_admission_count + org.non_admission_count;
-            this.summary[0].alco_count = this.summary[0].alco_count + org.alco_count;
-            this.summary[0].pressure_heart_count = this.summary[0].pressure_heart_count + org.pressure_heart_count;
-            this.summary[0].other_count = this.summary[0].other_count + org.other_count;
-          });
+        if (this.user_role === Role.Admin && this.organization_toggler_state === "summary") {
+          this.organizationsList[0].organization_name = "Все организации";
         }
-        this.summary[0].organization_name = "Все организации";
-        if (this.user_role === Role.Admin) {
-          this.visibleOrganizationsList = this.organization_toggler_state === "summary"
-            ? this.summary
-            : this.organizationsList;
-        }
-        else {
-          this.visibleOrganizationsList = this.organizationsList;
-        }
+        this.visibleOrganizationsList = this.organizationsList;
       } catch (err) {
         console.log(err);
       }

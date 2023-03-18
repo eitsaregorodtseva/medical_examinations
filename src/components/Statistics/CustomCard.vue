@@ -138,8 +138,8 @@
       <q-card-section class="col-6">
         <q-card
           class="col q-mb-md q-pa-md"
-          :style="{'cursor': 0 ? 'pointer' : 'auto', 'border-radius': '10px'}"
-          @click="$emit('show-modal', 'terminals', data.organization_id, 0)"
+          :style="{'cursor': data.terminal_count ? 'pointer' : 'auto', 'border-radius': '10px'}"
+          @click="$emit('show-modal', 'terminals', data.organization_id, data.terminal_count)"
         >
           <div style="font-size: 18px; font-weight: 600; text-align: center">
             Всего
@@ -149,7 +149,7 @@
               class="col q-ml-lg q-mt-sm"
               style="font-size: 20px; font-weight: 600; text-align: center"
             >
-              <div>0</div>
+              <div>{{ data.terminal_count }}</div>
             </div>
             <div class="col">
               <q-icon
@@ -168,7 +168,7 @@
               <div>В сети</div>
               <div class="row">
                 <div class="col numbers q-mt-md">
-                  <div>0</div>
+                  <div>{{ data.online }}</div>
                 </div>
                 <div class="col q-mt-sm q-ml-md">
                   <q-icon
@@ -182,7 +182,7 @@
               <div>Нужна поверка</div>
               <div class="row">
                 <div class="col numbers">
-                  <div>0</div>
+                  <div>{{ data.need_check }}</div>
                 </div>
                 <div class="col q-ml-md">
                   <q-icon
@@ -198,7 +198,7 @@
               <div>Не на связи</div>
               <div class="row">
                 <div class="col numbers q-mt-md">
-                  <div>0</div>
+                  <div>{{ data.offline }}</div>
                 </div>
                 <div class="col q-mt-md q-ml-md">
                   <q-icon
@@ -212,7 +212,7 @@
               <div>Лимит</div>
               <div class="row">
                 <div class="col numbers q-mt-md">
-                  <div>0</div>
+                  <div>{{ data.limit_exam }}</div>
                 </div>
                 <div class="col q-mt-sm q-ml-md">
                   <q-icon
@@ -245,6 +245,11 @@ export default {
           alco_count: 0,
           pressure_heart_count: 0,
           other_count: 0,
+          terminal_count: 0,
+          online: 0,
+          offline: 0,
+          need_check: 0,
+          limit_exam: 0
         }
       }, 
     },
