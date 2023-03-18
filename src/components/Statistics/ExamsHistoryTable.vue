@@ -9,7 +9,7 @@
     :loading="loading"
     :wrap-cells="true"
     separator="horizontal"
-    :style="{'max-height' : height}"
+    :style="{'max-height' : height, 'margin-right': '10px'}"
     table-header-class="app_normal text-black"
     rows-per-page-label="Записей на странице: "
     :pagination="pagination"

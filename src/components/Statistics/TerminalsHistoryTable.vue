@@ -5,34 +5,24 @@
       title="Терминалы"
       :rows="terminals"
       :columns="columns"
-      row-key="serial_number"
+      row-key="operation_start_date" 
       :loading="loading"
       :wrap-cells="true"
       separator="horizontal"
-      :style="{'max-height' : height, 'width': '1200px'}"
+      :style="{'max-height' : height, 'width': '1300px'}"
       table-header-class="app_normal text-black"
       rows-per-page-label="Записей на странице: "
       :pagination="pagination"
       :pagination-label="(firstRowIndex, endRowIndex, totalRowsNumber) => {
         return firstRowIndex + ' - ' + endRowIndex + ' из ' + totalRowsNumber
       }"
-    >
-      <template #top>
-        <div class="col-2 q-table__title">
-          Терминалы
-        </div>
-        <q-space />
-      </template>
-      <template #body-cell-auto_admittance="props">
-        <q-td :props="props" />
-      </template>
-    </q-table>
+    />
   </div>
 </template>
   
 <script>
 import moment from 'moment';
-
+//TODO fix row-key param
 const columns = [
   {
     name: 'serial_number',

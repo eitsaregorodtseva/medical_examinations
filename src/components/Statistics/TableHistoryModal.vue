@@ -4,7 +4,7 @@
     @update:model-value="value => $emit('update:modelValue', value)"
   >
     <q-card
-      style="max-width: 3000px; width: 1000px"
+      style="max-width: 3000px; width: 1400px;"
       class="q-pa-xs col"
     >
       <q-card-section
@@ -21,6 +21,7 @@
       </q-card-section>
       <q-card-section
         v-else
+        style="max-width: 3000px; width: 1380px; z-index: 1000;"
         class="row q-pa-xs"
       >
         <div class="col">
@@ -34,7 +35,7 @@
           />
         </div>
       </q-card-section>
-      <q-card-section class="row q-pt-xs justify-center">
+      <q-card-section class="row q-pt-xs">
         <div v-if="itemsList.length > 0">
           <div v-if="itemsType === 'exams'">
             <exams-history-table
