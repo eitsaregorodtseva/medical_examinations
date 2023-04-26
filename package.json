@@ -20,6 +20,7 @@
     "fs": "^0.0.1-security",
     "js-excel-template": "^3.0.1",
     "moment": "^2.29.1",
+    "pdfvuer": "^2.0.1",
     "quasar": "^2.5.3",
     "register-service-worker": "^1.7.1",
     "stream": "^0.0.2",
