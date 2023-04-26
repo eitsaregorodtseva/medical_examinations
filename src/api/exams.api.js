@@ -27,8 +27,8 @@ const getExamsHistoryForPersonnel = (user_id, personnel_id) => webAPI.get('/exam
 const getExamsHistoryByVerdict = (user_id, has_verdict) => webAPI.get('/exams',
     { params: {user_id, has_verdict} });
 
-const postVerdict = (exam_id, verd_list, user_id, verdict_comment = null) => webAPI.post(`/exams/${exam_id}/verdict`,
-    verd_list, { params: {user_id, verdict_comment} });
+const postVerdict = (exam_id, verd_list, user_id, verdict_comment = null, duration) => webAPI.post(`/exams/${exam_id}/verdict`,
+    verd_list, { params: {user_id, verdict_comment, duration} });
 
 const patchMedworkerInExam = (exam_id, user_id, medworker_id) => webAPI.patch(`/exams/${exam_id}`,
     null, { params : {user_id, medworker_id} });

@@ -16,7 +16,7 @@ const routes = [
           return '/new_exams'
         } 
         else{
-          return '/exams_history'
+          return '/statistics'
         }
       }
     }
@@ -98,17 +98,17 @@ const routes = [
       ]
     }
   },
-  {
-    path: '/reports',
-    name: 'Reports',
-    component: () => import('../views/ReportsExport.vue'),
-    meta: {
-      permittedRoles: [
-        Role.Admin,
-        Role.Dispatcher
-      ]
-    }
-  },
+  // {
+  //   path: '/reports',
+  //   name: 'Reports',
+  //   component: () => import('../views/ReportsExport.vue'),
+  //   meta: {
+  //     permittedRoles: [
+  //       Role.Admin,
+  //       Role.Dispatcher
+  //     ]
+  //   }
+  // },
   {
     path: '/sms',
     name: 'Sms',

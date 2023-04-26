@@ -1,18 +1,29 @@
 <template>
   <q-layout view="hHh LpR lfr">
-    <q-header class="bg-white q-pa-xs" style="color: inherit">
+    <q-header
+      class="bg-white q-pa-xs"
+      style="color: inherit"
+    >
       <q-toolbar>
-        <q-btn flat round dense icon="menu" class="q-mr-sm" @click="showSidebar = !showSidebar"/>
-        <!-- <q-btn v-if="this.user_role === Role.MedWorker" flat round dense icon="menu" class="q-mr-sm" @click="showSidebar = !showSidebar"/> -->
+        <q-btn
+          v-if="user_role === Role.MedWorker"
+          flat
+          round
+          dense
+          icon="menu"
+          class="q-mr-sm"
+          @click="showSidebar = !showSidebar"
+        />
         <header-logo />
         <header-logout-link />
       </q-toolbar>
     </q-header>
 
     <q-page-container>
-      <navigation-sidebar v-model="showSidebar" />
-
-      <!-- <navigation-sidebar v-if="this.user_role === Role.MedWorker" v-model="showSidebar" /> -->
+      <navigation-sidebar
+        v-if="user_role === Role.MedWorker"
+        v-model="showSidebar"
+      />
       <router-view />
     </q-page-container>
   </q-layout>

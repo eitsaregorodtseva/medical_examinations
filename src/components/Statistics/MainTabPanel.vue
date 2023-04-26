@@ -29,11 +29,12 @@
 
   <div
     v-else
-    class="fit row wrap justify-center q-gutter-xl q-mt-xs"
+    class="fit row wrap justify-center q-mt-md"
   >
     <div
       v-for="org in visibleOrganizationsList"
       :key="org"
+      class="q-ma-lg"
     >
       <custom-card
         class="col-4"
@@ -154,12 +155,14 @@ export default {
     handleChangeOrganization(organization_toggler_state) {
       this.organization_toggler_state = organization_toggler_state;
       this.loading_state = true;
+      this.filterValues = [];
       this.updateExamCard();
     },
 
     handleChangePeriod(period_toggler_state) {
       this.period_toggler_state = period_toggler_state;
       this.loading_state = true;
+      this.filterValues = [];
       if (this.period_toggler_state === "month") {
         this.first_date = moment().subtract(30, "days").format("YYYY-MM-DD");
       } else {
@@ -391,6 +394,12 @@ export default {
         console.log(response.data)
         this.organizationsList = response.data;
         this.loading_state = false;
+        if (this.loading_state === false) {
+          this.organizationNamesList = [];
+          this.organizationsList.map((org) => {
+            this.organizationNamesList.push(org.organization_name);
+          });
+        }
         if (this.user_role === Role.Admin && this.organization_toggler_state === "summary") {
           this.organizationsList[0].organization_name = "Все организации";
         }
