@@ -1,82 +1,85 @@
 <template>
   <!-- <div class="q-pa-md q-gutter-sm"> -->
-    <q-table
-      class="exams-table"
-      title="Осмотры"
-      :rows="exams"
-      :columns="columns"
-      row-key="exam_datetime"
-      :loading="loading"
-      no-data-label="Похоже, пока новых осмотров нет"
-      :wrap-cells="true"
-      separator="horizontal"
-      :style="{'max-height' : height}"
-      table-header-class="app_normal text-black"
-      rows-per-page-label="Записей на странице: "
-      :pagination="pagination"
-      :pagination-label="(firstRowIndex, endRowIndex, totalRowsNumber) => {
-        return firstRowIndex + ' - ' + endRowIndex + ' из ' + totalRowsNumber
-      }"
-      @row-click="onRowClicked"
-    >
-      <template #body-cell-auto_admittance="props">
-        <q-td :props="props">
-          <q-badge
-            outline
-            v-if="props.row.auto_admittance === true"
-            color="positive"
-            :label="props.value"
-          />
-          <q-badge
-            outline
-            v-if="props.row.auto_admittance === false"
-            color="negative"
-            :label="props.value"
-          />
-        </q-td>
-      </template>
-      <template #body-cell-admittance="props">
-        <q-td :props="props">
-          <q-badge
-            v-if="props.row.admittance === true"
-            color="positive"
-            text-color="black"
-            :label="props.value"
-          />
-          <q-badge
-            v-if="props.row.admittance === false"
-            color="negative"
-            text-color="white"
-            :label="props.value"
-          />
-        </q-td>
-      </template>
-      <template #body-cell-name="props">
-        <q-td :props="props">
-          <router-link
-            :to="'/personnel/' + props.row.pers_id"
-            @click.stop=""
-          >
-            {{ props.value }}
-          </router-link>
-        </q-td>
-      </template>
-      <template v-slot:no-data>
-        <div class="full-width column flex-center text-accent q-gutter-sm">
-          <q-icon size="2em" name="sentiment_satisfied_alt" />
-          <span>
-            Похоже, пока новых осмотров нет
-          </span>
-        </div>
-      </template>
-    </q-table>
+  <q-table
+    class="exams-table"
+    title="Осмотры"
+    :rows="exams"
+    :columns="columns"
+    row-key="exam_datetime"
+    :loading="loading"
+    no-data-label="Похоже, пока новых осмотров нет"
+    :wrap-cells="true"
+    separator="horizontal"
+    :style="{'max-height' : height}"
+    table-header-class="app_normal text-black"
+    rows-per-page-label="Записей на странице: "
+    :pagination="pagination"
+    :pagination-label="(firstRowIndex, endRowIndex, totalRowsNumber) => {
+      return firstRowIndex + ' - ' + endRowIndex + ' из ' + totalRowsNumber
+    }"
+    @row-click="onRowClicked"
+  >
+    <template #body-cell-auto_admittance="props">
+      <q-td :props="props">
+        <q-badge
+          v-if="props.row.auto_admittance === true"
+          outline
+          color="positive"
+          :label="props.value"
+        />
+        <q-badge
+          v-if="props.row.auto_admittance === false"
+          outline
+          color="negative"
+          :label="props.value"
+        />
+      </q-td>
+    </template>
+    <template #body-cell-admittance="props">
+      <q-td :props="props">
+        <q-badge
+          v-if="props.row.admittance === true"
+          color="positive"
+          text-color="black"
+          :label="props.value"
+        />
+        <q-badge
+          v-if="props.row.admittance === false"
+          color="negative"
+          text-color="white"
+          :label="props.value"
+        />
+      </q-td>
+    </template>
+    <template #body-cell-name="props">
+      <q-td :props="props">
+        <router-link
+          :to="'/personnel/' + props.row.pers_id"
+          @click.stop=""
+        >
+          {{ props.value }}
+        </router-link>
+      </q-td>
+    </template>
+    <template #no-data>
+      <div class="full-width column flex-center text-accent q-gutter-sm">
+        <q-icon
+          size="2em"
+          name="sentiment_satisfied_alt"
+        />
+        <span>
+          Похоже, пока новых осмотров нет
+        </span>
+      </div>
+    </template>
+  </q-table>
 
   <!-- </div> -->
 </template>
 
 <script>
 import moment from 'moment';
-import { nameWithInitials, fullName } from '@/helpers/names'
+import { fullName } from '@/helpers/names'
 
 const columns = [
   { name: 'exam_datetime', required: true, label: 'Дата и время', align: 'left', field: 'exam_datetime', format: val => moment(val).format('lll'), sortable: true },
@@ -108,23 +111,6 @@ const columns = [
   }
 ]
 
-const parseVerdictsList = (verdicts_list, verdict_comment) => {
-  if (!verdicts_list) {
-    return "";
-  }
-
-  if (verdicts_list.includes('Допущен')) {
-    return '';
-  }
-  if (verdicts_list.includes('Другое')) {
-    // Replace with comment
-    const ind = verdicts_list.indexOf('Другое');
-    verdicts_list[ind] = verdict_comment;
-  }
-  return verdicts_list.join(', ');
-
-}
-
 export default {
   props: {
     exams : Array,
@@ -150,7 +136,8 @@ export default {
   methods : {
     onRowClicked(evt, row, index) {
       sessionStorage.setItem('exam_id', row.exam_id)
-      this.$emit('examChosen')
+      const verdict_start = new Date();
+      this.$emit('examChosen', verdict_start)
     }
   },
 }

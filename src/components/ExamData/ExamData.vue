@@ -87,6 +87,7 @@
               :exam-data="exam_data"
               :user-id="user_id"
               :user-role="user_role"
+              :start-time="startTime"
               @verdict-made="$emit('verdictMade')"
             />
           </div>
@@ -161,6 +162,12 @@ export default {
         AppImage,
         MedpapersGrid,
         ExamVerdict,
+    },
+    props: {
+      startTime: {
+        type: Date,
+        default: new Date(),
+      }
     },
     emits: ['verdictMade'],
     data() {

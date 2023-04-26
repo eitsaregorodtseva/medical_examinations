@@ -201,7 +201,7 @@ import { Role } from '@/helpers/role'
 
 
 export default {
-  props: ['examId', 'examData', 'userId', 'userRole'],
+  props: ['examId', 'examData', 'userId', 'userRole', 'startTime'],
   emits: ['verdictMade'],
   data () {return {
     availableRejectReasons: [],
@@ -245,6 +245,8 @@ export default {
     }
   },
   mounted() {
+    console.log(this.startTime)
+
     if (this.userRole == Role.MedWorker) {
       this.getavailableRejectReasons()
     }
@@ -257,6 +259,7 @@ export default {
           this.availableRejectReasons.shift();
           this.availableRejectReasons.pop();
       } catch (error) {
+        console.log(error)
       }
     },
     async onReasonsSubmit() {
@@ -265,21 +268,27 @@ export default {
             verdicts.push(i);
         if (this.otherReasonIsChecked || this.otherReasonComment !== '')
             verdicts.push(13);
+        const verdict_time = new Date();
+        const duration = Math.round((verdict_time-this.startTime)/60000);
         try {
-            await postVerdict(this.examId, verdicts, this.userId, this.otherReasonComment);
+            await postVerdict(this.examId, verdicts, this.userId, this.otherReasonComment, duration);
             await patchMedworkerInExam(this.examId, this.userId, this.userId);
             this.$emit('verdictMade')
         } catch (error) {
+          console.log(error)
         }
     },
     async admit() {
+      const verdict_time = new Date();
+      const duration = Math.round((verdict_time-this.startTime)/60000);
         try {
             let verdicts = [ 1 ];
-            await postVerdict(this.examId, verdicts, this.userId);
+            await postVerdict(this.examId, verdicts, this.userId, duration);
             await patchMedworkerInExam(this.examId, this.userId, this.userId);
             // this.$router.push('/new_exams');
             this.$emit('verdictMade')
         } catch (error) {
+          console.log(error)
         }
     },
   }

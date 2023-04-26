@@ -4,7 +4,7 @@
     @update:model-value="value => $emit('update:modelValue', value)"
   >
     <q-card
-      style="max-width: 3000px; width: 1400px;"
+      style="max-width: 3000px; width: 1300px;"
       class="q-pa-xs col"
     >
       <q-card-section
@@ -21,8 +21,8 @@
       </q-card-section>
       <q-card-section
         v-else
-        style="max-width: 3000px; width: 1380px; z-index: 1000;"
-        class="row q-pa-xs"
+        style="max-width: 3000px; width: 100%; z-index: 1000; padding-right: 0px"
+        class="row q-py-xs q-pl-xs"
       >
         <div class="col">
           <q-btn

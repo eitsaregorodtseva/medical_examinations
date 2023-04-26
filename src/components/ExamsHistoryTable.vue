@@ -9,7 +9,7 @@
     :loading="loading"
     :wrap-cells="true"
     separator="horizontal"
-    :style="{'max-height' : height}"
+    :style="{'max-height' : height, 'max-width': '95vw'}"
     table-header-class="app_normal text-black"
     rows-per-page-label="Записей на странице: "
     :pagination="pagination"
@@ -164,6 +164,7 @@ import { Notify } from 'quasar'
 const columns = [
   { name: 'exam_datetime', required: true, label: 'Дата и время', align: 'left', field: 'exam_datetime', format: val => moment(val).format('lll'), sortable: true },
   { name: 'organization_name', label: 'Организация', align: 'left', field: 'organization_name', sortable: true },
+  { name: 'terminal', label: '№ Терминала', align: 'left', field: 'terminal', sortable: true },
   { name: 'pers_number', label: 'Таб. №', align: 'left', field: 'pers_number', sortable: true },
   {
     name: 'name',
@@ -172,6 +173,7 @@ const columns = [
     field: row => fullName(row.second_name,  row.first_name, row.father_name),
     sortable: true
   },
+  { name: 'exam_id', label: '№ осмотра', align: 'left', field: 'exam_id', sortable: true },
   { name: 'type', label: 'Тип осмотра', align: 'left', field: 'type', sortable: true },
   {
     name: 'auto_admittance',
@@ -225,7 +227,14 @@ const columns = [
     field: 'verdict_datetime',
     format:  val => val==null ? "" : (moment(val).format('lll')),
     sortable: true
-  }
+  },
+  { name: 'duration', 
+    label: 'Продолжительность вердикта', 
+    align: 'left', 
+    field: 'duration', 
+    format:  val => val + " мин.", 
+    sortable: true 
+  },
 ]
 
 const parseVerdictsList = (verdicts_list, verdict_comment) => {

@@ -6,7 +6,7 @@
       <exams-queue-table
         :exams="examsList"
         height="90vh"
-        @exam-chosen="examDetailsVisible=true"
+        @exam-chosen="startResultsChecking"
       />
       <q-dialog
         v-model="examDetailsVisible"
@@ -28,7 +28,10 @@
               </q-tooltip>
             </q-btn>
           </div>
-          <exam-data @verdict-made="examDetailsVisible=false" />
+          <exam-data
+            :start-time="start_time"
+            @verdict-made="examDetailsVisible=false"
+          />
         </q-card>
       </q-dialog>
     </div>
@@ -79,7 +82,8 @@ export default {
       examDetailsVisible: false,
       tabBlinkTimer: null,
       tabNeedsAttention : false,
-      notificationSound: null
+      notificationSound: null,
+      start_time: null,
     }},
     watch : {
       examsList(current, last) {
@@ -134,6 +138,11 @@ export default {
         populateDataFromStorage() {
             this.user_id = sessionStorage.getItem('user_id')
             this.user_organization_id = sessionStorage.getItem('user_organization_id')
+        },
+        startResultsChecking(start_time) {
+          console.log(start_time)
+          this.examDetailsVisible = true;
+          this.start_time = start_time;
         },
         startExamsMonitoring() {
           this.showTable = true
