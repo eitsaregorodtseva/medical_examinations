@@ -7,11 +7,13 @@ import { fullName, nameWithInitials } from '@/helpers/names'
 import moment from 'moment'
 
 export async function createExamsReport (exams, organizationName, dateFrom, dateTo) {
-    await createReport(exams, organizationName, dateFrom, dateTo, "/excel_templates/exams_report_template.xlsx?v=2.0", "Журнал_регистрации_осмотра.xlsx")
+    const document_title = `${'Журнал_регистрации_осмотра_' + dateFrom + '_' + dateTo + '.xlsx'}`;
+    await createReport(exams, organizationName, dateFrom, dateTo, "/excel_templates/exams_report_template.xlsx?v=2.0", document_title)
 }
 
 export async function createSuspendedDriversReport (exams, organizationName, dateFrom, dateTo) {
-    await createReport(exams, organizationName, dateFrom, dateTo, "/excel_templates/suspended_drivers_template.xlsx?v=2.0", "Журнал_осмотров_отстранненых_водителей.xlsx")
+  const document_title = `${'Журнал_осмотров_отстранненых_водителей_' + dateFrom + '_' + dateTo + '.xlsx'}`;
+  await createReport(exams, organizationName, dateFrom, dateTo, "/excel_templates/suspended_drivers_template.xlsx?v=2.0", document_title)
 }
 
 async function createReport (exams, organizationName, dateFrom, dateTo, excelTemplatePath, outputFileName) {
