@@ -3,7 +3,7 @@
     :model-value="modelValue"
     @update:model-value="value => $emit('update:modelValue', value)"
   >
-    <q-card 
+    <q-card
       class="q-py-md q-px-lg"
       style="min-width: 300px; width: 900px;"
     >
@@ -22,24 +22,31 @@
       </q-card-section>
       <q-card-section>
         <div v-if="calendarState === 'month'">
-          <month-calendar 
+          <month-calendar
             :active-period="active_period"
             :exams-count="examsCount"
+            :select-all="select_all"
             @get-interval="getInterval"
           />
         </div>
         <div v-else>
-          <year-calendar 
+          <year-calendar
             :active-period="active_period"
             :exams-count="examsCount"
+            :select-all="select_all"
             @get-interval="getInterval"
           />
         </div>
       </q-card-section>
-      <q-card-actions align="right">
+      <q-card-actions class="justify-between">
+        <q-checkbox
+          v-model="select_all"
+          label="Весь период"
+        />
         <q-btn
           color="dark"
           no-caps
+          :disable="current_date && current_date.from === null && current_date.to === null"
           @click="$emit('updateTable', current_date)"
         >
           Показать
@@ -54,8 +61,10 @@ import moment from "moment";
 import { ref } from 'vue';
 import MonthCalendar from "./components/Calendars/MonthCalendar.vue";
 import YearCalendar from "./components/Calendars/YearCalendar.vue";
-import { getExamsCountByPeriod,
-  getExamsCountForOrganizationByPeriod } from "@/api/exams.api.js"
+import {
+  getExamsCountByPeriod,
+  getExamsCountForOrganizationByPeriod
+} from "@/api/exams.api.js"
 
 export default {
   components: {
@@ -65,7 +74,7 @@ export default {
   props: {
     todayDate: {
       type: String,
-      default: ref(moment().format("YYYY/MM/DD")) 
+      default: ref(moment().format("YYYY/MM/DD"))
     },
     firstDate: {
       type: String,
@@ -91,26 +100,43 @@ export default {
   data() {
     return {
       range_state: ref(false),
+      select_all: ref(false),
       current_date: ref(),
       active_period: {
         from: moment().format("YYYY-MM-DD"),
         to: moment().format("YYYY-MM-DD")
       },
       examsCount: [],
-
       user_id: undefined,
     }
   },
-mounted() {
-  this.populateDataFromStorage();
-},
-updated() {
-  this.active_period = { 
-    from: moment(new Date(this.firstDate)).format("YYYY-MM-DD"), 
-    to: moment(new Date(this.todayDate)).add(1, 'days').format("YYYY-MM-DD") 
-  };
-  this.handleChangePeriod();
-  this.getExamsCount();
+  watch: {
+    'select_all': function (select_all) {
+      if (select_all) {
+        this.current_date = {
+          from: moment(this.active_period.from).format("YYYY/MM/DD"),
+          to: moment(this.active_period.to).format("YYYY/MM/DD"),
+        };
+      }
+      else {
+        this.current_date = {
+          from: null,
+          to: null,
+        };
+      }
+    },
+  },
+  mounted() {
+    this.populateDataFromStorage();
+  },
+  updated() {
+    this.select_all = false;
+    this.active_period = {
+      from: moment(new Date(this.firstDate)).format("YYYY-MM-DD"),
+      to: moment(new Date(this.todayDate)).add(1, 'days').format("YYYY-MM-DD")
+    };
+    this.handleChangePeriod();
+    this.getExamsCount();
   },
   methods: {
     populateDataFromStorage() {
@@ -118,18 +144,18 @@ updated() {
     },
 
     handleChangePeriod() {
-      this.current_date =
-        this.period_toggle_state == "day"
-          ? moment().format("YYYY/MM/DD")
-          : {
-            from: moment().subtract(7, "days").format("YYYY/MM/DD"),
-            to: moment().format("YYYY/MM/DD"),
-          };
+        this.current_date =
+          this.period_toggle_state == "day"
+            ? moment().format("YYYY/MM/DD")
+            : {
+              from: null,
+              to: null,
+            };
     },
 
     getInterval(interval) {
       this.current_date = {
-        from: moment(new Date(interval[0])).format("YYYY/MM/DD"), 
+        from: moment(new Date(interval[0])).format("YYYY/MM/DD"),
         to: moment(new Date(interval[1])).format("YYYY/MM/DD")
       }
     },
@@ -141,27 +167,27 @@ updated() {
         var response;
         try {
           response = await getExamsCountForOrganizationByPeriod(
-              this.user_id,
-              date_from,
-              date_to,
-              this.organizationId,
-            );
-            this.examsCount = response.data
-          } 
-           catch (err) {
+            this.user_id,
+            date_from,
+            date_to,
+            this.organizationId,
+          );
+          this.examsCount = response.data
+        }
+        catch (err) {
           console.log(err);
         }
       }
       else {
         try {
           response = await getExamsCountByPeriod(
-              this.user_id,
-              date_from,
-              date_to
-            );
-            this.examsCount = response.data
-          } 
-           catch (err) {
+            this.user_id,
+            date_from,
+            date_to
+          );
+          this.examsCount = response.data
+        }
+        catch (err) {
           console.log(err);
         }
       }

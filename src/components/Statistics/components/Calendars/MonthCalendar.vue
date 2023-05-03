@@ -100,6 +100,10 @@ export default {
         handleSelectedDate: {
             type: String,
             default: today()
+        },
+        selectAll: {
+            type: Boolean,
+            default: false,
         }
     },
     emits: ['get-interval'],
@@ -146,14 +150,24 @@ export default {
         },
         startEndDates() {
             const dates = []
-            if (this.anchorDayIdentifier !== false && this.otherDayIdentifier !== false) {
-                if (this.anchorDayIdentifier <= this.otherDayIdentifier) {
-                    dates.push(this.anchorTimestamp.date, this.otherTimestamp.date)
-                    this.$emit('get-interval', dates)
-                }
-                else {
-                    dates.push(this.otherTimestamp.date, this.anchorTimestamp.date)
-                    this.$emit('get-interval', dates)
+            if (this.selectAll) {
+                dates.push(this.activePeriod.from, this.activePeriod.to);
+                this.$emit('get-interval', dates);
+                // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+                this.anchorTimestamp = ref(null);
+                // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+                this.otherTimestamp = ref(null);
+            }
+            else {
+                if (this.anchorDayIdentifier !== false && this.otherDayIdentifier !== false) {
+                    if (this.anchorDayIdentifier <= this.otherDayIdentifier) {
+                        dates.push(this.anchorTimestamp.date, this.otherTimestamp.date)
+                        this.$emit('get-interval', dates)
+                    }
+                    else {
+                        dates.push(this.otherTimestamp.date, this.anchorTimestamp.date)
+                        this.$emit('get-interval', dates)
+                    }
                 }
             }
             return dates
@@ -195,11 +209,11 @@ export default {
         onChange() {
             this.disable_after = new Date(this.activePeriod.to).getMonth() ===
                 new Date(this.selectedDate).getMonth() &&
-                new Date(this.activePeriod.to).getFullYear() === 
+                new Date(this.activePeriod.to).getFullYear() ===
                 new Date(this.selectedDate).getFullYear();
-            this.disable_before = new Date(this.activePeriod.from).getMonth() === 
-                new Date(this.selectedDate).getMonth() && 
-                new Date(this.activePeriod.from).getFullYear() === 
+            this.disable_before = new Date(this.activePeriod.from).getMonth() ===
+                new Date(this.selectedDate).getMonth() &&
+                new Date(this.activePeriod.from).getFullYear() ===
                 new Date(this.selectedDate).getFullYear();
         },
         onClickDay() {
@@ -207,30 +221,36 @@ export default {
         },
 
         onMouseDownDay({ scope, event }) {
-            if (leftClick(event)) {
-                if (this.mobile === true
-                    && this.anchorTimestamp !== null
-                    && this.otherTimestamp !== null
-                    && this.anchorTimestamp.date === this.otherTimestamp.date) {
+            if (!this.selectAll) {
+                if (leftClick(event)) {
+                    if (this.mobile === true
+                        && this.anchorTimestamp !== null
+                        && this.otherTimestamp !== null
+                        && this.anchorTimestamp.date === this.otherTimestamp.date) {
+                        this.otherTimestamp = scope.timestamp
+                        this.mouseDown = false
+                        return
+                    }
+                    this.mouseDown = true
+                    this.anchorTimestamp = scope.timestamp
                     this.otherTimestamp = scope.timestamp
-                    this.mouseDown = false
-                    return
                 }
-                this.mouseDown = true
-                this.anchorTimestamp = scope.timestamp
-                this.otherTimestamp = scope.timestamp
             }
         },
         onMouseUpDay({ scope, event }) {
-            if (leftClick(event)) {
-                this.otherTimestamp = scope.timestamp
-                this.mouseDown = false
+            if (!this.selectAll) {
+                if (leftClick(event)) {
+                    this.otherTimestamp = scope.timestamp
+                    this.mouseDown = false
+                }
             }
 
         },
         onMouseMoveDay({ scope }) {
-            if (this.mouseDown === true && scope.outside !== true) {
-                this.fotherTimestamp = scope.timestamp
+            if (!this.selectAll) {
+                if (this.mouseDown === true && scope.outside !== true) {
+                    this.fotherTimestamp = scope.timestamp
+                }
             }
         }
     }

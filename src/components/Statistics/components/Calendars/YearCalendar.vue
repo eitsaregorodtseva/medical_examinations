@@ -28,6 +28,7 @@
     :handle-selected-date="selectedDate"
     :active-period="activePeriod"
     :exams-count="examsCount"
+    :select-all="selectAll"
     @get-interval="passInterval"
   />
 </template>
@@ -35,7 +36,7 @@
 <script>
 import { today } from '@quasar/quasar-ui-qcalendar/src';
 import MonthCalendar from './MonthCalendar.vue';
-import MonthComponent from '../../MonthComponent.vue';
+import MonthComponent from './MonthComponent.vue';
 import moment from 'moment';
 
 export default {
@@ -55,6 +56,10 @@ export default {
       default() {
         return []
       }
+    },
+    selectAll: {
+      type: Boolean,
+      default: false,
     }
   },
   emits: ['get-interval'],
