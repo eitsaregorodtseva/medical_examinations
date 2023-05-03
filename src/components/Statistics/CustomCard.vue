@@ -153,7 +153,7 @@
             </div>
             <div class="col">
               <q-icon
-                size="45px"
+                size="40px"
                 name="img:/img/icons/terminal.svg"
               />
             </div>
