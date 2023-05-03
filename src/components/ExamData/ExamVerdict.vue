@@ -269,9 +269,8 @@ export default {
         if (this.otherReasonIsChecked || this.otherReasonComment !== '')
             verdicts.push(13);
         const verdict_time = new Date();
-        const duration = Math.round((verdict_time-this.startTime)/60000);
         try {
-            await postVerdict(this.examId, verdicts, this.userId, this.otherReasonComment, duration);
+            await postVerdict(this.examId, verdicts, this.userId, this.otherReasonComment, this.startTime, verdict_time);
             await patchMedworkerInExam(this.examId, this.userId, this.userId);
             this.$emit('verdictMade')
         } catch (error) {
@@ -280,10 +279,9 @@ export default {
     },
     async admit() {
       const verdict_time = new Date();
-      const duration = Math.round((verdict_time-this.startTime)/60000);
         try {
             let verdicts = [ 1 ];
-            await postVerdict(this.examId, verdicts, this.userId, duration);
+            await postVerdict(this.examId, verdicts, this.userId, this.startTime, verdict_time);
             await patchMedworkerInExam(this.examId, this.userId, this.userId);
             // this.$router.push('/new_exams');
             this.$emit('verdictMade')

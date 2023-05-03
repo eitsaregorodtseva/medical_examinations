@@ -86,16 +86,6 @@
         />
       </q-td>
     </template>
-    <!-- <template #body-cell-name="props">
-        <q-td :props="props">
-          <router-link
-            :to="'/personnel/' + props.row.pers_id"
-            @click.stop=""
-          >
-            {{ props.value }}
-          </router-link>
-        </q-td>
-      </template> -->
   </q-table>
 
   <q-dialog
@@ -232,7 +222,7 @@ const columns = [
     label: 'Продолжительность вердикта', 
     align: 'left', 
     field: 'duration', 
-    format:  val => val + " мин.", 
+    format:  val => val==null ? "" : val + " мин.", 
     sortable: true 
   },
 ]
