@@ -20,8 +20,8 @@
 </template>
 <script>
 import { ref } from "vue";
-import PdfViewer from "./components/PdfViewer.vue";
-import InfoDocsNavigation from './components/InfoDocsNavigation.vue';
+import PdfViewer from "../components/PdfViewer.vue";
+import InfoDocsNavigation from "./InfoDocsNavigation.vue";
 export default {
   components: {
     PdfViewer,

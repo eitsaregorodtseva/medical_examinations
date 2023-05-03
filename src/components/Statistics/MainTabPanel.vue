@@ -391,7 +391,6 @@ export default {
             this.current_date
           );
         }
-        console.log(response.data)
         this.organizationsList = response.data;
         this.loading_state = false;
         if (this.loading_state === false) {

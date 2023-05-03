@@ -35,7 +35,7 @@
           />
         </div>
       </q-card-section>
-      <q-card-section class="row q-pt-xs">
+      <q-card-section class="row q-pt-xs justify-center">
         <div v-if="itemsList.length > 0">
           <div v-if="itemsType === 'exams'">
             <exams-history-table

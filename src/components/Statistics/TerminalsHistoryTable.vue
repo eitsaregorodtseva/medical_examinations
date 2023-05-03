@@ -5,7 +5,6 @@
       title="Терминалы"
       :rows="terminals"
       :columns="columns"
-      row-key="operation_start_date" 
       :loading="loading"
       :wrap-cells="true"
       separator="horizontal"

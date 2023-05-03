@@ -15,9 +15,13 @@
           <docs-tab-panel />
         </q-tab-panel>
         <q-tab-panel name="1c" />
-        <q-tab-panel name="medworkers" />
+        <q-tab-panel name="medworkers">
+          <med-tab-panel />
+        </q-tab-panel>
         <q-tab-panel name="applications" />
-        <q-tab-panel name="settings" />
+        <q-tab-panel name="settings">
+          <settings-tab-panel />
+        </q-tab-panel>
         <q-tab-panel name="help">
           <info-docs-tab-panel />
         </q-tab-panel>
@@ -30,15 +34,18 @@
 import { ref } from "vue";
 import MainTabPanel from "@/components/Statistics/MainTabPanel.vue";
 import NavigationNavbar from "../components/Statistics/components/NavigationNavbar.vue";
-import InfoDocsTabPanel from "../components/Statistics/InfoDocsTabPanel.vue";
-import DocsTabPanel from "../components/Statistics/DocsTabPanel.vue";
-
+import DocsTabPanel from "../components/Statistics/Documents/DocsTabPanel.vue";
+import SettingsTabPanel from "../components/Statistics/Settings/SettingsTabPanel.vue";
+import InfoDocsTabPanel from "../components/Statistics/Information/InfoDocsTabPanel.vue";
+import MedTabPanel from "../components/Statistics/Medworkers/MedTabPanel.vue";
 export default {
   components: {
     MainTabPanel,
     NavigationNavbar,
     DocsTabPanel,
-    InfoDocsTabPanel
+    InfoDocsTabPanel,
+    SettingsTabPanel,
+    MedTabPanel
 },
   data() {
     return {
