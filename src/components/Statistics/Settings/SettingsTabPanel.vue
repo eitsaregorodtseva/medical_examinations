@@ -7,6 +7,9 @@
     v-model="tab"
   >
     <q-tab-panel
+      name="organizations"
+    />
+    <q-tab-panel
       name="exams"
     />
     <q-tab-panel

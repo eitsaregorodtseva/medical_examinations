@@ -39,6 +39,10 @@ export default {
     return {
       settingsList: [
         {
+          name: "organizations",
+          label: "Организации",
+        },
+        {
           name: "exams",
           label: "Осмотры",
         },
