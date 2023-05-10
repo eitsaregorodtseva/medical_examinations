@@ -8,49 +8,37 @@
   >
     <q-tab-panel
       name="organizations"
-    />
-    <q-tab-panel
-      name="exams"
-    />
+    >
+      <organization-settings />
+    </q-tab-panel>
     <q-tab-panel
       name="terminals"
-    />
-    <q-tab-panel
-      name="appliances"
-    />
-    <q-tab-panel
-      name="medworker"
-    />
-    <q-tab-panel
-      name="1C"
-    />
-    <q-tab-panel
-      name="applications"
-    />
-    <q-tab-panel
-      name="printers"
-    />
-    <q-tab-panel
-      name="cameras"
-    />
-    <q-tab-panel
-      name="network"
-    />
+    >
+      <terminal-settings />
+    </q-tab-panel>
     <q-tab-panel
       name="access"
-    />
+    >
+      <access-settings />
+    </q-tab-panel>
   </q-tab-panels>
 </template>
 <script>
 import { ref } from "vue";
 import SettingsNavigation from "./SettingsNavigation.vue";
+import OrganizationSettings from "./Tables/OrganizationSettings.vue";
+import TerminalSettings from "./Tables/TerminalSettings.vue";
+import AccessSettings from "./Tables/AccessSettings.vue";
 export default {
   components: {
     SettingsNavigation,
+    OrganizationSettings,
+    TerminalSettings,
+    AccessSettings
   },
   data() {
     return {
-      tab: ref("exams"),
+      tab: ref("organizations"),
     };
   },
 };
@@ -61,9 +49,7 @@ export default {
 }
 
 .q-tab-panel {
-  padding-left: 0px;
-  display: flex;
-  justify-content: center;
   padding-top: 50px;
+  overflow: hidden;
 }
 </style>
