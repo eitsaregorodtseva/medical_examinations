@@ -18,7 +18,9 @@
         <q-tab-panel name="medworkers">
           <med-tab-panel />
         </q-tab-panel>
-        <q-tab-panel name="applications" />
+        <q-tab-panel name="applications">
+          <applications-tab-panel />
+        </q-tab-panel>
         <q-tab-panel name="settings">
           <settings-tab-panel />
         </q-tab-panel>
@@ -38,6 +40,7 @@ import DocsTabPanel from "../components/Statistics/Documents/DocsTabPanel.vue";
 import SettingsTabPanel from "../components/Statistics/Settings/SettingsTabPanel.vue";
 import InfoDocsTabPanel from "../components/Statistics/Information/InfoDocsTabPanel.vue";
 import MedTabPanel from "../components/Statistics/Medworkers/MedTabPanel.vue";
+import ApplicationsTabPanel from "../components/Statistics/ApplicationsTabPanel.vue";
 export default {
   components: {
     MainTabPanel,
@@ -45,7 +48,8 @@ export default {
     DocsTabPanel,
     InfoDocsTabPanel,
     SettingsTabPanel,
-    MedTabPanel
+    MedTabPanel,
+    ApplicationsTabPanel
 },
   data() {
     return {
