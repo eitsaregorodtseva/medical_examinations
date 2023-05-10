@@ -14,7 +14,13 @@
         <q-tab-panel name="documents">
           <docs-tab-panel />
         </q-tab-panel>
-        <q-tab-panel name="1c" />
+        <q-tab-panel
+          name="1c"
+          style="padding-top: 50px; padding-left: 16px;
+  overflow: hidden;"
+        >
+          <consulting-table />
+        </q-tab-panel>
         <q-tab-panel name="medworkers">
           <med-tab-panel />
         </q-tab-panel>
@@ -41,6 +47,7 @@ import SettingsTabPanel from "../components/Statistics/Settings/SettingsTabPanel
 import InfoDocsTabPanel from "../components/Statistics/Information/InfoDocsTabPanel.vue";
 import MedTabPanel from "../components/Statistics/Medworkers/MedTabPanel.vue";
 import ApplicationsTabPanel from "../components/Statistics/ApplicationsTabPanel.vue";
+import ConsultingTable from "../components/Statistics/Consulting/ConsultingTable.vue"
 export default {
   components: {
     MainTabPanel,
@@ -49,7 +56,8 @@ export default {
     InfoDocsTabPanel,
     SettingsTabPanel,
     MedTabPanel,
-    ApplicationsTabPanel
+    ApplicationsTabPanel,
+    ConsultingTable
 },
   data() {
     return {
