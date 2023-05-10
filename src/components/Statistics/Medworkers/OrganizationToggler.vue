@@ -7,7 +7,7 @@
     :options="[
       { label: 'Всего', value: 'summary' },
       { label: 'Медработники', value: 'medworkers' },
-      { label: 'Загруженность', value: 'organizations' },
+      { label: 'Загрузка', value: 'workload' },
     ]"
     style="border-radius: 5px;"
     @click="$emit('change-organization', model)"

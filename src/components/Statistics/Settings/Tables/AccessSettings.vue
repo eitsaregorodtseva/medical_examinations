@@ -17,6 +17,7 @@
       :loading="loading_state"
       :wrap-cells="true"
       separator="horizontal"
+      style="max-height: 65vh"
       table-header-class="app_normal text-black"
       rows-per-page-label="Записей на странице: "
       :pagination="pagination"

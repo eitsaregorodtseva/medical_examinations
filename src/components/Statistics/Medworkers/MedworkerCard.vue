@@ -6,7 +6,7 @@
   >
     <q-item>
       <q-item-section>
-        <q-item-label>{{ data.organization_name }}</q-item-label>
+        <q-item-label>{{ data.fio }}</q-item-label>
       </q-item-section>
     </q-item>
     <q-separator />
@@ -14,8 +14,8 @@
       <q-card-section class="col-6">
         <q-card
           class="col q-mb-md q-pa-md"
-          :style="{'cursor': data.all_exams_count ? 'pointer' : 'auto', 'border-radius': '10px'}"
-          @click="$emit('show-modal', 'exams', data.organization_id, data.all_exams_count)"
+          :style="{'cursor': data.exams ? 'pointer' : 'auto', 'border-radius': '10px'}"
+          @click="$emit('show-modal', 'exams', data.organization_id, data.exams)"
         >
           <div style="font-size: 18px; font-weight: 600; text-align: center">
             Осмотров
@@ -25,7 +25,7 @@
               class="col-7 q-ml-sm q-mt-sm q-mr-xs"
               style="font-size: 20px; font-weight: 600; text-align: center"
             >
-              <div>{{ data.all_exams_count }}</div>
+              <div>{{ data.exams ?? 0 }}</div>
             </div>
             <div class="col-2 q-mr-xs">
               <q-icon
@@ -45,7 +45,7 @@
               <div>Недопуск</div>
               <div class="row">
                 <div class="col numbers q-mt-md">
-                  <div>{{ data.non_admission_count }}</div>
+                  <div>{{ data.percent_false ?? 0 }}</div>
                 </div>
                 <div class="col q-mt-sm q-ml-md">
                   <q-icon
@@ -59,7 +59,7 @@
               <div>Просрочки</div>
               <div class="row">
                 <div class="col numbers q-mt-md">
-                  <div>{{ data.alco_count }}</div>
+                  <div>{{ data.count_delay_verdict ?? 0 }}</div>
                 </div>
                 <div class="col q-mt-sm q-ml-md">
                   <q-icon
@@ -103,7 +103,7 @@
               <div>Часов</div>
               <div class="row">
                 <div class="col numbers q-mt-md">
-                  <div>{{ data.online }}</div>
+                  <div>{{ data.hours ?? 0 }}</div>
                 </div>
                 <div class="col q-mt-sm q-ml-md">
                   <q-icon
@@ -117,7 +117,7 @@
               <div>Дней</div>
               <div class="row">
                 <div class="col numbers q-mt-md">
-                  <div>{{ data.need_check }}</div>
+                  <div>{{ data.days ?? 0 }}</div>
                 </div>
                 <div class="col q-mt-sm q-ml-md">
                   <q-icon
@@ -141,13 +141,12 @@ export default {
       type: Object,
       default() {
         return {
-          medworker_id: 0,
-          medworker_name: '',
+          fio: '',
           days: 0,
           hours: 0,
           exams: 0,
-          no_access: 0,
-          delays: 0,
+          percent_false: 0,
+          count_delay_verdict: 0,
         }
       }, 
     },

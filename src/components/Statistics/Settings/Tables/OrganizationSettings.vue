@@ -17,6 +17,7 @@
       :loading="loading_state"
       :wrap-cells="true"
       separator="horizontal"
+      style="max-height: 65vh"
       table-header-class="app_normal text-black"
       rows-per-page-label="Записей на странице: "
       :pagination="pagination"
@@ -35,7 +36,14 @@ const columns = [
   { name: 'fio', label: 'ФИО', align: 'left', field: 'fio', sortable: true },
   { name: 'status', label: 'Должность', align: 'left', field: 'status', sortable: true },
   { name: 'phone_number', label: 'Телефон', align: 'left', field: 'phone_number', sortable: true },
-  { name: 'sms_alerts', label: 'Оповещение об алкоголе', align: 'left', field: 'sms_alerts', sortable: true },
+  { 
+    name: 'sms_alerts', 
+    label: 'Оповещение об алкоголе', 
+    align: 'left', 
+    field: 'sms_alerts',
+    format: field => field === 'yes' ? 'Да' : 'Нет',
+    sortable: true, 
+  },
 ]
 
 export default {

@@ -11,13 +11,12 @@
   </div>
   <div v-else>
     <q-table
-      title="Терминалы"
+      title="Загруженность"
       :rows="data"
       :columns="columns"
       :loading="loading_state"
       :wrap-cells="true"
       separator="horizontal"
-      style="max-height: 65vh"
       table-header-class="app_normal text-black"
       rows-per-page-label="Записей на странице: "
       :pagination="pagination"
@@ -28,10 +27,13 @@
   </div>
 </template>
 <script>
-import { getTerminalsSettings } from '../../../../api/settings';
 const columns = [
-  { name: 'terminal', required: true, label: '№ Терминала', align: 'left', field: 'terminal', sortable: true },
-  { name: 'status', label: 'Состояние', align: 'left', field: 'status', sortable: true },
+  { name: 'organization_name', required: true, label: 'Организация', align: 'left', field: 'organization_name', sortable: true },
+  { name: 'fio', label: 'ФИО', align: 'left', field: 'fio', sortable: true },
+  { name: 'role', label: 'Тип доступа', align: 'left', field: 'role', sortable: true },
+  { name: 'login', label: 'Логин', align: 'left', field: 'login', sortable: true },
+  { name: 'password_hash', label: 'Пароль', align: 'left', field: 'password_hash', sortable: true },
+  { name: 'registration_date', label: 'Дата открытия', align: 'left', field: 'registration_date', sortable: true },
 ]
 
 export default {
@@ -45,7 +47,7 @@ export default {
       user_id: null,
 
       pagination: {
-        sortBy: 'terminal',
+        sortBy: 'organization_name',
         descending: true,
         page: 1,
         rowsPerPage: 10
@@ -54,25 +56,12 @@ export default {
   },
   mounted() {
     this.populateDataFromStorage();
-    this.getTerminalsSettings();
+    this.loading_state = false; //remove
   },
   methods: {
     populateDataFromStorage() {
       this.user_id = sessionStorage.getItem("user_id");
     },
-
-    async getTerminalsSettings() {
-      try {
-        var response;
-        response = await getTerminalsSettings(
-          this.user_id,
-        );
-        this.data = response.data;
-        this.loading_state = false;
-      } catch (err) {
-        console.log(err);
-      }
-    }
 
   }
 }
