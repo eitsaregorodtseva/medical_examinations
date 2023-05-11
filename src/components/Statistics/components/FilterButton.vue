@@ -15,7 +15,7 @@
   </div>
 </template>
 <script>
-import { Role } from '../../../helpers/role';
+import { Role } from '@/constants/role';
 
 export default {
     props: {

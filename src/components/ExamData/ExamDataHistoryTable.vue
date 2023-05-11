@@ -40,7 +40,7 @@
 
 <script>
 import moment from 'moment';
-import { nameWithInitials } from '@/helpers/names'
+import { nameWithInitials } from '@/constants/names'
 
 const columns = [
   { name: 'exam_datetime', required: true, label: 'Дата и время', align: 'left', field: 'exam_datetime', format: val => moment(val).format('lll'), sortable: true },

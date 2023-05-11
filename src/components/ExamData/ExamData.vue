@@ -142,13 +142,13 @@
 import SensorDataTable from './SensorDataTable.vue'
 import ExamDataHistoryTable from './ExamDataHistoryTable.vue'
 import ExamVerdict from './ExamVerdict.vue'
-import AppImage from '@/components/AppImage'
+import AppImage from '@/components/AppImage/AppImage'
 import MedpapersGrid from '@/components/Medpapers/MedpapersGrid'
 import {
     getExamData,
     getExamsHistoryForPersonnel,
 } from '@/api/exams.api'
-import { fullName } from '@/helpers/names'
+import { fullName } from '@/constants/names'
 import VideoPlayers from '@/components/ExamData/VideoPlayers.vue'
 import {serverURL} from '@/api/services'
 import {getPersonnelRecord} from '@/api/personnel.api'

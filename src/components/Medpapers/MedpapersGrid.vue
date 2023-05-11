@@ -58,8 +58,8 @@
 <script>
 import moment from 'moment';
 import {mediaURL} from '@/api/services'
-import AppImage from '@/components/AppImage'
-import { getPersonnelMedpapers, addPersonnelMedpaper } from '@/api/personnel.api'
+import AppImage from '@/components/AppImage/AppImage'
+import { getPersonnelMedpapers } from '@/api/personnel.api'
 
 const columns = [
   { name: 'id', label: 'По добавлению', field: 'id', sortable: true, align: 'center' },

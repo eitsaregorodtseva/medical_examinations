@@ -197,7 +197,7 @@ import {
   postVerdict,
   patchMedworkerInExam
 } from '@/api/exams.api'
-import { Role } from '@/helpers/role'
+import { Role } from '@/constants/role'
 
 
 export default {

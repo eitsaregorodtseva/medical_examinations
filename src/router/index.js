@@ -1,12 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { notify } from '@kyvg/vue3-notification'
-import  { Role } from '@/helpers/role'
+import  { Role } from '@/constants/role'
 
 const routes = [
   {
     path: '/',
     name: 'Home',
-    component: () => import('../views/Home.vue'),
+    component: () => import('@/pages/Home/Home.vue'),
     redirect: to => {
       let role = sessionStorage.getItem('user_role')
       if (!role) {
@@ -24,7 +24,7 @@ const routes = [
   {
     path: '/auth',
     name: 'Auth',
-    component: () => import('../views/Auth.vue'),
+    component: () => import('@/pages/Auth/Auth.vue'),
     meta :{
       layout : 'auth'
     }
@@ -32,7 +32,7 @@ const routes = [
   {
     path: '/dig_sig',
     name: 'DigitalSignature',
-    component: () => import('../views/DigitalSignature.vue'),
+    component: () => import('@/pages/DigitalSignature/DigitalSignature.vue'),
     meta : {
       layout : 'auth',
       permittedRoles : [
@@ -43,13 +43,13 @@ const routes = [
   {
     path: '/personnel/:personnelId',
     name: 'PersonnelSingle',
-    component: () => import('../views/PersonnelSingle.vue'),
+    component: () => import('@/pages/PersonnelSingle/PersonnelSingle.vue'),
     props: (route) => ({personnelId: Number.parseInt(route.params.personnelId, 10) || 0}),
     meta : {
       permittedRoles : [
         Role.MedWorker,
-        Role.Admin,
-        Role.Dispatcher
+        // Role.Admin,
+        // Role.Dispatcher
       ]
     }
   },
@@ -60,15 +60,15 @@ const routes = [
     meta : {
       permittedRoles : [
         Role.MedWorker,
-        Role.Admin,
-        Role.Dispatcher
+        // Role.Admin,
+        // Role.Dispatcher
       ]
     }
   },
   {
     path: '/new_exams',
     name: 'NewExams',
-    component: () => import('../views/NewExams.vue'),
+    component: () => import('@/pages/NewExams/NewExams.vue'),
     meta : {
       permittedRoles : [
         Role.MedWorker
@@ -78,19 +78,19 @@ const routes = [
   {
     path: '/exams_history',
     name: 'ExamsHistory',
-    component: () => import('../views/ExamsHistory.vue'),
+    component: () => import('@/pages/ExamsHistory/ExamsHistory.vue'),
     meta : {
       permittedRoles : [
         Role.Admin,
-        Role.Dispatcher,
-        Role.MedWorker
+        // Role.Dispatcher,
+        // Role.MedWorker
       ]
     }
   },
   {
     path: '/statistics',
     name: 'Statistics',
-    component: () => import('../views/Statistics.vue'),
+    component: () => import('@/components/Statistics/Statistics.vue'),
     meta: {
       permittedRoles: [
         Role.Admin,
@@ -101,7 +101,7 @@ const routes = [
   // {
   //   path: '/reports',
   //   name: 'Reports',
-  //   component: () => import('../views/ReportsExport.vue'),
+  //   component: () => import('../pages/ReportsExport.vue'),
   //   meta: {
   //     permittedRoles: [
   //       Role.Admin,
@@ -112,7 +112,7 @@ const routes = [
   {
     path: '/sms',
     name: 'Sms',
-    component: () => import('../components/Sms/SmsInform.vue'),
+    component: () => import('../pages/Sms/SmsInform.vue'),
     meta: {
       layout: 'auth'
     }

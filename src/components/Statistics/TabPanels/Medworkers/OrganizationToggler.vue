@@ -6,7 +6,8 @@
     no-caps
     :options="[
       { label: 'Всего', value: 'summary' },
-      { label: 'Организации', value: 'organizations' },
+      { label: 'Медработники', value: 'medworkers' },
+      { label: 'Загрузка', value: 'workload' },
     ]"
     style="border-radius: 5px;"
     @click="$emit('change-organization', model)"
@@ -14,7 +15,7 @@
 </template>
 <script>
 import { ref } from 'vue';
-import { Role } from '../../../constants/role';
+import { Role } from '@/constants/role';
 
 export default {
   emits: ['change-organization'],

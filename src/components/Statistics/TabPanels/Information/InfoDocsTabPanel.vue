@@ -1,0 +1,52 @@
+<template>
+  <navigation-navbar
+    v-model="tab"
+    :navigation-menu="navigationList"
+    class="q-mt-md"
+  />
+  <q-tab-panels v-model="tab">
+    <q-tab-panel name="passport">
+      <pdf-viewer path="certificate.pdf" />
+    </q-tab-panel>
+    <q-tab-panel name="certificate">
+      <pdf-viewer path="certificate.pdf" />
+    </q-tab-panel>
+  </q-tab-panels>
+</template>
+<script>
+import { ref } from "vue";
+import PdfViewer from "./components/PdfViewer.vue";
+import NavigationNavbar from "@/components/NavigationNavbar/NavigationNavbar.vue";
+
+export default {
+  components: {
+    PdfViewer,
+    NavigationNavbar
+  },
+  data() {
+    return {
+      tab: ref("passport"),
+      navigationList: [
+        {
+          name: "passport",
+          label: "Технический паспорт",
+        },
+        {
+          name: "certificate",
+          label: "Свидетельство о регистрации ПО",
+
+        },
+      ]
+    };
+  },
+};
+</script>
+<style scoped>
+.q-tabs--dense .q-tab {
+  border-radius: 5px;
+}
+
+.q-tab-panel {
+  padding-left: 0px;
+}
+</style>

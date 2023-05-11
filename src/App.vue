@@ -8,8 +8,8 @@
 </template>
 
 <script>
-import DefaultLayout from '@/layouts/DefaultLayout';
-import AuthLayout from '@/layouts/AuthLayout';
+import DefaultLayout from '@/components/layouts/DefaultLayout';
+import AuthLayout from '@/components/layouts/AuthLayout';
 
 export default {
   components: {

@@ -52,13 +52,44 @@
             </q-item>
           </template>
         </q-select>
+
+        <div class="h6">
+          Выберите водителя:
+        </div>
+        <q-select
+          v-model="valuesPersonnel"
+          :options="optionsPersonnel"
+          :option-label="option => GetFullName(option.second_name, option.first_name, option.father_name)"
+          class="col-8"
+          outline
+          use-input
+          stack-label
+          input-debounce="0"
+          label="Водители"
+          @filter="handleFilterOptions"
+        >
+          <template #append>
+            <q-icon
+              name="close"
+              class="cursor-pointer"
+              @click.stop.prevent="valuesPersonnel = []"
+            />
+          </template>
+          <template #no-option>
+            <q-item>
+              <q-item-section class="text-grey">
+                Нет результатов
+              </q-item-section>
+            </q-item>
+          </template>
+        </q-select>
       </q-card-section>
       <q-card-actions>
         <div class="row q-gutter-md q-mt-xl">
           <q-btn
             color="dark"
             no-caps
-            @click="$emit('filterCards', filterValues)"
+            @click="$emit('filterCards', filterValues, valuesPersonnel)"
           >
             Применить
           </q-btn>
@@ -76,6 +107,9 @@
 
 <script>
 import { ref } from "vue";
+import { getPersonnelList } from '@/api/personnel.api.js'
+import { fullName } from '@/constants/names'
+
 export default {
   props: {
     options: {
@@ -91,8 +125,8 @@ export default {
       },
     },
     modelValue: {
-      type : Boolean,
-      default : false
+      type: Boolean,
+      default: false
     },
   },
   emits: {
@@ -103,16 +137,33 @@ export default {
     return {
       filterValues: ref(),
       filterOptions: ref(),
+
+      optionsPersonnel: ref(),
+      valuesPersonnel: ref(),
+
+      user_id: null,
+      organization_id: null,
     }
   },
   mounted() {
     this.filterValues = this.values;
     this.filterOptions = this.options;
+    this.populateDataFromStorage();
+    this.getPersonnel();
   },
   updated() {
     this.filterValues = this.values;
   },
   methods: {
+    populateDataFromStorage() {
+      this.user_id = sessionStorage.getItem('user_id')
+      this.organization_id = sessionStorage.getItem('user_organization_id')
+    },
+
+    GetFullName(second, first, father){
+      return fullName(second, first, father)
+    },
+
     handleResetFilters() {
       this.filterValues = [];
     },
@@ -128,7 +179,31 @@ export default {
           );
         }
       })
-    }
-  }
+    },
+
+    handleFilterPersonnelOptions(value, update) {
+      update(() => {
+        if (value === '') {
+          this.optionsPersonnel = this.optionsPersonnel;
+        }
+        else {
+          const needle = value.toLowerCase();
+          this.optionsPersonnel = this.options.filter(
+            v => v.toLowerCase().indexOf(needle) > -1
+          );
+        }
+      })
+    },
+
+    async getPersonnel() {
+      try {
+        var response = await getPersonnelList(this.user_id, this.organization_id);
+        this.optionsPersonnel = response.data
+      } catch (err) {
+        console.log(err)
+      }
+    },
+
+  },
 }
 </script>

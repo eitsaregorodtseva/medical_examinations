@@ -45,6 +45,9 @@ const getExamsCountByPeriod = (user_id, start_date, end_date) => webAPI.get('/ca
 const getExamsCountForOrganizationByPeriod = (user_id, start_date, end_date, organization_id) => webAPI.get('/calendar',
     { params: {user_id, start_date, end_date, organization_id} });
 
+const getExamsHistoryForOrganizationByPeriodPersonnel = (user_id, organization_id, personnel_id, date_from, date_to) => webAPI.get('/exams',
+    { params: {user_id, organization_id, personnel_id, date_from, date_to} });
+
 export {
     getQueueSize,
     getNextPatient,
@@ -60,5 +63,6 @@ export {
     getExamsHistoryByPeriod,
     getExamsHistoryForOrganizationByPeriod,
     getExamsCountByPeriod,
-    getExamsCountForOrganizationByPeriod
+    getExamsCountForOrganizationByPeriod,
+    getExamsHistoryForOrganizationByPeriodPersonnel
 }
