@@ -70,7 +70,7 @@
 <script>
 import CustomCard from "./components/CustomCard.vue";
 import CalendarModal from "../../CalendarModal.vue";
-import FilterModal from "@/components/Statistics/FilterModal.vue";
+import FilterModal from '../../FilterModal.vue'
 import TableHistoryModal from "./components/TableHistoryModal.vue";
 import OrganizationToggler from "../../components/OrganizationToggler.vue";
 import PeriodToggler from "../../components/PeriodToggler.vue";

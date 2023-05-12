@@ -11,12 +11,12 @@
         <img
           v-if="isError"
           id="img"
-          src="@\assets\images\flash-drive(1).png"
+          src="/img/flash-drive(1).png"
         >
         <img
           v-else
           id="img"
-          src="@\assets\images\flash-drive.png"
+          src="/img/flash-drive.png"
         >
       </div>
       <div

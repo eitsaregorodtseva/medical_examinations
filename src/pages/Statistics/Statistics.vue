@@ -41,13 +41,13 @@
 
 <script>
 import { ref } from "vue";
-import MainTabPanel from "@/components/Statistics/TabPanels/Main/MainTabPanel.vue";
-import DocsTabPanel from "@/components/Statistics/TabPanels/Documents/DocsTabPanel.vue";
-import SettingsTabPanel from "@/components/Statistics/TabPanels/Settings/SettingsTabPanel.vue";
-import InfoDocsTabPanel from "@/components/Statistics/TabPanels/Information/InfoDocsTabPanel.vue";
-import MedTabPanel from "@/components/Statistics/TabPanels/Medworkers/MedTabPanel.vue";
-import ApplicationsTabPanel from "@/components/Statistics/TabPanels/Applications/ApplicationsTabPanel.vue";
-import ConsultingTable from "@/components/Statistics/TabPanels/Consulting/ConsultingTable.vue"
+import MainTabPanel from "./TabPanels/Main/MainTabPanel.vue";
+import DocsTabPanel from "./TabPanels/Documents/DocsTabPanel.vue";
+import SettingsTabPanel from "./TabPanels/Settings/SettingsTabPanel.vue";
+import InfoDocsTabPanel from "./TabPanels/Information/InfoDocsTabPanel.vue";
+import MedTabPanel from "./TabPanels/Medworkers/MedTabPanel.vue";
+import ApplicationsTabPanel from "./TabPanels/Applications/ApplicationsTabPanel.vue";
+import ConsultingTable from "./TabPanels/Consulting/ConsultingTable.vue"
 import NavigationNavbar from "@/components/NavigationNavbar/NavigationNavbar.vue";
 import { Role } from '@/constants/role';
 

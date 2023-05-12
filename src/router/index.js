@@ -90,7 +90,7 @@ const routes = [
   {
     path: '/statistics',
     name: 'Statistics',
-    component: () => import('@/components/Statistics/Statistics.vue'),
+    component: () => import('@/pages/Statistics/Statistics.vue'),
     meta: {
       permittedRoles: [
         Role.Admin,
