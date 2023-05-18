@@ -124,9 +124,19 @@ export default {
     computed: {
         eventsMap() {
             const map = {}
+            console.log(today())
 
-            if (this.examsCount.length > 0) {
-                this.examsCount.forEach(event => {
+            const data = [{exams: 0,calendar: '2023-05-01'}, {exams: 13,calendar: '2023-05-02'}, 
+                          {exams: 3,calendar: '2023-05-03'}, {exams: 3,calendar: '2023-05-04'}, 
+                          {exams: 4,calendar: '2023-05-05'}, {exams: 3,calendar: '2023-05-06'}, 
+                          {exams: 6,calendar: '2023-05-07'}, {exams: 0,calendar: '2023-05-08'},
+                          {exams: 0,calendar: '2023-05-09'}, {exams: 3,calendar: '2023-05-10'},
+                          {exams: 3,calendar: '2023-05-11'}, {exams: 8,calendar: '2023-05-12'},
+                          {exams: 2,calendar: '2023-05-13'}, {exams: 2,calendar: '2023-05-14'},
+                          {exams: 1,calendar: '2023-05-15'}, {exams: 6,calendar: '2023-05-16'},
+                          {exams: 5,calendar: '2023-05-17'}, {exams: 7,calendar: '2023-05-18'},]
+            if (data.length > 0) {
+                data.forEach(event => {
                     (map[event.calendar] = (map[event.calendar] || [])).push({
                         id: map.length,
                         title: event.exams,

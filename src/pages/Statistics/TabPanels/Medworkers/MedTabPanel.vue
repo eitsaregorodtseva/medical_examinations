@@ -50,7 +50,10 @@
     v-if="organization_toggler_state === 'workload' && !loading_state"
     class="q-pa-md"
   >
-    <workload-table />
+    <workload-table
+      :data="workloadTableData"
+      @update-table="updateWorkloadTable"
+    />
   </div>
 
   <filter-modal
@@ -71,7 +74,7 @@ import FilterModal from "./FilterModal.vue";
 import WorkloadTable from './WorkloadTable.vue'
 import moment from "moment";
 import { ref } from "vue";
-import { getMedworkersStats } from '@/api/medworkers.api';
+import { getMedworkersStats, getWorkload, getMaxWorkload } from '@/api/medworkers.api';
 export default {
   components: {
     MedworkerCard,
@@ -90,6 +93,7 @@ export default {
       //organizations
       organizationsList: [],
       visibleOrganizationsList: [],
+      workloadTableData: [],
 
       //calendar
       current_date: moment().format("YYYY-MM-DD"),
@@ -193,10 +197,25 @@ export default {
       }
     },
 
-    async updateWorkloadTable() {
+    async updateWorkloadTable(page = 1, count_row = 10) {
       try {
+        var response = await getWorkload(
+          this.user_id,
+          this.first_date,
+          this.current_date,
+          page,
+          count_row
+          );
+          this.workloadTableData = response.data;
+          var max_workload = await getMaxWorkload(
+            this.user_id,
+            this.first_date,
+            this.current_date,
+            );
         this.loading_state = false;
-      } catch(err) {
+        console.log(response)
+        console.log(max_workload)
+      } catch (err) {
         console.log(err)
       }
     }

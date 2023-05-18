@@ -1,5 +1,5 @@
 <template>
-  <q-tabs
+  <q-tabs role="tab"
     :model-value="modelValue"
     dense
     outside-arrows

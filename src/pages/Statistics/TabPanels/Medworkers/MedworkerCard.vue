@@ -28,10 +28,15 @@
               <div>{{ data.exams ?? 0 }}</div>
             </div>
             <div class="col-2 q-mr-xs">
-              <q-icon
+              <!-- <q-icon
                 size="40px"
                 name="img:/img/icons/done.svg"
-              />
+              /> -->
+              <q-icon
+                size="40px"
+              >
+                <img src="@/img/icons/done.svg">
+              </q-icon>
             </div>
           </div>
         </q-card>
@@ -48,10 +53,15 @@
                   <div>{{ data.percent_false ?? 0 }}</div>
                 </div>
                 <div class="col q-mt-sm q-ml-md">
-                  <q-icon
+                  <!-- <q-icon
                     size="40px"
                     name="img:/img/icons/denied.svg"
-                  />
+                  /> -->
+                  <q-icon
+                size="40px"
+              >
+                <img src="@/img/icons/denied.svg">
+              </q-icon>
                 </div>
               </div>
             </q-card>
@@ -62,10 +72,15 @@
                   <div>{{ data.count_delay_verdict ?? 0 }}</div>
                 </div>
                 <div class="col q-mt-sm q-ml-md">
-                  <q-icon
+                  <!-- <q-icon
                     size="45px"
                     name="img:/img/icons/overdue.svg"
-                  />
+                  /> -->
+                  <q-icon
+                size="40px"
+              >
+                <img src="@/img/icons/overdue.svg">
+              </q-icon>
                 </div>
               </div>
             </q-card>
@@ -88,10 +103,15 @@
             class="col q-mt-md"
             style="display: flex; justify-content: center;"
           >
-            <q-icon
+            <!-- <q-icon
               size="40px"
               name="img:/img/icons/work.svg"
-            />
+            /> -->
+            <q-icon
+                size="40px"
+              >
+                <img src="@/img/icons/work.svg">
+              </q-icon>
           </div>
         </q-card>
         <div
@@ -106,10 +126,15 @@
                   <div>{{ data.hours ?? 0 }}</div>
                 </div>
                 <div class="col q-mt-sm q-ml-md">
-                  <q-icon
+                  <!-- <q-icon
                     size="40px"
                     name="img:/img/icons/clock.svg"
-                  />
+                  /> -->
+                  <q-icon
+                size="40px"
+              >
+                <img src="@/img/icons/clock.svg">
+              </q-icon>
                 </div>
               </div>
             </q-card>
@@ -120,10 +145,15 @@
                   <div>{{ data.days ?? 0 }}</div>
                 </div>
                 <div class="col q-mt-sm q-ml-md">
-                  <q-icon
+                  <!-- <q-icon
                     size="40px"
                     name="img:/img/icons/calendar.svg"
-                  />
+                  /> -->
+                  <q-icon
+                size="40px"
+              >
+                <img src="@/img/icons/calendar.svg">
+              </q-icon>
                 </div>
               </div>
             </q-card>

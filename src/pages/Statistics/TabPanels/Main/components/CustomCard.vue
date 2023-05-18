@@ -30,8 +30,9 @@
             <div class="col-2 q-mr-xs">
               <q-icon
                 size="40px"
-                name="img:/img/icons/done.svg"
-              />
+              >
+                <img src="@/img/icons/done.svg">
+              </q-icon>
             </div>
           </div>
         </q-card>
@@ -52,10 +53,15 @@
                   <div>{{ data.new_exams_count ?? 0 }}</div>
                 </div>
                 <div class="col q-mt-sm q-ml-md">
-                  <q-icon
+                  <!-- <q-icon
                     size="40px"
                     name="img:/img/icons/plan.svg"
-                  />
+                  /> -->
+                  <q-icon
+                    size="40px"
+                  >
+                    <img src="@/img/icons/plan.svg">
+                  </q-icon>
                 </div>
               </div>
             </q-card>
@@ -70,10 +76,15 @@
                   <div>{{ data.alco_count ?? 0 }}</div>
                 </div>
                 <div class="col q-mt-sm q-ml-md">
-                  <q-icon
+                  <!-- <q-icon
                     size="40px"
                     name="img:/img/icons/alcohol.svg"
-                  />
+                  /> -->
+                  <q-icon
+                    size="40px"
+                  >
+                    <img src="@/img/icons/alcohol.svg">
+                  </q-icon>
                 </div>
               </div>
             </q-card>
@@ -90,10 +101,15 @@
                   <div>{{ data.admission_count ?? 0 }}</div>
                 </div>
                 <div class="col q-mt-sm q-ml-md">
-                  <q-icon
+                  <!-- <q-icon
                     size="40px"
                     name="img:/img/icons/ok.svg"
-                  />
+                  /> -->
+                  <q-icon
+                    size="40px"
+                  >
+                    <img src="@/img/icons/ok.svg">
+                  </q-icon>
                 </div>
               </div>
             </q-card>
@@ -108,10 +124,15 @@
                   <div>{{ data.pressure_heart_count ?? 0 }}</div>
                 </div>
                 <div class="col q-ml-md">
-                  <q-icon
+                  <!-- <q-icon
                     size="35px"
                     name="img:/img/icons/pressure.svg"
-                  />
+                  /> -->
+                  <q-icon
+                    size="35px"
+                  >
+                    <img src="@/img/icons/pressure.svg">
+                  </q-icon>
                 </div>
               </div>
             </q-card>
@@ -128,10 +149,15 @@
                   <div>{{ data.non_admission_count ?? 0 }}</div>
                 </div>
                 <div class="col q-ml-md">
-                  <q-icon
+                  <!-- <q-icon
                     size="35px"
                     name="img:/img/icons/denied.svg"
-                  />
+                  /> -->
+                  <q-icon
+                    size="35px"
+                  >
+                    <img src="@/img/icons/denied.svg">
+                  </q-icon>
                 </div>
               </div>
             </q-card>
@@ -146,10 +172,15 @@
                   <div>{{ data.other_count ?? 0 }}</div>
                 </div>
                 <div class="col q-mt-md q-ml-md">
-                  <q-icon
+                  <!-- <q-icon
                     size="35px"
                     name="img:/img/icons/other.svg"
-                  />
+                  /> -->
+                  <q-icon
+                    size="35px"
+                  >
+                    <img src="@/img/icons/other.svg">
+                  </q-icon>
                 </div>
               </div>
             </q-card>
@@ -176,10 +207,15 @@
               <div>{{ data.terminal_count ?? 0 }}</div>
             </div>
             <div class="col">
-              <q-icon
+              <!-- <q-icon
                 size="40px"
                 name="img:/img/icons/terminal.svg"
-              />
+              /> -->
+              <q-icon
+                size="40px"
+              >
+                <img src="@/img/icons/terminal.svg">
+              </q-icon>
             </div>
           </div>
         </q-card>
@@ -195,10 +231,15 @@
                   <div>{{ data.online ?? 0 }}</div>
                 </div>
                 <div class="col q-mt-sm q-ml-md">
-                  <q-icon
+                  <!-- <q-icon
                     size="40px"
                     name="img:/img/icons/process.svg"
-                  />
+                  /> -->
+                  <q-icon
+                    size="40px"
+                  >
+                    <img src="@/img/icons/process.svg">
+                  </q-icon>
                 </div>
               </div>
             </q-card>
@@ -209,10 +250,15 @@
                   <div>{{ data.need_check ?? 0 }}</div>
                 </div>
                 <div class="col q-ml-md">
-                  <q-icon
+                  <!-- <q-icon
                     size="35px"
                     name="img:/img/icons/check.svg"
-                  />
+                  /> -->
+                  <q-icon
+                    size="35px"
+                  >
+                    <img src="@/img/icons/check.svg">
+                  </q-icon>
                 </div>
               </div>
             </q-card>
@@ -225,10 +271,15 @@
                   <div>{{ data.offline ?? 0 }}</div>
                 </div>
                 <div class="col q-mt-md q-ml-md">
-                  <q-icon
+                  <!-- <q-icon
                     size="30px"
                     name="img:/img/icons/connection.svg"
-                  />
+                  /> -->
+                  <q-icon
+                    size="30px"
+                  >
+                    <img src="@/img/icons/connection.svg">
+                  </q-icon>
                 </div>
               </div>
             </q-card>
@@ -239,10 +290,15 @@
                   <div>{{ data.limit_exam ?? 0 }}</div>
                 </div>
                 <div class="col q-mt-sm q-ml-md">
-                  <q-icon
+                  <!-- <q-icon
                     size="40px"
                     name="img:/img/icons/limit.svg"
-                  />
+                  /> -->
+                  <q-icon
+                    size="40px"
+                  >
+                    <img src="@/img/icons/limit.svg">
+                  </q-icon>
                 </div>
               </div>
             </q-card>
