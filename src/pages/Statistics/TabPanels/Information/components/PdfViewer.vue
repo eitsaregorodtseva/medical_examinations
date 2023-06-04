@@ -15,6 +15,7 @@
 </template>
 <script>
 import pdf from 'pdfvuer';
+import 'pdfjs-dist/build/pdf.worker.entry'
 export default {
   components: {
     pdf,

@@ -5,6 +5,7 @@
   > 
     <q-btn
       style="float: right"
+      color="dark"
       flat
       icon="filter_list"
       no-caps

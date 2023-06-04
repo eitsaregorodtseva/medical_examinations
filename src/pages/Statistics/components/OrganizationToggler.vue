@@ -1,6 +1,6 @@
 <template>
   <q-btn-toggle
-    v-if="role === Role.Admin"
+    v-if="user_organization_id === '' || user_organization_id === 'null'"
     v-model="model"
     toggle-color="dark"
     no-caps
@@ -22,7 +22,8 @@ export default {
     return {
       Role,
       model: ref('summary'),
-      role: sessionStorage.getItem('user_role'),
+      role: this.$store.state.user.role,
+      user_organization_id: this.$store.state.user.organization_id ?? '',
     }
   },
 }

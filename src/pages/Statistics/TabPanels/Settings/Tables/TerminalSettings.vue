@@ -42,8 +42,7 @@ export default {
       data: [],
       loading_state: true,
 
-      user_id: null,
-
+      user_id: this.$store.state.user.id,
       pagination: {
         sortBy: 'terminal',
         descending: true,
@@ -53,14 +52,9 @@ export default {
     }
   },
   mounted() {
-    this.populateDataFromStorage();
     this.getTerminalsSettings();
   },
   methods: {
-    populateDataFromStorage() {
-      this.user_id = sessionStorage.getItem("user_id");
-    },
-
     async getTerminalsSettings() {
       try {
         var response;

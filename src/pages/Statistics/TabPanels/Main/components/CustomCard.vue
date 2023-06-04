@@ -15,7 +15,7 @@
         <q-card
           class="col q-mb-md q-pa-md"
           :style="{'cursor': data.all_exams_count ? 'pointer' : 'auto', 'border-radius': '10px'}"
-          @click="$emit('show-modal', 'exams', data.organization_id, data.all_exams_count)"
+          @click="$emit('show-modal', 'exams', data.organization_id, data.all_exams_count, 'all_exams_count')"
         >
           <div style="font-size: 18px; font-weight: 600; text-align: center">
             Осмотров
@@ -45,7 +45,7 @@
             <q-card
               class="item-card q-pa-md"
               :style="{'cursor': data.new_exams_count ? 'pointer' : 'auto', 'border-radius': '10px'}"
-              @click="$emit('show-modal', 'exams', data.organization_id, data.new_exams_count)"
+              @click="$emit('show-modal', 'exams', data.organization_id, data.new_exams_count, 'new_exams_count')"
             >
               <div>План</div>
               <div class="row">
@@ -68,7 +68,7 @@
             <q-card
               class="item-card q-pa-md"
               :style="{'cursor': data.alco_count ? 'pointer' : 'auto', 'border-radius': '10px'}"
-              @click="$emit('show-modal', 'exams', data.organization_id, data.alco_count)"
+              @click="$emit('show-modal', 'exams', data.organization_id, data.alco_count, alco_count)"
             >
               <div>Алкоголь</div>
               <div class="row">
@@ -93,7 +93,7 @@
             <q-card
               class="item-card q-pa-md"
               :style="{'cursor': data.admission_count ? 'pointer' : 'auto', 'border-radius': '10px'}"
-              @click="$emit('show-modal', 'exams', data.organization_id, data.admission_count)"
+              @click="$emit('show-modal', 'exams', data.organization_id, data.admission_count, 'admission_count')"
             >
               <div>Допуски</div>
               <div class="row">
@@ -116,7 +116,7 @@
             <q-card
               class="item-card q-pa-md"
               :style="{'cursor': data.pressure_heart_count ? 'pointer' : 'auto', 'border-radius': '10px'}"
-              @click="$emit('show-modal', 'exams', data.organization_id, data.pressure_heart_count)"
+              @click="$emit('show-modal', 'exams', data.organization_id, data.pressure_heart_count, 'pressure_heart_count')"
             >
               <div>Давление/пульс</div>
               <div class="row">
@@ -141,7 +141,7 @@
             <q-card
               class="item-card q-pa-md"
               :style="{'cursor': data.non_admission_count ? 'pointer' : 'auto', 'border-radius': '10px'}"
-              @click="$emit('show-modal', 'exams', data.organization_id, data.non_admission_count)"
+              @click="$emit('show-modal', 'exams', data.organization_id, data.non_admission_count, 'non_admission_count')"
             >
               <div>Недопуск, всего</div>
               <div class="row">
@@ -164,7 +164,7 @@
             <q-card
               class="item-card q-pa-md"
               :style="{'cursor': data.other_count ? 'pointer' : 'auto', 'border-radius': '10px'}"
-              @click="$emit('show-modal', 'exams', data.organization_id, data.other_count)"
+              @click="$emit('show-modal', 'exams', data.organization_id, data.other_count, 'other_count')"
             >
               <div>Прочее</div>
               <div class="row">

@@ -19,8 +19,10 @@
     "file-saver": "^2.0.5",
     "fs": "^0.0.1-security",
     "js-excel-template": "^3.0.1",
+    "jspdf": "^2.5.1",
     "moment": "^2.29.1",
     "pdfvuer": "^2.0.1",
+    "qrcode": "^1.5.3",
     "quasar": "^2.5.3",
     "register-service-worker": "^1.7.1",
     "stream": "^0.0.2",
@@ -32,6 +34,7 @@
     "vue3-popper": "^1.2.0",
     "vue3-table-lite": "^1.0.6",
     "vuex": "^4.0.0-0",
+    "vuex-persistedstate": "^4.1.0",
     "xlsx-template-browserify": "^2.0.1"
   },
   "devDependencies": {

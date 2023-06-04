@@ -65,6 +65,7 @@ import {
   getExamsCountByPeriod,
   getExamsCountForOrganizationByPeriod
 } from "@/api/exams.api.js"
+import { getMaxWorkload } from "@/api/medworkers.api";
 
 export default {
   components: {
@@ -91,6 +92,14 @@ export default {
     organizationId: {
       type: Number,
       default: 0
+    },
+    calendarType: {
+      type: String,
+      default: ''
+    },
+    filterValue: {
+      type: String,
+      default: ''
     }
   },
   emits: {
@@ -107,7 +116,7 @@ export default {
         to: moment().format("YYYY-MM-DD")
       },
       examsCount: [],
-      user_id: undefined,
+      user_id: this.$store.state.user.id,
     }
   },
   watch: {
@@ -126,9 +135,6 @@ export default {
       }
     },
   },
-  mounted() {
-    this.populateDataFromStorage();
-  },
   updated() {
     this.select_all = false;
     this.active_period = {
@@ -136,21 +142,22 @@ export default {
       to: moment(new Date(this.todayDate)).add(1, 'days').format("YYYY-MM-DD")
     };
     this.handleChangePeriod();
-    this.getExamsCount();
+    if (this.organizationId !== 0) {
+      this.getExamsCount();
+    }
+    if (this.calendarType === 'medworkers') {
+      this.getExamsCount();
+    }
   },
   methods: {
-    populateDataFromStorage() {
-      this.user_id = sessionStorage.getItem("user_id");
-    },
-
     handleChangePeriod() {
-        this.current_date =
-          this.period_toggle_state == "day"
-            ? moment().format("YYYY/MM/DD")
-            : {
-              from: null,
-              to: null,
-            };
+      this.current_date =
+        this.period_toggle_state == "day"
+          ? moment().format("YYYY/MM/DD")
+          : {
+            from: null,
+            to: null,
+          };
     },
 
     getInterval(interval) {
@@ -163,32 +170,49 @@ export default {
     async getExamsCount() {
       let date_from = moment(new Date(this.active_period.from)).add(1, 'days').format("YYYY-MM-DD");
       let date_to = moment(new Date(this.active_period.to)).subtract(1, 'days').format("YYYY-MM-DD");
-      if (this.organizationId) {
-        var response;
-        try {
-          response = await getExamsCountForOrganizationByPeriod(
-            this.user_id,
-            date_from,
-            date_to,
-            this.organizationId,
-          );
-          this.examsCount = response.data
+      if (this.calendarType === 'exams') {
+        if (this.organizationId) {
+          var response;
+          try {
+            response = await getExamsCountForOrganizationByPeriod(
+              this.user_id,
+              date_from,
+              date_to,
+              this.organizationId,
+              this.filterValue,
+            );
+            this.examsCount = response.data
+          }
+          catch (err) {
+            console.log(err);
+          }
         }
-        catch (err) {
-          console.log(err);
+        else {
+          try {
+            response = await getExamsCountByPeriod(
+              this.user_id,
+              date_from,
+              date_to,
+              this.filterValue
+            );
+            this.examsCount = response.data
+          }
+          catch (err) {
+            console.log(err);
+          }
         }
       }
       else {
         try {
-          response = await getExamsCountByPeriod(
+          response = await getMaxWorkload(
             this.user_id,
             date_from,
-            date_to
+            date_to,
           );
           this.examsCount = response.data
         }
         catch (err) {
-          console.log(err);
+          console.log(err)
         }
       }
     }

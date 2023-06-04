@@ -206,8 +206,8 @@ export default {
     },
   },
   data () {return{
-    user_id: null,
-    user_organization_id: null,
+    user_id: this.$store.state.user.id,
+    user_organization_id: this.$store.state.user.organization_id,
     chosen_organization_id: null,
     filters : emptyForm(),
     filtersEventData: {
@@ -271,7 +271,6 @@ export default {
   },
 
   mounted() {
-        this.populateDataFromStorage()
         this.HideOrgSelector()
         if (this.isRoot) {
           this.getOrganizationsList()
@@ -280,6 +279,13 @@ export default {
 
         // Initializing saved data.
         this.InitiateFilters()
+
+        if (this.user_organization_id == "null") {
+        this.isRoot = true
+      }
+      else{
+        this.isRoot = false
+      }
     },
 
   methods : {
@@ -320,17 +326,6 @@ export default {
             this.personnelSelectionOptions = this.receivedPersonnel.filter(v => fullName(v.second_name,  v.first_name, v.father_name).toLowerCase().indexOf(needle) > -1)
           })
         }
-    },
-
-    populateDataFromStorage() {
-      this.user_id = sessionStorage.getItem('user_id')
-      this.user_organization_id = sessionStorage.getItem('user_organization_id')
-      if (this.user_organization_id == "null"){
-        this.isRoot = true
-      }
-      else{
-        this.isRoot = false
-      }
     },
 
     HideOrgSelector(){

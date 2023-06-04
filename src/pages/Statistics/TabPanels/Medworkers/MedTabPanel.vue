@@ -1,6 +1,6 @@
 <template>
   <div class="fit row wrap q-pl-xs q-gutter-md">
-    <div>
+    <div class="q-mr-xl">
       <div class="col">
         <div class="row q-py-md q-gutter-md">
           <organization-toggler @change-organization="handleChangeOrganization" />
@@ -52,16 +52,27 @@
   >
     <workload-table
       :data="workloadTableData"
+      :loading="loading_workload"
+      @open-calendar="calendar_state = true"
       @update-table="updateWorkloadTable"
     />
   </div>
-
   <filter-modal
     v-model="filter_state"
     class="self-end"
     :options="organizationNamesList"
     :values="filterValues"
     @filter-cards="filterCards"
+  />
+
+  <calendar-modal 
+    v-model="calendar_state"
+    calendar-type="medworkers"
+    :today-date="current_date"
+    :first-date="first_date"
+    :calendar-dates="calendar_dates"
+    calendar-state="year"
+    @update-table="updateWorkloadTable"
   />
 </template>
 
@@ -70,19 +81,21 @@ import MedworkerCard from './MedworkerCard.vue';
 import OrganizationToggler from './OrganizationToggler.vue';
 import PeriodToggler from './PeriodToggler.vue';
 import FilterButton from './FilterButton.vue';
+import WorkloadTable from './WorkloadTable.vue';
 import FilterModal from "./FilterModal.vue";
-import WorkloadTable from './WorkloadTable.vue'
+import CalendarModal from '../../CalendarModal.vue';
 import moment from "moment";
 import { ref } from "vue";
-import { getMedworkersStats, getWorkload, getMaxWorkload } from '@/api/medworkers.api';
+import { getMedworkersStats, getWorkload } from '@/api/medworkers.api';
 export default {
   components: {
     MedworkerCard,
     OrganizationToggler,
     PeriodToggler,
     FilterButton,
-    FilterModal,
-    WorkloadTable
+    WorkloadTable,
+    CalendarModal,
+    FilterModal
   },
   data() {
     return {
@@ -98,28 +111,28 @@ export default {
       //calendar
       current_date: moment().format("YYYY-MM-DD"),
       first_date: moment().format("YYYY-MM-DD"),
+      calendar_dates: {start: undefined, end: undefined},
 
       //filter
       filterValues: [],
       organizationNamesList: [],
 
       //states
+      calendar_state: false,
       filter_state: false,
       loading_state: true,
+      loading_workload: true,
 
-      user_id: null,
+      user_id: this.$store.state.user.id,
     }
   },
   mounted() {
-    this.populateDataFromStorage(),
+    // console.log(this.$store.state.user)
+    this.user_id =  this.$store.state.user.id;
       this.handleChangePeriod('month'),
       this.handleChangeOrganization('summary');
   },
   methods: {
-    populateDataFromStorage() {
-      this.user_id = sessionStorage.getItem("user_id");
-    },
-
     handleChangeOrganization(organization_toggler_state) {
       this.organization_toggler_state = organization_toggler_state;
       this.loading_state = true;
@@ -128,7 +141,8 @@ export default {
         this.updateExamCard();
       }
       else {
-        this.updateWorkloadTable();
+        this.first_date = moment().subtract(364, "days").format("YYYY-MM-DD");
+        this.updateWorkloadTable(undefined, 1, 10);
       }
     },
 
@@ -197,24 +211,38 @@ export default {
       }
     },
 
-    async updateWorkloadTable(page = 1, count_row = 10) {
+    preparePeriod(date) {
+      let start_date;
+      let end_date;
+        start_date = typeof date === "string" ?
+          moment(new Date(date)).format("YYYY-MM-DD") :
+          moment(new Date(date.from)).format("YYYY-MM-DD");
+        end_date = typeof date === "string" ?
+          moment(new Date(date)).format("YYYY-MM-DD") :
+          moment(new Date(date.to)).format("YYYY-MM-DD");
+      return { start: start_date, end: end_date }
+    },
+
+    async updateWorkloadTable(date_from_modal, page, count_row) {
+      this.loading_workload = true;
+      // this.loading_state = true;
+      let date = {start: undefined, end: undefined}
+      if (date_from_modal) {
+        date = this.preparePeriod(date_from_modal);
+        this.calendar_dates = date;
+      }
+      this.calendar_state = false;
       try {
         var response = await getWorkload(
           this.user_id,
-          this.first_date,
-          this.current_date,
-          page,
-          count_row
+          this.calendar_dates.start ?? this.first_date,
+          this.calendar_dates.end ?? this.current_date,
+          page ?? 1,
+          count_row ?? 10
           );
-          this.workloadTableData = response.data;
-          var max_workload = await getMaxWorkload(
-            this.user_id,
-            this.first_date,
-            this.current_date,
-            );
+        this.workloadTableData = response.data;
+        this.loading_workload = false;
         this.loading_state = false;
-        console.log(response)
-        console.log(max_workload)
       } catch (err) {
         console.log(err)
       }

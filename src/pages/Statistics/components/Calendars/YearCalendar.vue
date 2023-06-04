@@ -60,7 +60,7 @@ export default {
     selectAll: {
       type: Boolean,
       default: false,
-    }
+    },
   },
   emits: ['get-interval'],
   data() {
@@ -80,8 +80,8 @@ export default {
         buttons_info.push({ year: last_year, months: [] });
       }
 
-      var dateStart = moment(this.activePeriod.from);
-      const dateEnd = moment(this.activePeriod.to);
+      var dateStart = moment(this.activePeriod.from).add(1, 'days');
+      const dateEnd = moment(new Date(this.activePeriod.to)).subtract(1, 'days');
 
       while (dateEnd > dateStart || dateStart.format('M') === dateEnd.format('M')) {
         const year = new Date(dateStart).getFullYear();

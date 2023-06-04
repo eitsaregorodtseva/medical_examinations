@@ -100,7 +100,7 @@ export default {
     },
   },
   mounted() {
-    console.log(this.terminals)
+    // console.log(this.terminals)
   }
 }
 

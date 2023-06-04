@@ -53,8 +53,10 @@
   />
   <calendar-modal
     v-model="calendar_state"
+    calendar-type="exams"
     :today-date="current_date"
     :first-date="first_date"
+    :filter-value="exams_filter"
     :calendar-state="period_toggler_state"
     :organization-id="current_organization"
     @update-table="updateHistoryTable"
@@ -82,8 +84,7 @@ import {
 } from "@/api/organizations.api.js";
 import {
   getExamsHistoryByPeriod,
-  getExamsHistoryForOrganizationByPeriod,
-  getExamsHistoryForOrganizationByPeriodPersonnel
+  getExamsHistoryForOrganizationByPeriod 
 } from "@/api/exams.api.js";
 import moment from "moment";
 import { ref } from "vue";
@@ -113,6 +114,7 @@ export default {
       //calendar
       current_date: moment().format("YYYY-MM-DD"),
       first_date: moment().format("YYYY-MM-DD"),
+      exams_filter: '',
 
       //filter
       filterValues: [],
@@ -135,25 +137,16 @@ export default {
       current_part: '',
       current_organization: 0,
 
-      user_id: null,
-      user_organization_id: null,
-      user_role: null,
+      user_id: this.$store.state.user.id,
+      user_organization_id: this.$store.state.user.organization_id,
+      user_role: this.$store.state.user.role,
     };
   },
   mounted() {
-    this.populateDataFromStorage(),
       this.handleChangePeriod('today'),
       this.handleChangeOrganization('summary');
   },
   methods: {
-    populateDataFromStorage() {
-      this.user_id = sessionStorage.getItem("user_id");
-      this.user_organization_id = sessionStorage.getItem(
-        "user_organization_id"
-      );
-      this.user_role = sessionStorage.getItem('user_role');
-    },
-
     handleChangeOrganization(organization_toggler_state) {
       this.organization_toggler_state = organization_toggler_state;
       this.loading_state = true;
@@ -177,9 +170,12 @@ export default {
       this.updateExamCard();
     },
 
-    handleToggleShowDialog(value, id, requestFlag) {
+    handleToggleShowDialog(value, id, requestFlag, filter) {
+      // console.log(filter)
+      // console.log(requestFlag)
       this.current_part = value;
       this.current_organization = id;
+      this.exams_filter = filter;
       if (requestFlag) {
         if (value === "terminals") {
           this.updateTerminalsHistoryTable(moment(new Date(this.current_date)).subtract(1, 'days').toString(), this.current_organization)
@@ -255,7 +251,8 @@ export default {
             this.user_id,
             this.current_organization,
             date.start,
-            date.end
+            date.end,
+            this.exams_filter
           );
           this.examsList = this.itemsList = response.data;
           if (this.examsList.length > 0) {
@@ -278,7 +275,8 @@ export default {
           response = await getExamsHistoryByPeriod(
             this.user_id,
             date.start,
-            date.end
+            date.end,
+            this.exams_filter
           );
           this.examsList = this.itemsList = response.data;
           if (this.examsList.length > 0) {
@@ -351,11 +349,11 @@ export default {
     },
 
     filterCards(orgValues, personnelValues) {
-      console.log(orgValues, personnelValues)
+      // console.log(orgValues, personnelValues)
       if (personnelValues !== undefined && personnelValues !== {}) {
         this.getExamsFilteredByPersonnel(personnelValues.pers_id)
       }
-      console.log(this.personnelFilterValues)
+      // console.log(this.personnelFilterValues)
       this.visibleOrganizationsList = [];
       if (orgValues.length > 0 || personnelValues !== undefined || personnelValues !== {}) {
         if (personnelValues === undefined || personnelValues === {}) {
@@ -393,35 +391,36 @@ export default {
       this.filterValues = orgValues;
     },
 
-    async getExamsFilteredByPersonnel(pers_id) {
-      const date = this.preparePeriod({ from: this.first_date, to: this.current_date }, true);
-      try {
-        var response;
-        response = await getExamsHistoryForOrganizationByPeriodPersonnel(
-          this.user_id,
-          this.current_organization,
-          pers_id,
-          date.start,
-          date.end,
-        );
-        let organizationNames = [];
-        const exams = response.data;
-        if (organizationNames.length > 0) {
-          for (var i = 0; i < exams.length; i++) {
-            if (!organizationNames.includes(exams[i].organization_name))
-              organizationNames.push(exams[i].organization_name)
-          }
-        }
-        this.personnelFilterValues =  organizationNames;
-      } catch (err) {
-        console.log(err);
-      }
-    },
+    // async getExamsFilteredByPersonnel(pers_id) {
+    //   const date = this.preparePeriod({ from: this.first_date, to: this.current_date }, true);
+    //   try {
+    //     var response;
+    //     response = await getExamsHistoryForOrganizationByPeriodPersonnel(
+    //       this.user_id,
+    //       this.current_organization,
+    //       pers_id,
+    //       date.start,
+    //       date.end,
+    //     );
+    //     let organizationNames = [];
+    //     const exams = response.data;
+    //     if (organizationNames.length > 0) {
+    //       for (var i = 0; i < exams.length; i++) {
+    //         if (!organizationNames.includes(exams[i].organization_name))
+    //           organizationNames.push(exams[i].organization_name)
+    //       }
+    //     }
+    //     this.personnelFilterValues =  organizationNames;
+    //   } catch (err) {
+    //     console.log(err);
+    //   }
+    // },
 
     async updateExamCard() {
       try {
         var response;
-        if (this.user_role === Role.Admin) {
+        // if (this.user_role === Role.Admin) {
+        if (this.user_organization_id === "null") {
           if (this.organization_toggler_state === "summary") {
             response = await getAllOrganizationsStats(
               this.user_id,
@@ -454,7 +453,7 @@ export default {
             this.organizationNamesList.push(org.organization_name);
           });
         }
-        if (this.user_role === Role.Admin && this.organization_toggler_state === "summary") {
+        if (this.user_organization_id === 'null' && this.organization_toggler_state === "summary") {
           this.organizationsList[0].organization_name = "Все организации";
         }
         this.visibleOrganizationsList = this.organizationsList;

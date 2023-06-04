@@ -53,7 +53,7 @@ export default {
       populateDataFromStorage() {
         this.user_role = sessionStorage.getItem('user_role');
     },
-    }
+  }
 }
 </script>
 

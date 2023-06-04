@@ -1,7 +1,7 @@
 <template>
   <app-centered-box :is-error="isError">
     <q-form
-      class="q-pa-md fit column items-center"
+      class="q-pa-md fit no-wrap column items-center"
       @submit.prevent="auth"
     >
       <div
@@ -17,7 +17,7 @@
       >
         Неверный логин или пароль
       </div>
-      <div class="col-grow self-stretch column justify-center q-gutter-lg">
+      <div class="q-mt-md col-grow no-wrap self-stretch column justify-center q-gutter-md">
         <q-input
           v-model.trim="login"
           outlined
@@ -40,7 +40,7 @@
           </template>
         </q-input>
       </div>
-      <div class="col-auto self-center">
+      <div class="q-mt-md col-auto self-center">
         <q-btn
           unelevated
           rounded
@@ -89,6 +89,12 @@ export default {
                 sessionStorage.setItem('user_role', response.data.role);
                 sessionStorage.setItem('user_organization_id', response.data.organization_id);
                 sessionStorage.setItem('user_el_signature', response.data.el_signature);
+                this.$store.commit('user', {
+                  id: response.data.id, 
+                  role: response.data.role, 
+                  organization_id: response.data.organization_id, 
+                  el_signature: response.data.el_signature
+                });
                 if (response.data.role === Role.MedWorker && response.data.id !== '3') {
                   this.$router.push('/dig_sig')
                 } else {

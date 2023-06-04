@@ -58,7 +58,7 @@ export default {
         },
         {
           name: "ref_doctor",
-          label: "Напраление на врача",
+          label: "Направление на врача",
 
         },
         {

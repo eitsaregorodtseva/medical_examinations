@@ -147,7 +147,8 @@ export default {
     },
 
     data (){ return {
-        user_id : null,
+        user_id : this.$store.state.user.id,
+        user_organization_id: this.$store.state.user.organization_id,
         personnel_info : Object.assign({}, this.initPersonnelInfo),
         uuid : null
     }},
@@ -163,15 +164,9 @@ export default {
         // Generate unique id for this component
         this.uuid = uuid.toString()
         uuid += 1;
-
-        this.populateDataFromStorage()
     },
 
     methods : {
-        populateDataFromStorage() {
-            this.user_id = sessionStorage.getItem('user_id')
-            this.user_organization_id = sessionStorage.getItem('user_organization_id')
-        },
         closeModal () {
             this.$emit('update:modelValue', false)
         },

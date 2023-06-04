@@ -4,6 +4,7 @@
       <div class="col" style="max-width:600px">
         <q-responsive
           class=""
+          style="max-width:600px; min-height: 300px;"
           :ratio="4/3"
           :class="isError ? 'app_error' : 'app_normal'"
         >

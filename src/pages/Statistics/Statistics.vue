@@ -59,6 +59,7 @@ const navigationList = [
             Role.Admin,
             Role.Dispatcher,
         ],
+        onlyRoot: false
     },
     {
         name: "documents",
@@ -67,6 +68,7 @@ const navigationList = [
             Role.Admin,
             Role.Dispatcher,
         ],
+        onlyRoot: false
     },
     {
         name: "1c",
@@ -75,6 +77,7 @@ const navigationList = [
             Role.Admin,
             Role.Dispatcher,
         ],
+        onlyRoot: false
     },
     {
         name: "medworkers",
@@ -82,6 +85,7 @@ const navigationList = [
         roles: [
             Role.Admin,
         ],
+        onlyRoot: true
     },
     {
         name: "applications",
@@ -90,6 +94,7 @@ const navigationList = [
             Role.Admin,
             Role.Dispatcher
         ],
+        onlyRoot: false
     },
     {
         name: "settings",
@@ -98,6 +103,7 @@ const navigationList = [
             Role.Admin,
             Role.Dispatcher
         ],
+        onlyRoot: true
     },
     {
         name: "help",
@@ -106,6 +112,7 @@ const navigationList = [
             Role.Admin,
             Role.Dispatcher
         ],
+        onlyRoot: false
     },
 ]
 
@@ -124,11 +131,15 @@ export default {
     return {
       tab: ref("main"),
       role: sessionStorage.getItem('user_role'),
+      user_organization_id: this.$store.state.user.organization_id ?? '',
     };
   },
   computed: {
+    isRoot() {
+      return this.user_organization_id === '' || this.user_organization_id === 'null'
+    },
         thisRolesMenu() {
-            return navigationList.filter(i => i.roles.indexOf(this.role) > -1)
+            return navigationList.filter(i => i.roles.indexOf(this.role) > -1 && (!this.isRoot ? this.isRoot === i.onlyRoot : true))
         },
     }
 };

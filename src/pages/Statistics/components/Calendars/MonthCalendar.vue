@@ -104,7 +104,7 @@ export default {
         selectAll: {
             type: Boolean,
             default: false,
-        }
+    }
     },
     emits: ['get-interval'],
     data() {
@@ -124,23 +124,12 @@ export default {
     computed: {
         eventsMap() {
             const map = {}
-            console.log(today())
-
-            const data = [{exams: 0,calendar: '2023-05-01'}, {exams: 13,calendar: '2023-05-02'}, 
-                          {exams: 3,calendar: '2023-05-03'}, {exams: 3,calendar: '2023-05-04'}, 
-                          {exams: 4,calendar: '2023-05-05'}, {exams: 3,calendar: '2023-05-06'}, 
-                          {exams: 6,calendar: '2023-05-07'}, {exams: 0,calendar: '2023-05-08'},
-                          {exams: 0,calendar: '2023-05-09'}, {exams: 3,calendar: '2023-05-10'},
-                          {exams: 3,calendar: '2023-05-11'}, {exams: 8,calendar: '2023-05-12'},
-                          {exams: 2,calendar: '2023-05-13'}, {exams: 2,calendar: '2023-05-14'},
-                          {exams: 1,calendar: '2023-05-15'}, {exams: 6,calendar: '2023-05-16'},
-                          {exams: 5,calendar: '2023-05-17'}, {exams: 7,calendar: '2023-05-18'},]
-            if (data.length > 0) {
-                data.forEach(event => {
-                    (map[event.calendar] = (map[event.calendar] || [])).push({
+            if (this.examsCount.length > 0) {
+                this.examsCount.forEach(event => {
+                    (map[event.calendar ?? event.calendar_date] = (map[event.calendar ?? event.calendar_date] || [])).push({
                         id: map.length,
-                        title: event.exams,
-                        date: event.calendar
+                        title: event.exams ?? event.max_workload,
+                        date: event.calendar_date
                     })
                 })
             }
@@ -160,26 +149,26 @@ export default {
         },
         startEndDates() {
             const dates = []
-            if (this.selectAll) {
-                dates.push(this.activePeriod.from, this.activePeriod.to);
-                this.$emit('get-interval', dates);
-                // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-                this.anchorTimestamp = ref(null);
-                // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-                this.otherTimestamp = ref(null);
-            }
-            else {
-                if (this.anchorDayIdentifier !== false && this.otherDayIdentifier !== false) {
-                    if (this.anchorDayIdentifier <= this.otherDayIdentifier) {
-                        dates.push(this.anchorTimestamp.date, this.otherTimestamp.date)
-                        this.$emit('get-interval', dates)
-                    }
-                    else {
-                        dates.push(this.otherTimestamp.date, this.anchorTimestamp.date)
-                        this.$emit('get-interval', dates)
+                if (this.selectAll) {
+                    dates.push(this.activePeriod.from, this.activePeriod.to);
+                    this.$emit('get-interval', dates);
+                    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+                    this.anchorTimestamp = ref(null);
+                    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+                    this.otherTimestamp = ref(null);
+                }
+                else {
+                    if (this.anchorDayIdentifier !== false && this.otherDayIdentifier !== false) {
+                        if (this.anchorDayIdentifier <= this.otherDayIdentifier) {
+                            dates.push(this.anchorTimestamp.date, this.otherTimestamp.date)
+                            this.$emit('get-interval', dates)
+                        }
+                        else {
+                            dates.push(this.otherTimestamp.date, this.anchorTimestamp.date)
+                            this.$emit('get-interval', dates)
+                        }
                     }
                 }
-            }
             return dates
         },
         formattedMonth() {

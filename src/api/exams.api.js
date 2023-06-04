@@ -33,17 +33,17 @@ const postVerdict = (exam_id, verd_list, user_id, verdict_comment = null, verdic
 const patchMedworkerInExam = (exam_id, user_id, medworker_id) => webAPI.patch(`/exams/${exam_id}`,
     null, { params : {user_id, medworker_id} });
 
-const getExamsHistoryByPeriod = (user_id, date_from, date_to) => webAPI.get('/exams',
-{ params: {user_id, date_from, date_to} });
+const getExamsHistoryByPeriod = (user_id, date_from, date_to, exams_filter) => webAPI.get('/exams_filter',
+{ params: {user_id, date_from, date_to, exams_filter} });
 
-const getExamsHistoryForOrganizationByPeriod = (user_id, organization_id, date_from, date_to) => webAPI.get('/exams',
-    { params: {user_id, organization_id, date_from, date_to} });
+const getExamsHistoryForOrganizationByPeriod = (user_id, organization_id, date_from, date_to, exams_filter) => webAPI.get('/exams_filter',
+    { params: {user_id, organization_id, date_from, date_to, exams_filter} });
     
-const getExamsCountByPeriod = (user_id, start_date, end_date) => webAPI.get('/calendar',
-    { params: {user_id, start_date, end_date} });
+const getExamsCountByPeriod = (user_id, start_date, end_date, exams_filter) => webAPI.get('/calendar',
+    { params: {user_id, start_date, end_date, exams_filter} });
 
-const getExamsCountForOrganizationByPeriod = (user_id, start_date, end_date, organization_id) => webAPI.get('/calendar',
-    { params: {user_id, start_date, end_date, organization_id} });
+const getExamsCountForOrganizationByPeriod = (user_id, start_date, end_date, organization_id, exams_filter) => webAPI.get('/calendar',
+    { params: {user_id, start_date, end_date, organization_id, exams_filter} });
 
 const getExamsHistoryForOrganizationByPeriodPersonnel = (user_id, organization_id, personnel_id, date_from, date_to) => webAPI.get('/exams',
     { params: {user_id, organization_id, personnel_id, date_from, date_to} });

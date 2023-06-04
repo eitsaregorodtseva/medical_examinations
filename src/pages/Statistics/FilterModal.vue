@@ -53,7 +53,7 @@
           </template>
         </q-select>
 
-        <div class="h6">
+        <!-- <div class="h6">
           Выберите водителя:
         </div>
         <q-select
@@ -82,7 +82,7 @@
               </q-item-section>
             </q-item>
           </template>
-        </q-select>
+        </q-select> -->
       </q-card-section>
       <q-card-actions>
         <div class="row q-gutter-md q-mt-xl">
@@ -107,7 +107,7 @@
 
 <script>
 import { ref } from "vue";
-import { getPersonnelList } from '@/api/personnel.api.js'
+// import { getPersonnelList } from '@/api/personnel.api.js'
 import { fullName } from '@/constants/names'
 
 export default {
@@ -141,25 +141,19 @@ export default {
       optionsPersonnel: ref(),
       valuesPersonnel: ref(),
 
-      user_id: null,
-      organization_id: null,
+      user_id: this.$store.state.user.id,
+      organization_id: this.$store.state.user.organization_id,
     }
   },
   mounted() {
     this.filterValues = this.values;
     this.filterOptions = this.options;
-    this.populateDataFromStorage();
-    this.getPersonnel();
+    // this.getPersonnel();
   },
   updated() {
     this.filterValues = this.values;
   },
   methods: {
-    populateDataFromStorage() {
-      this.user_id = sessionStorage.getItem('user_id')
-      this.organization_id = sessionStorage.getItem('user_organization_id')
-    },
-
     GetFullName(second, first, father){
       return fullName(second, first, father)
     },
@@ -181,28 +175,28 @@ export default {
       })
     },
 
-    handleFilterPersonnelOptions(value, update) {
-      update(() => {
-        if (value === '') {
-          this.optionsPersonnel = this.optionsPersonnel;
-        }
-        else {
-          const needle = value.toLowerCase();
-          this.optionsPersonnel = this.options.filter(
-            v => v.toLowerCase().indexOf(needle) > -1
-          );
-        }
-      })
-    },
+    // handleFilterPersonnelOptions(value, update) {
+    //   update(() => {
+    //     if (value === '') {
+    //       this.optionsPersonnel = this.optionsPersonnel;
+    //     }
+    //     else {
+    //       const needle = value.toLowerCase();
+    //       this.optionsPersonnel = this.options.filter(
+    //         v => v.toLowerCase().indexOf(needle) > -1
+    //       );
+    //     }
+    //   })
+    // },
 
-    async getPersonnel() {
-      try {
-        var response = await getPersonnelList(this.user_id, this.organization_id);
-        this.optionsPersonnel = response.data
-      } catch (err) {
-        console.log(err)
-      }
-    },
+    // async getPersonnel() {
+    //   try {
+    //     var response = await getPersonnelList(this.user_id, this.organization_id);
+    //     this.optionsPersonnel = response.data
+    //   } catch (err) {
+    //     console.log(err)
+    //   }
+    // },
 
   },
 }

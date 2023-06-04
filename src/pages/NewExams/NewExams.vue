@@ -74,8 +74,8 @@ export default {
       ExamData,
     },
     data () { return {
-      user_id: null,
-      user_organization_id: null,
+      user_id: this.$store.state.user.id,
+      user_organization_id: this.$store.state.user.organization_id,
       examsList : [],
       queueCheckTimer : '',
       showTable: false,
@@ -126,7 +126,6 @@ export default {
       },
     },
     mounted() {
-      this.populateDataFromStorage();
       this.notificationSound = new Audio(notificationSoundURL);
     },
     beforeUnmount () {
@@ -135,10 +134,6 @@ export default {
       this.tabDefaultState();
     },
     methods : {
-        populateDataFromStorage() {
-            this.user_id = sessionStorage.getItem('user_id')
-            this.user_organization_id = sessionStorage.getItem('user_organization_id')
-        },
         startResultsChecking(start_time) {
           console.log(start_time)
           this.examDetailsVisible = true;

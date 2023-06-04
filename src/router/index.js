@@ -81,9 +81,9 @@ const routes = [
     component: () => import('@/pages/ExamsHistory/ExamsHistory.vue'),
     meta : {
       permittedRoles : [
-        Role.Admin,
+        // Role.Admin,
         // Role.Dispatcher,
-        // Role.MedWorker
+        Role.MedWorker
       ]
     }
   },
